@@ -97,16 +97,16 @@
 )
 
 (set-face-attribute 'default nil
-  :font "IBM Plex Mono"
-  :height 90
+  :font "JetBrains Mono"
+  :height 70
   :weight 'medium)
 (set-face-attribute 'variable-pitch nil
-   :font "IBM Plex Mono"
-   :height 90
+   :font "JetBrains Mono"
+   :height 70
    :weight 'medium)
 (set-face-attribute 'fixed-pitch nil
-   :font "IBM Plex Mono"
-   :height 90
+   :font "JetBrains Mono"
+   :height 70
    :weight 'medium)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
@@ -129,3 +129,28 @@
 
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode t)
+
+(use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(use-package org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+(use-package which-key
+  :init
+    (which-key-mode 1)
+  :config
+  (setq which-key-side-window-location 'bottom
+     which-key-sort-order #'which-key-key-order-alpha
+     which-key-sort-uppercase-first nil
+     which-key-add-column-padding 1
+     which-key-max-display-columns nil
+     which-key-min-display-lines 6
+     which-key-side-window-slot -10
+     which-key-side-window-max-height 0.25
+     which-key-idle-delay 0.5
+     which-key-max-description-length 25
+     which-key-allow-imprecise-window-fit t
+     which-key-separator "   " ))

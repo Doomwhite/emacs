@@ -35,8 +35,6 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-(elpaca-no-symlink-mode)
-
 ;; Install use-package support
 (elpaca elpaca-use-package
   ;; Enable :elpaca use-package keyword.
@@ -78,21 +76,56 @@
 (elpaca nil (message "deferred"))
 
 (use-package general
-	:config
-	(general-evil-setup)
+    :config
+    (general-evil-setup)
 
-  ;; Leader key
-  (general-create definer dw/leader-keys
-       :states '(normal insert visual emacs)
-       :keymaps 'override
-       :prefix  "SPC"
-       :global-prefix "M-SPC")
+;; set up 'SPC' as the global leader key
+(general-create-definer dw/leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC" ;; set leader
+    :global-prefix "M-SPC") ;; access leader in insert mode
 
 (dw/leader-keys
-  "b" '(:ignore t :wk "buffer")
-  "bb" '(switch-to-buffer :wk "Switch buffer")
-  "bk" '(kill-this-buffer :wk "Kill this buffer")
-  "bn" '(next-buffer :wk "Next buffer")
-  "bp" '(previous-buffer :wk "Previous buffer")
-  "br" '(revert-buffer :wk "Reload buffer"))
-  )
+    "b" '(:ignore t :wk "buffer")
+    "bb" '(switch-to-buffer :wk "Switch buffer")
+    "bk" '(kill-this-buffer :wk "Kill this buffer")
+    "bn" '(next-buffer :wk "Next buffer")
+    "bp" '(previous-buffer :wk "Previous buffer")
+    "br" '(revert-buffer :wk "Reload buffer"))
+
+)
+
+(set-face-attribute 'default nil
+  :font "IBM Plex Mono"
+  :height 90
+  :weight 'medium)
+(set-face-attribute 'variable-pitch nil
+   :font "IBM Plex Mono"
+   :height 90
+   :weight 'medium)
+(set-face-attribute 'fixed-pitch nil
+   :font "IBM Plex Mono"
+   :height 90
+   :weight 'medium)
+;; Makes commented text and keywords italics.
+;; This is working in emacsclient but not emacs.
+;; Your font must have an italic face available.
+(set-face-attribute 'font-lock-comment-face nil
+   :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil
+   :slant 'italic)
+;; This sets the default font on all graphical frames created after restarting Emacs.
+;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
+;; are not right unless I also add this method of setting the default font.
+(add-to-list 'default-frame-alist '(font . "IBM Plex Mono"))
+
+;; Uncomment the following line if line spacing needs adjusting.
+(setq-default line-spacing 0.12)
+
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+(global-display-line-numbers-mode 1)
+(global-visual-line-mode t)

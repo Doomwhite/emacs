@@ -52,9 +52,14 @@
 ;;(use-package general :demand t)
 ;;(elpaca-wait)
 
+(setq scroll-conservatively 101
+      scroll-margin 5
+      scroll-preserve-screen-position 't)
+
 ;; Expands to: (elpaca evil (use-package evil :demand t))
 (use-package evil
     :init
+    (setq evil-want-C-u-scroll t)
     (setq evil-want-integration t)
     (setq evil-want-keybindings nil)
     (setq evil-vsplit-window-right t)
@@ -76,46 +81,47 @@
 ;; (elpaca nil (message "deferred"))
 
 (use-package general
-        :config
-        (general-evil-setup)
+	 :config
+	 (general-evil-setup)
 
-    ;; set up 'SPC' as the global leader key
-    (general-create-definer dw/leader-keys
-        :states '(normal insert visual emacs)
-        :keymaps 'override
-        :prefix "SPC" ;; set leader
-        :global-prefix "M-SPC") ;; access leader in insert mode
+     ;; set up 'SPC' as the global leader key
+     (general-create-definer dw/leader-keys
+	 :states '(normal insert visual emacs)
+	 :keymaps 'override
+	 :prefix "SPC" ;; set leader
+	 :global-prefix "M-SPC") ;; access leader in insert mode
 
-    (dw/leader-keys
-        "." '(find-file :wk "Find file")
-        "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
-        "TAB TAB" '(comment-line :wk "Comment lines"))
+     (dw/leader-keys
+	 "." '(find-file :wk "Find file")
+	 "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+	 "TAB TAB" '(comment-line :wk "Comment lines"))
 
-    (dw/leader-keys
-        "b" '(:ignore t :wk "buffer")
-        "bb" '(switch-to-buffer :wk "Switch buffer")
-        "bi" '(ibuffer :wk "Ibuffer")
-        "bk" '(kill-this-buffer :wk "Kill this buffer")
-        "bn" '(next-buffer :wk "Next buffer")
-        "bp" '(previous-buffer :wk "Previous buffer")
-        "br" '(revert-buffer :wk "Reload buffer"))
+     (dw/leader-keys
+	 "b" '(:ignore t :wk "buffer")
+	 "bb" '(switch-to-buffer :wk "Switch buffer")
+	 "bi" '(ibuffer :wk "Ibuffer")
+	 "bk" '(kill-this-buffer :wk "Kill this buffer")
+	 "bn" '(next-buffer :wk "Next buffer")
+	 "bp" '(previous-buffer :wk "Previous buffer")
+	 "br" '(revert-buffer :wk "Reload buffer"))
 
 
-    (dw/leader-keys
-      "e" '(:ignore t :wk "Evaluate")
-      "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
-      "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
-      "ee" '(eval-expression t :wk "Evaluate and elisp expression")
-      "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
-      "er" '(eval-region t :wk "Evaluate elisp in region"))
+     (dw/leader-keys
+       "e" '(:ignore t :wk "Evaluate")
+       "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
+       "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
+       "ee" '(eval-expression t :wk "Evaluate and elisp expression")
+       "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
+       "er" '(eval-region t :wk "Evaluate elisp in region"))
+
+
+  (dw/leader-keys
+   "h" '(:ignore t :wk "Help")
+   "h f" '(describe-function :wk "Describe function")
+   "h v" '(describe-variable :wk "Describe variable")
+   ;;"h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
+   "h r r" '(reload-init-file :wk "Reload emacs config"))
 )
-
- (dw/leader-keys
-  "h" '(:ignore t :wk "Help")
-  "h f" '(describe-function :wk "Describe function")
-  "h v" '(describe-variable :wk "Describe variable")
-  ;;"h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
-  "h r r" '(reload-init-file :wk "Reload emacs config"))
 
 (set-face-attribute 'default nil
   :font "IBM Plex Mono"
@@ -171,7 +177,7 @@
      which-key-min-display-lines 6
      which-key-side-window-slot -10
      which-key-side-window-max-height 0.25
-     which-key-idle-delay 0.5
+     which-key-idle-delay 0.2
      which-key-max-description-length 25
      which-key-allow-imprecise-window-fit t
      which-key-separator "   " ))

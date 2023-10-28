@@ -119,21 +119,21 @@
    "h" '(:ignore t :wk "Help")
    "h f" '(describe-function :wk "Describe function")
    "h v" '(describe-variable :wk "Describe variable")
-   ;;"h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
-   "h r r" '(reload-init-file :wk "Reload emacs config"))
+   "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
+   ;;"h r r" '(reload-init-file :wk "Reload emacs config"))
 )
 
 (set-face-attribute 'default nil
   :font "IBM Plex Mono"
-  :height 70
+  :height 90
   :weight 'medium)
 (set-face-attribute 'variable-pitch nil
    :font "IBM Plex Mono"
-   :height 70
+   :height 90
    :weight 'medium)
 (set-face-attribute 'fixed-pitch nil
    :font "IBM Plex Mono"
-   :height 70
+   :height 90
    :weight 'medium)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.

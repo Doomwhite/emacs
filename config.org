@@ -10,12 +10,17 @@
   - [[#load-evil-mode][Load Evil Mode]]
   - [[#general-keybindings][General Keybindings]]
 - [[#fonts][FONTS]]
+  - [[#setting-the-font-face][Setting the Font Face]]
+  - [[#zooming-inout][Zooming In/Out]]
 - [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
 - [[#org-mode][ORG MODE]]
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
+  - [[#disable-electric-indent][Disable Electric Indent]]
+  - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
+- [[#reload-emacs][RELOAD EMACS]]
 - [[#which-key][WHICH-KEY]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
@@ -113,52 +118,58 @@
 ** General Keybindings
 
 #+begin_src emacs-lisp
-     (use-package general
-	 :config
-	 (general-evil-setup)
+(use-package general
+    :config
+    (general-evil-setup)
 
-     ;; set up 'SPC' as the global leader key
-     (general-create-definer dw/leader-keys
-	 :states '(normal insert visual emacs)
-	 :keymaps 'override
-	 :prefix "SPC" ;; set leader
-	 :global-prefix "M-SPC") ;; access leader in insert mode
+    ;; set up 'SPC' as the global leader key
+    (general-create-definer dw/leader-keys
+        :states '(normal insert visual emacs)
+        :keymaps 'override
+        :prefix "SPC" ;; set leader
+        :global-prefix "M-SPC") ;; access leader in insert mode
 
-     (dw/leader-keys
-	 "." '(find-file :wk "Find file")
-	 "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
-	 "TAB TAB" '(comment-line :wk "Comment lines"))
+    (dw/leader-keys
+        "." '(find-file :wk "Find file")
+        "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+        "TAB TAB" '(comment-line :wk "Comment lines"))
 
-     (dw/leader-keys
-	 "b" '(:ignore t :wk "buffer")
-	 "bb" '(switch-to-buffer :wk "Switch buffer")
-	 "bi" '(ibuffer :wk "Ibuffer")
-	 "bk" '(kill-this-buffer :wk "Kill this buffer")
-	 "bn" '(next-buffer :wk "Next buffer")
-	 "bp" '(previous-buffer :wk "Previous buffer")
-	 "br" '(revert-buffer :wk "Reload buffer"))
-
-
-     (dw/leader-keys
-       "e" '(:ignore t :wk "Evaluate")
-       "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
-       "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
-       "ee" '(eval-expression t :wk "Evaluate and elisp expression")
-       "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
-       "er" '(eval-region t :wk "Evaluate elisp in region"))
+    (dw/leader-keys
+        "b" '(:ignore t :wk "buffer")
+        "bb" '(switch-to-buffer :wk "Switch buffer")
+        "bi" '(ibuffer :wk "Ibuffer")
+        "bk" '(kill-this-buffer :wk "Kill this buffer")
+        "bn" '(next-buffer :wk "Next buffer")
+        "bp" '(previous-buffer :wk "Previous buffer")
+        "br" '(revert-buffer :wk "Reload buffer"))
 
 
-  (dw/leader-keys
-   "h" '(:ignore t :wk "Help")
-   "h f" '(describe-function :wk "Describe function")
-   "h v" '(describe-variable :wk "Describe variable")
-   "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
-   ;;"h r r" '(reload-init-file :wk "Reload emacs config"))
-)
+    (dw/leader-keys
+        "e" '(:ignore t :wk "Evaluate")
+        "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
+        "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
+        "ee" '(eval-expression t :wk "Evaluate and elisp expression")
+        "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
+        "er" '(eval-region t :wk "Evaluate elisp in region"))
+
+
+    (dw/leader-keys
+        "h" '(:ignore t :wk "Help")
+        "h f" '(describe-function :wk "Describe function")
+        "h v" '(describe-variable :wk "Describe variable")
+        "h r r" '(reload-init-file :wk "Reload emacs config"))
+
+    (dw/leader-keys
+        "t" '(:ignore t :wk "Toggle")
+        "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+        "t t" '(visual-line-mode :wk "Toggle truncate lines"))
+    )
 #+end_src
 
 
 * FONTS
+
+** Setting the Font Face
 
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
@@ -187,6 +198,16 @@
 
   ;; Uncomment the following line if line spacing needs adjusting.
   (setq-default line-spacing 0.12)
+#+end_src
+
+** Zooming In/Out
+You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTRL plus the mouse wheel for zooming in/out.
+
+#+begin_src 
+  (global-set-key (kbd "C-=") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+  (global-set-key (kbd "C-wheel-up") 'text-scale-increase)
+  (global-set-key (kbd "C-wheel-down") 'text-scale-decrease)
 #+end_src
 
 * GRAPHICAL USER INTERFACE TWEAKS
@@ -220,6 +241,42 @@ Org-bullets gives us attractive bullets rather than asterisks.
   (add-hook 'org-mode-hook 'org-indent-mode)
   (use-package org-bullets)
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+end_src
+** Disable Electric Indent
+Org mode source blocks have some really weird and annoying default indentation behavior.  I think this has to do with electric-indent-mode, which is turned on by default in Emacs.  So let’s turn it OFF!
+#+begin_src emacs-lisp
+  (electric-indent-mode -1)
+#+end_src
+
+** Source Code Block Tag Expansion
+Org-tempo is not a separate package but a module within org that can be enabled.  Org-tempo allows for ‘<s’ followed by TAB to expand to a begin_src tag.  Other expansions available include:
+
+| Typing the below + TAB | Expands to ...                          |
+|------------------------+-----------------------------------------|
+| <a                     | '#+BEGIN_EXPORT ascii' … '#+END_EXPORT  |
+| <c                     | '#+BEGIN_CENTER' … '#+END_CENTER'       |
+| <C                     | '#+BEGIN_COMMENT' … '#+END_COMMENT'     |
+| <e                     | '#+BEGIN_EXAMPLE' … '#+END_EXAMPLE'     |
+| <E                     | '#+BEGIN_EXPORT' … '#+END_EXPORT'       |
+| <h                     | '#+BEGIN_EXPORT html' … '#+END_EXPORT'  |
+| <l                     | '#+BEGIN_EXPORT latex' … '#+END_EXPORT' |
+| <q                     | '#+BEGIN_QUOTE' … '#+END_QUOTE'         |
+| <s                     | '#+BEGIN_SRC' … '#+END_SRC'             |
+| <v                     | '#+BEGIN_VERSE' … '#+END_VERSE'         |
+
+#+begin_src emacs-lisp
+  (require 'org-tempo)
+#+end_src
+
+
+
+* RELOAD EMACS
+This is just an example of how to create an function in Elisp.
+
+#+begin_src emacs-lisp
+(defun reload-init-file ()
+    (interactive)
+    (load-file user-init-file))
 #+end_src
 
 * WHICH-KEY

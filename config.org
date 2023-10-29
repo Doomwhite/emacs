@@ -9,6 +9,8 @@
   - [[#elpaca-package-manager][Elpaca Package Manager]]
   - [[#load-evil-mode][Load Evil Mode]]
   - [[#general-keybindings][General Keybindings]]
+- [[#all-the-icons][ALL THE ICONS]]
+- [[#buffer-move][BUFFER MOVE]]
 - [[#fonts][FONTS]]
   - [[#setting-the-font-face][Setting the Font Face]]
   - [[#zooming-inout][Zooming In/Out]]
@@ -20,6 +22,7 @@
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
+- [[#ivy-counsel][IVY (COUNSEL)]]
 - [[#reload-emacs][RELOAD EMACS]]
 - [[#which-key][WHICH-KEY]]
 
@@ -118,54 +121,162 @@
 ** General Keybindings
 
 #+begin_src emacs-lisp
-(use-package general
-    :config
-    (general-evil-setup)
+  (use-package general
+      :config
+      (general-evil-setup)
 
-    ;; set up 'SPC' as the global leader key
-    (general-create-definer dw/leader-keys
-        :states '(normal insert visual emacs)
-        :keymaps 'override
-        :prefix "SPC" ;; set leader
-        :global-prefix "M-SPC") ;; access leader in insert mode
+      ;; set up 'SPC' as the global leader key
+      (general-create-definer dw/leader-keys
+          :states '(normal insert visual emacs)
+          :keymaps 'override
+          :prefix "SPC" ;; set leader
+          :global-prefix "M-SPC") ;; access leader in insert mode
 
-    (dw/leader-keys
-        "." '(find-file :wk "Find file")
-        "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
-        "TAB TAB" '(comment-line :wk "Comment lines"))
+      (dw/leader-keys
+          "." '(find-file :wk "Find file")
+          "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+          "f r" '(counsel-recentf :wk "Find recent files")
+          "TAB TAB" '(comment-line :wk "Comment lines"))
 
-    (dw/leader-keys
-        "b" '(:ignore t :wk "buffer")
-        "bb" '(switch-to-buffer :wk "Switch buffer")
-        "bi" '(ibuffer :wk "Ibuffer")
-        "bk" '(kill-this-buffer :wk "Kill this buffer")
-        "bn" '(next-buffer :wk "Next buffer")
-        "bp" '(previous-buffer :wk "Previous buffer")
-        "br" '(revert-buffer :wk "Reload buffer"))
-
-
-    (dw/leader-keys
-        "e" '(:ignore t :wk "Evaluate")
-        "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
-        "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
-        "ee" '(eval-expression t :wk "Evaluate and elisp expression")
-        "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
-        "er" '(eval-region t :wk "Evaluate elisp in region"))
+      (dw/leader-keys
+          "b" '(:ignore t :wk "buffer")
+          "bb" '(switch-to-buffer :wk "Switch buffer")
+          "bi" '(ibuffer :wk "Ibuffer")
+          "bk" '(kill-this-buffer :wk "Kill this buffer")
+          "bn" '(next-buffer :wk "Next buffer")
+          "bp" '(previous-buffer :wk "Previous buffer")
+          "br" '(revert-buffer :wk "Reload buffer"))
 
 
-    (dw/leader-keys
-        "h" '(:ignore t :wk "Help")
-        "h f" '(describe-function :wk "Describe function")
-        "h v" '(describe-variable :wk "Describe variable")
-        "h r r" '(reload-init-file :wk "Reload emacs config"))
+      (dw/leader-keys
+          "e" '(:ignore t :wk "Evaluate")
+          "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
+          "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
+          "ee" '(eval-expression t :wk "Evaluate and elisp expression")
+          "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
+          "er" '(eval-region t :wk "Evaluate elisp in region"))
 
-    (dw/leader-keys
-        "t" '(:ignore t :wk "Toggle")
-        "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-        "t t" '(visual-line-mode :wk "Toggle truncate lines"))
-    )
+
+      (dw/leader-keys
+          "h" '(:ignore t :wk "Help")
+          "h f" '(describe-function :wk "Describe function")
+          "h v" '(describe-variable :wk "Describe variable")
+          "h r r" '(reload-init-file :wk "Reload emacs config"))
+
+      (dw/leader-keys
+          "t" '(:ignore t :wk "Toggle")
+          "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+          "t t" '(visual-line-mode :wk "Toggle truncate lines"))
+
+      (dw/leader-keys
+          "w" '(:ignore t :wk "Windows")
+          ;; Window splits
+          "w c" '(evil-window-delete :wk "Close window")
+          "w n" '(evil-window-new :wk "New window")
+          "w s" '(evil-window-split :wk "Horizontal split window")
+          "w v" '(evil-window-vsplit :wk "Vertical split window")
+          ;; Window motions
+          "w h" '(evil-window-left :wk "Window left")
+          "w j" '(evil-window-down :wk "Window down")
+          "w k" '(evil-window-up :wk "Window up")
+          "w l" '(evil-window-right :wk "Window right")
+          "w w" '(evil-window-next :wk "Goto next window")
+          ;; Move Windows
+          "w H" '(buf-move-left :wk "Buffer move left")
+          "w J" '(buf-move-down :wk "Buffer move down")
+          "w K" '(buf-move-up :wk "Buffer move up")
+          "w L" '(buf-move-right :wk "Buffer move right"))
+
+           )
 #+end_src
 
+
+* ALL THE ICONS
+This is an icon set that can be used with dashboard, dired, ibuffer and other Emacs programs.
+  
+#+begin_src emacs-lisp
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
+#+end_src
+
+* BUFFER MOVE
+Creating some functions to allow us to easily move windows (splits) around.  The following block of code was taken from buffer-move.el found on the EmacsWiki:
+https://www.emacswiki.org/emacs/buffer-move.el
+
+#+begin_src emacs-lisp
+(require 'windmove)
+
+;;;###autoload
+(defun buf-move-up ()
+  "Swap the current buffer and the buffer above the split.
+If there is no split, ie now window above the current one, an
+error is signaled."
+;;  "Switches between the current buffer, and the buffer above the
+;;  split, if possible."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'up))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (null other-win)
+        (error "No window above this one")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+
+;;;###autoload
+(defun buf-move-down ()
+"Swap the current buffer and the buffer under the split.
+If there is no split, ie now window under the current one, an
+error is signaled."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'down))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (or (null other-win) 
+            (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win))))
+        (error "No window under this one")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+
+;;;###autoload
+(defun buf-move-left ()
+"Swap the current buffer and the buffer on the left of the split.
+If there is no split, ie now window on the left of the current
+one, an error is signaled."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'left))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (null other-win)
+        (error "No left split")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+
+;;;###autoload
+(defun buf-move-right ()
+"Swap the current buffer and the buffer on the right of the split.
+If there is no split, ie now window on the right of the current
+one, an error is signaled."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'right))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (null other-win)
+        (error "No right split")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+#+end_src
 
 * FONTS
 
@@ -268,6 +379,45 @@ Org-tempo is not a separate package but a module within org that can be enabled.
   (require 'org-tempo)
 #+end_src
 
+* IVY (COUNSEL)
++ Ivy, a generic completion mechanism for Emacs.
++ Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
++ Ivy-rich allows us to add descriptions alongside the commands in M-x.
+
+  #+begin_src emacs-lisp
+  (use-package counsel
+    :after ivy
+    :config (counsel-mode))
+  
+  (use-package ivy
+    :bind
+    ;; ivy-resume resumes the last Ivy-based completion.
+    (("C-c C-r" . ivy-resume)
+     ("C-x B" . ivy-switch-buffer-other-window))
+    :custom
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    (setq enable-recursive-minibuffers t)
+    :config
+    (ivy-mode))
+
+  (use-package all-the-icons-ivy-rich
+    :ensure t
+    :init (all-the-icons-ivy-rich-mode 1))
+
+  (use-package ivy-rich
+    :after ivy
+    :ensure t
+    :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
+    :custom
+    (ivy-virtual-abbreviate 'full
+     ivy-rich-switch-buffer-align-virtual-buffer t
+     ivy-rich-path-style 'abbrev)
+    :config
+    (ivy-set-display-transformer 'ivy-switch-buffer
+                                 'ivy-rich-switch-buffer-transformer))
+
+  #+end_src
 
 
 * RELOAD EMACS
@@ -276,6 +426,7 @@ This is just an example of how to create an function in Elisp.
 #+begin_src emacs-lisp
 (defun reload-init-file ()
     (interactive)
+    (load-file user-init-file)
     (load-file user-init-file))
 #+end_src
 

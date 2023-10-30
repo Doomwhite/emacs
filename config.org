@@ -24,6 +24,9 @@
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
 - [[#ivy-counsel][IVY (COUNSEL)]]
 - [[#reload-emacs][RELOAD EMACS]]
+- [[#shells-and-terminals][SHELLS AND TERMINALS]]
+  - [[#eshell][Eshell]]
+- [[#theme][THEME]]
 - [[#which-key][WHICH-KEY]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
@@ -149,13 +152,14 @@
 
 
       (dw/leader-keys
-          "e" '(:ignore t :wk "Evaluate")
-          "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
-          "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
-          "ee" '(eval-expression t :wk "Evaluate and elisp expression")
-          "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
-          "er" '(eval-region t :wk "Evaluate elisp in region"))
-
+        "e" '(:ignore t :wk "Eshell/Evaluate")    
+        "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+        "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+        "e e" '(eval-expression :wk "Evaluate and elisp expression")
+        "e h" '(counsel-esh-history :which-key "Eshell history")
+        "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+        "e r" '(eval-region :wk "Evaluate elisp in region")
+        "e s" '(eshell :which-key "Eshell"))
 
       (dw/leader-keys
           "h" '(:ignore t :wk "Help")
@@ -428,6 +432,42 @@ This is just an example of how to create an function in Elisp.
     (interactive)
     (load-file user-init-file)
     (load-file user-init-file))
+#+end_src
+
+
+* SHELLS AND TERMINALS
+In my configs, all of my shells (bash, fish, zsh and the ESHELL) require my shell-color-scripts-git package to be installed.  On Arch Linux, you can install it from the AUR.  Otherwise, go to my shell-color-scripts repository on GitLab to get it.
+
+** Eshell
+Eshell is an Emacs 'shell' that is written in Elisp.
+
+#+begin_src emacs-lisp
+(use-package eshell-syntax-highlighting
+  :after esh-mode
+  :config
+  (eshell-syntax-highlighting-global-mode +1))
+
+;; eshell-syntax-highlighting -- adds fish/zsh-like syntax highlighting.
+;; eshell-rc-script -- your profile for eshell; like a bashrc for eshell.
+;; eshell-aliases-file -- sets an aliases file for the eshell.
+  
+(setq eshell-rc-script (concat user-emacs-directory "eshell/profile")
+      ;; eshell-aliases-file (concat user-emacs-directory "eshell/aliases")
+      eshell-history-size 5000
+      eshell-buffer-maximum-lines 5000
+      eshell-hist-ignoredups t
+      eshell-scroll-to-bottom-on-input t
+      eshell-destroy-buffer-when-process-dies t
+      ;; eshell-visual-commands'("bash" "fish" "htop" "ssh" "top" "zsh")
+)
+#+end_src
+
+* THEME
+The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *dwmacs*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
+
+#+begin_src emacs-lisp
+;;(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+;;(load-theme 'dwmacs t)
 #+end_src
 
 * WHICH-KEY

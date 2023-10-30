@@ -108,13 +108,14 @@
 
 
     (dw/leader-keys
-        "e" '(:ignore t :wk "Evaluate")
-        "eb" '(eval-buffer t :wk "Evaluate elisp in buffer")
-        "ed" '(eval-defun t :wk "Evaluate defun containing or after point")
-        "ee" '(eval-expression t :wk "Evaluate and elisp expression")
-        "el" '(eval-last-sexp t :wk "Evaluate elisp expression before point")
-        "er" '(eval-region t :wk "Evaluate elisp in region"))
-
+      "e" '(:ignore t :wk "Eshell/Evaluate")    
+      "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+      "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+      "e e" '(eval-expression :wk "Evaluate and elisp expression")
+      "e h" '(counsel-esh-history :which-key "Eshell history")
+      "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+      "e r" '(eval-region :wk "Evaluate elisp in region")
+      "e s" '(eshell :which-key "Eshell"))
 
     (dw/leader-keys
         "h" '(:ignore t :wk "Help")
@@ -306,6 +307,28 @@ one, an error is signaled."
     (interactive)
     (load-file user-init-file)
     (load-file user-init-file))
+
+(use-package eshell-syntax-highlighting
+  :after esh-mode
+  :config
+  (eshell-syntax-highlighting-global-mode +1))
+
+;; eshell-syntax-highlighting -- adds fish/zsh-like syntax highlighting.
+;; eshell-rc-script -- your profile for eshell; like a bashrc for eshell.
+;; eshell-aliases-file -- sets an aliases file for the eshell.
+  
+(setq eshell-rc-script (concat user-emacs-directory "eshell/profile")
+      ;; eshell-aliases-file (concat user-emacs-directory "eshell/aliases")
+      eshell-history-size 5000
+      eshell-buffer-maximum-lines 5000
+      eshell-hist-ignoredups t
+      eshell-scroll-to-bottom-on-input t
+      eshell-destroy-buffer-when-process-dies t
+      ;; eshell-visual-commands'("bash" "fish" "htop" "ssh" "top" "zsh")
+)
+
+;;(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+;;(load-theme 'dwmacs t)
 
 (use-package which-key
   :init

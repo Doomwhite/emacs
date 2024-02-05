@@ -1,10 +1,10 @@
-(defvar elpaca-installer-version 0.5)
+(defvar elpaca-installer-version 0.6)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                               :ref nil
-                              :files (:defaults (:exclude "extensions"))
+                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
                               :build (:not elpaca--activate-package)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
@@ -34,7 +34,6 @@
     (load "./elpaca-autoloads")))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
-
 (elpaca-no-symlink-mode)
 
 ;; Install use-package support
@@ -55,21 +54,23 @@
 ;;(elpaca-wait)
 
 ;; Expands to: (elpaca evil (use-package evil :demand t))
-(use-package evil
-    :init
-    (setq evil-want-integration t)
-    (setq evil-want-keybindings nil)
-    (setq evil-vsplit-window-right t)
-    (setq evil-split-window-below t)
-    (evil-mode))
-    (use-package evil-collection
+      (use-package evil
+	      :init
+	      (setq evil-want-integration t
+				      evil-want-keybinding nil
+				      evil-vsplit-window-right t
+				      evil-split-window-below t
+				      evil-want-C-u-scroll t
+				      evil-collection-setup-minibuffer t)
+	      (evil-mode))
+ (use-package evil-collection
         :after evil
       :config
       (setq evil-collection-media '(dashboard dired ibuffer))
-      (evil-collectiong-init))
-   (use-package evil-tutor)
+      (evil-collection-init))
+  (use-package evil-tutor)
 
-;;Turns off elpaca-use-package-mode current declartion
+;;Turns off elpaca-use-package-mode current declaration
 ;;Note this will cause the declaration to be interpreted immediately (not deferred).
 ;;Useful for configuring built-in emacs features.
 (use-package emacs :elpaca nil :config (setq ring-bell-function #'ignore))
@@ -78,15 +79,15 @@
 (elpaca nil (message "deferred"))
 
 (use-package general
-	:config
-	(general-evil-setup)
+:config
+      (general-evil-setup)
 
-  ;; Leader key
-  (general-create definer dw/leader-keys
-       :states '(normal insert visual emacs)
-       :keymaps 'override
-       :prefix  "SPC"
-       :global-prefix "M-SPC")
+;; Leader key
+(general-create-definer dw/leader-keys
+	:states '(normal insert visual emacs)
+	:keymaps 'override
+	:prefix  "SPC"
+	:global-prefix "M-SPC")
 
 (dw/leader-keys
   "b" '(:ignore t :wk "buffer")
@@ -94,5 +95,43 @@
   "bk" '(kill-this-buffer :wk "Kill this buffer")
   "bn" '(next-buffer :wk "Next buffer")
   "bp" '(previous-buffer :wk "Previous buffer")
-  "br" '(revert-buffer :wk "Reload buffer"))
-  )
+  "br" '(revert-buffer :wk "Reload buffer")))
+
+(set-face-attribute 'default nil
+  :font "IBM Plex Mono"
+  :height 110
+  :weight 'medium)
+(set-face-attribute 'variable-pitch nil
+  :font "IBM Plex Mono"
+  :height 120
+  :weight 'medium)
+(set-face-attribute 'fixed-pitch nil
+  :font "IBM Plex Mono"
+  :height 110
+  :weight 'medium)
+;; Makes commented text and keywords italics.
+;; This is working in emacsclient but not emacs.
+;; Your font must have an italic face available.
+(set-face-attribute 'font-lock-comment-face nil
+  :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil
+  :slant 'italic)
+
+;; This sets the default font on all graphical frames created after restarting Emacs.
+;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
+;; are not right unless I also add this method of setting the default font.
+;; (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-11"))
+
+;; Uncomment the following line if line spacing needs adjusting.
+(setq-default line-spacing 0.12)
+
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+(global-display-line-numbers-mode 1)
+(global-visual-line-mode t)
+
+(use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))

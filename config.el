@@ -67,6 +67,11 @@
         :after evil
       :config
       (setq evil-collection-media '(dashboard dired ibuffer))
+	      (setq evil-normal-state-modes
+				      (append evil-emacs-state-modes
+								      evil-insert-state-modes
+								      evil-normal-state-modes
+								      evil-motion-state-modes))
       (evil-collection-init))
   (use-package evil-tutor)
 
@@ -135,3 +140,26 @@
 (use-package toc-org
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(use-package org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+(electric-indent-mode -1)
+
+(use-package which-key
+  :init
+    (which-key-mode 1)
+  :config
+  (setq which-key-side-window-location 'bottom
+	which-key-sort-order #'which-key-key-order-alpha
+	which-key-sort-uppercase-first nil
+	which-key-add-column-padding 1
+	which-key-max-display-columns nil
+	which-key-min-display-lines 6
+	which-key-side-window-slot -10
+	which-key-side-window-max-height 0.25
+	which-key-idle-delay 0.8
+	which-key-max-description-length 25
+	which-key-allow-imprecise-window-fit t
+	which-key-separator " → " ))

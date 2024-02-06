@@ -17,6 +17,7 @@
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
+- [[#reload-emacs][RELOAD EMACS]]
 - [[#which-key][WHICH-KEY]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
@@ -118,25 +119,40 @@
 ** General Keybindings
 
 #+begin_src emacs-lisp
-	(use-package general
-    :config
-	  (general-evil-setup)
+    (use-package general
+      :config
+      (general-evil-setup)
 
-    ;; Leader key
-    (general-create-definer dw/leader-keys
-	    :states '(normal insert visual emacs)
-	    :keymaps 'override
-	    :prefix  "SPC"
-	    :global-prefix "M-SPC")
-   
-    (dw/leader-keys
-      "b" '(:ignore t :wk "buffer")
-      "bb" '(switch-to-buffer :wk "Switch buffer")
-      "bk" '(kill-this-buffer :wk "Kill this buffer")
-      "bn" '(next-buffer :wk "Next buffer")
-      "bp" '(previous-buffer :wk "Previous buffer")
-      "br" '(revert-buffer :wk "Reload buffer")))
-    
+      ;; Leader key
+      (general-create-definer dw/leader-keys
+         :states '(normal insert visual emacs)
+         :keymaps 'override
+         :prefix  "SPC"
+         :global-prefix "M-SPC")
+
+      (dw/leader-keys
+         "b" '(:ignore t :wk "buffer")
+         "bb" '(switch-to-buffer :wk "Switch buffer")
+         "bk" '(kill-this-buffer :wk "Kill this buffer")
+         "bn" '(next-buffer :wk "Next buffer")
+         "bp" '(previous-buffer :wk "Previous buffer")
+         "br" '(revert-buffer :wk "Reload buffer"))
+
+      (dw/leader-keys
+         "e" '(:ignore t :wk "Evaluate")    
+         "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+         "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+         "e e" '(eval-expression :wk "Evaluate and elisp expression")
+         "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+         "e r" '(eval-region :wk "Evaluate elisp in region"))
+
+      (dw/leader-keys
+         "h" '(:ignore t :wk "Help")
+         "h f" '(describe-function :wk "Describe function")
+         "h v" '(describe-variable :wk "Describe variable")
+         "h r r" '(reload-init-file :wk "Reload emacs config"))
+  )
+
 #+end_src
 
 * FONTS
@@ -213,6 +229,14 @@ Org mode source blocks have some really weird and annoying default indentation b
 (electric-indent-mode -1)
 #+end_src
 
+* RELOAD EMACS
+This is just an example of how to create a simple function in Emacs.  Use this function to reload Emacs after adding changes to the config. 
+#+begin_src emacs-lisp
+(defun reload-init-file ()
+  (interactive)
+  (load-file user-init-file)
+#+end_src
+
 * WHICH-KEY
 #+begin_src emacs-lisp
   (use-package which-key
@@ -227,7 +251,7 @@ Org mode source blocks have some really weird and annoying default indentation b
 	  which-key-min-display-lines 6
 	  which-key-side-window-slot -10
 	  which-key-side-window-max-height 0.25
-	  which-key-idle-delay 0.8
+	  which-key-idle-delay 0.4
 	  which-key-max-description-length 25
 	  which-key-allow-imprecise-window-fit t
 	  which-key-separator " → " ))

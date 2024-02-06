@@ -84,23 +84,38 @@
 (elpaca nil (message "deferred"))
 
 (use-package general
-:config
-      (general-evil-setup)
+    :config
+    (general-evil-setup)
 
-;; Leader key
-(general-create-definer dw/leader-keys
-	:states '(normal insert visual emacs)
-	:keymaps 'override
-	:prefix  "SPC"
-	:global-prefix "M-SPC")
+    ;; Leader key
+    (general-create-definer dw/leader-keys
+       :states '(normal insert visual emacs)
+       :keymaps 'override
+       :prefix  "SPC"
+       :global-prefix "M-SPC")
 
-(dw/leader-keys
-  "b" '(:ignore t :wk "buffer")
-  "bb" '(switch-to-buffer :wk "Switch buffer")
-  "bk" '(kill-this-buffer :wk "Kill this buffer")
-  "bn" '(next-buffer :wk "Next buffer")
-  "bp" '(previous-buffer :wk "Previous buffer")
-  "br" '(revert-buffer :wk "Reload buffer")))
+    (dw/leader-keys
+       "b" '(:ignore t :wk "buffer")
+       "bb" '(switch-to-buffer :wk "Switch buffer")
+       "bk" '(kill-this-buffer :wk "Kill this buffer")
+       "bn" '(next-buffer :wk "Next buffer")
+       "bp" '(previous-buffer :wk "Previous buffer")
+       "br" '(revert-buffer :wk "Reload buffer"))
+
+    (dw/leader-keys
+       "e" '(:ignore t :wk "Evaluate")    
+       "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+       "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+       "e e" '(eval-expression :wk "Evaluate and elisp expression")
+       "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+       "e r" '(eval-region :wk "Evaluate elisp in region"))
+
+    (dw/leader-keys
+       "h" '(:ignore t :wk "Help")
+       "h f" '(describe-function :wk "Describe function")
+       "h v" '(describe-variable :wk "Describe variable")
+       "h r r" '(reload-init-file :wk "Reload emacs config"))
+)
 
 (set-face-attribute 'default nil
   :font "IBM Plex Mono"
@@ -147,6 +162,10 @@
 
 (electric-indent-mode -1)
 
+(defun reload-init-file ()
+  (interactive)
+  (load-file user-init-file)
+
 (use-package which-key
   :init
     (which-key-mode 1)
@@ -159,7 +178,7 @@
 	which-key-min-display-lines 6
 	which-key-side-window-slot -10
 	which-key-side-window-max-height 0.25
-	which-key-idle-delay 0.8
+	which-key-idle-delay 0.4
 	which-key-max-description-length 25
 	which-key-allow-imprecise-window-fit t
 	which-key-separator " → " ))

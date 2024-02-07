@@ -11,17 +11,18 @@
   - [[#adding-the-client-to-the-gitconfig-editor][Adding the client to the gitconfig editor]]
 
 * Dependencies
-  - Windows Emacs 29+ and its bin folder in the PATH
+  - Windows Emacs 29+ 
+    + and its bin folder in the PATH
   - IBM Plex Mono font
   - HOME environment variable to the parent folder of the configuration 
 
 * How to use the server script
   - If you are having issues creating the server to attach, then try this:
     + Changing the server's folder author to the current user, instead of the Admin.
-      * Select the folder;
-      * Go to its properties;
-      * Go to the 'Security' tab;
-      * Click on the 'Advanced' button;
+      * Select the folder.
+      * Go to its properties.
+      * Go to the 'Security' tab.
+      * Click on the 'Advanced' button.
       * On the top of the window will have the field 'Owner', change it to your user.
   - Or try debugging the server to find the error source.
     + emacs --daemon --debug-init
@@ -30,11 +31,14 @@
   - A change in the Windows registry will be required, it will change the Detail part of the properties from every file in OS.
     + Create a string value in HKEY_CLASSES_ROOT\lnkfile called 'FullDetails'
     + Set its value to : 
-        prop:System.PropGroup.Description;System.ItemTypeText;System.Comment;System.Link.TargetParsingPath;System.AppUserModel.ID;System.ItemFolderPathDisplay;prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName
+        + prop:System.PropGroup.Description;System.ItemTypeText;System.Comment;System.Link.TargetParsingPath;System.AppUserModel.ID;System.ItemFolderPathDisplay;prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName
     + Make a shortcut for the emacsclient such as: 
-    emacsclientw.exe -c -n
-    + Go to the shortcut's properties, and then:
-    + To the Details tab, there will be a field 'AppUserModelId', change it to the Emacs executable, currently it's 'GNU.Emacs'.
+        + Target: emacsclientw.exe -c -n
+    + Go to the shortcut's properties.
+    + Go to the Details tab.
+    + there will be a field 'AppUserModelId'.
+    + Change it to the Emacs executable same ID.
+        + Currently it's 'GNU.Emacs'.
   
 * Adding the client to the gitconfig editor
   - Simply add this to the config:

@@ -17,7 +17,6 @@
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
-- [[#reload-emacs][RELOAD EMACS]]
 - [[#which-key][WHICH-KEY]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
@@ -150,7 +149,10 @@
          "h" '(:ignore t :wk "Help")
          "h f" '(describe-function :wk "Describe function")
          "h v" '(describe-variable :wk "Describe variable")
-         "h r r" '(reload-init-file :wk "Reload emacs config"))
+         "h r r" '((lambda () (interactive)
+                   (load-file "~/.config/emacs/init.el")
+                   (ignore (elpaca-process-queues)))
+                  :wk "Reload emacs config"))
   )
 
 #+end_src
@@ -190,7 +192,7 @@ Defining the various fonts that Emacs will use.
 #+end_src
 
 * GRAPHICAL USER INTERFACE TWEAKS
-Let's make Windows Emacs look a little better.
+Let's make GNU Emacs look a little better.
 
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
@@ -229,22 +231,16 @@ Org mode source blocks have some really weird and annoying default indentation b
 (electric-indent-mode -1)
 #+end_src
 
-* RELOAD EMACS
-This is just an example of how to create a simple function in Emacs.  Use this function to reload Emacs after adding changes to the config. 
-#+begin_src emacs-lisp
-(defun reload-init-file ()
-  (interactive)
-  (load-file user-init-file)
-#+end_src
-
 * WHICH-KEY
 #+begin_src emacs-lisp
-  (use-package which-key
-    :init
-      (which-key-mode 1)
-    :config
-    (setq which-key-side-window-location 'bottom
+(use-package which-key
+  :init
+    (which-key-mode 1)
+  :diminish
+  :config
+  (setq which-key-side-window-location 'bottom
 	  which-key-sort-order #'which-key-key-order-alpha
+	  which-key-allow-imprecise-window-fit nil
 	  which-key-sort-uppercase-first nil
 	  which-key-add-column-padding 1
 	  which-key-max-display-columns nil
@@ -253,6 +249,6 @@ This is just an example of how to create a simple function in Emacs.  Use this f
 	  which-key-side-window-max-height 0.25
 	  which-key-idle-delay 0.4
 	  which-key-max-description-length 25
-	  which-key-allow-imprecise-window-fit t
-	  which-key-separator " → " ))
+	  which-key-allow-imprecise-window-fit nil
+	  which-key-separator " > " ))
 #+end_src

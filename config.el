@@ -61,8 +61,7 @@
 				      evil-vsplit-window-right t
 				      evil-split-window-below t
 				      evil-want-C-u-scroll t
-				      evil-collection-setup-minibuffer t)
-	      (evil-mode))
+				      evil-collection-setup-minibuffer t))
  (use-package evil-collection
         :after evil
       :config
@@ -72,7 +71,8 @@
 								      evil-insert-state-modes
 								      evil-normal-state-modes
 								      evil-motion-state-modes))
-      (evil-collection-init))
+      (evil-collection-init)
+	      (evil-mode))
   (use-package evil-tutor)
 
 ;;Turns off elpaca-use-package-mode current declaration
@@ -114,7 +114,10 @@
        "h" '(:ignore t :wk "Help")
        "h f" '(describe-function :wk "Describe function")
        "h v" '(describe-variable :wk "Describe variable")
-       "h r r" '(reload-init-file :wk "Reload emacs config"))
+       "h r r" '((lambda () (interactive)
+                 (load-file "~/.config/emacs/init.el")
+                 (ignore (elpaca-process-queues)))
+                :wk "Reload emacs config"))
 )
 
 (set-face-attribute 'default nil
@@ -162,23 +165,21 @@
 
 (electric-indent-mode -1)
 
-(defun reload-init-file ()
-  (interactive)
-  (load-file user-init-file)
-
 (use-package which-key
   :init
     (which-key-mode 1)
+  :diminish
   :config
   (setq which-key-side-window-location 'bottom
-	which-key-sort-order #'which-key-key-order-alpha
-	which-key-sort-uppercase-first nil
-	which-key-add-column-padding 1
-	which-key-max-display-columns nil
-	which-key-min-display-lines 6
-	which-key-side-window-slot -10
-	which-key-side-window-max-height 0.25
-	which-key-idle-delay 0.4
-	which-key-max-description-length 25
-	which-key-allow-imprecise-window-fit t
-	which-key-separator " → " ))
+	  which-key-sort-order #'which-key-key-order-alpha
+	  which-key-allow-imprecise-window-fit nil
+	  which-key-sort-uppercase-first nil
+	  which-key-add-column-padding 1
+	  which-key-max-display-columns nil
+	  which-key-min-display-lines 6
+	  which-key-side-window-slot -10
+	  which-key-side-window-max-height 0.25
+	  which-key-idle-delay 0.4
+	  which-key-max-description-length 25
+	  which-key-allow-imprecise-window-fit nil
+	  which-key-separator " > " ))

@@ -42,7 +42,7 @@
         + Target: emacsclientw.exe -c -n
     + Go to the shortcut's properties.
     + Go to the Details tab.
-    + there will be a field 'AppUserModelId'.
+    + Find a field called 'AppUserModelId'.
     + Change it to the Emacs executable same ID.
         + Currently it's 'GNU.Emacs'.
   

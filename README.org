@@ -12,7 +12,7 @@
 
 * Dependencies
   - Windows Emacs 29+ 
-    + and its bin folder in the PATH
+    + And its bin folder in the PATH
   - IBM Plex Mono font
   - HOME environment variable to the parent folder of the configuration 
 
@@ -28,7 +28,7 @@
     + emacs --daemon --debug-init
 
 * How to set a taskbar shortcut for the client that occupies only 1 slot
-  - A change in the Windows registry will be required, it will change the Detail part of the properties from every file in OS.
+  - A change in the Windows registry will be required, it will change the Details part of the properties from every file in OS.
     + Create a string value in HKEY_CLASSES_ROOT\lnkfile called 'FullDetails'
     + Set its value to : 
         + prop:System.PropGroup.Description;System.ItemTypeText;System.Comment;System.Link.TargetParsingPath;System.AppUserModel.ID;System.ItemFolderPathDisplay;prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName

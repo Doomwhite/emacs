@@ -13,6 +13,7 @@
 - [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
+  - [[#scroll-off-functionatility][Scroll off functionatility]]
 - [[#org-mode][ORG MODE]]
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
@@ -203,10 +204,26 @@ Let's make GNU Emacs look a little better.
 
 ** Display Line Numbers and Truncated Lines
 #+begin_src emacs-lisp
-(global-display-line-numbers-mode 1)
-(display-line-numbers-mode 1)
-(global-visual-line-mode t)
+  (global-display-line-numbers-mode 1)
+  (setq display-line-numbers-type 'relative)
+  (global-visual-line-mode t)
 #+end_src
+
+** Scroll off functionatility
+#+begin_src emacs-lisp
+  ; Scroll by one line when moving off the screen by 1 line
+  (setq scroll-conservatively 101)
+(defun update-scroll-margin (&optional frame)
+  "Update scroll-margin based on the current window height."
+  (interactive)
+  (setq scroll-margin
+        (ceiling (/ (float (window-height))
+                    (* 3.5 1.2)))))
+
+(add-hook 'after-make-frame-functions #'update-scroll-margin)
+(add-hook 'window-size-change-functions #'update-scroll-margin)
+#+end_src
+
 
 * ORG MODE
 ** Enabling Table of Contents

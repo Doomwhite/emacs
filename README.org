@@ -17,14 +17,20 @@
   - HOME environment variable to the parent folder of the configuration 
 
 * How to use the server script
-  - If you are having issues creating the server to attach, then try this:
+- Automatically start the server on startup
+  + Make a symlink of the script
+  + Open the startup folder of windows
+    + Win+R > shell::startup
+  + Place the symlink in the startup folder
+  + The state of the startup script if verifiable in the task manager
+- If you are having issues creating the server to attach, then try this:
     + Changing the server's folder author to the current user, instead of the Admin.
       * Select the folder.
       * Go to its properties.
       * Go to the 'Security' tab.
       * Click on the 'Advanced' button.
       * On the top of the window will have the field 'Owner', change it to your user.
-  - Or try debugging the server to find the error source.
+- Or try debugging the server to find the error source.
     + emacs --daemon --debug-init
 
 * How to set a taskbar shortcut for the client that occupies only 1 slot

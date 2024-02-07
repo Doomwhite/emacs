@@ -15,14 +15,13 @@
 - [[#how-to-set-a-taskbar-shortcut-for-the-client-that-occupies-only-1-slot][How to set a taskbar shortcut for the client that occupies only 1 slot]]
   - [[#a-change-in-the-windows-registry-will-be-required-it-will-change-the-detail-part-of-the-properties-from-every-file-in-os][A change in the windows registry will be required, it will change the Detail part of the properties from every file in OS.]]
 - [[#adding-the-client-to-the-gitconfig-editor][Adding the client to the gitconfig editor]]
-  - [[#simply-add-this-to-the-config][Simply add this to the config:]]
 
 * Dependencies
 ** Windows Emacs 29+
-*** And its bin folder in the PATH
+And its bin folder in the PATH
 ** IBM Plex Mono font
 ** HOME environment variable
-*** To the parent folder of the configuration 
+To the parent folder of the configuration 
 
 * How to use the server script
 ** If you are having issues creating the server to attach, then try this:
@@ -47,5 +46,5 @@ emacsclientw.exe -c -n
 To the Details tab, there will be a field 'AppUserModelId', change it to the Emacs executable, currently it's 'GNU.Emacs'.
 
 * Adding the client to the gitconfig editor
-** Simply add this to the config:
-editor = emacsclientw -a runemacs
+ Simply add this to the config:
+ editor = emacsclientw -a runemacs

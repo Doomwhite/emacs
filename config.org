@@ -14,10 +14,15 @@
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
   - [[#scroll-off-functionatility][Scroll off functionatility]]
+  - [[#transparency][Transparency]]
 - [[#org-mode][ORG MODE]]
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
+- [[#backup-file][Backup file]]
+  - [[#set-backup-directory][Set backup directory]]
+  - [[#set-backup-type-to-be-always-a-copy][Set backup type to be always a copy]]
+  - [[#always-keep-backup-files][Always keep backup files]]
 - [[#which-key][WHICH-KEY]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
@@ -103,6 +108,7 @@
 									evil-insert-state-modes
 									evil-normal-state-modes
 									evil-motion-state-modes))
+    (evil-set-undo-system 'undo-redo)
   	(evil-collection-init))
     (use-package evil-tutor)
 
@@ -224,6 +230,10 @@ Let's make GNU Emacs look a little better.
 (add-hook 'window-size-change-functions #'update-scroll-margin)
 #+end_src
 
+** Transparency 
+(set-frame-parameter nil 'alpha-background 70)
+(add-to-list 'default-frame-alist '(alpha-background . 70))
+
 
 * ORG MODE
 ** Enabling Table of Contents
@@ -246,7 +256,27 @@ Org-bullets gives us attractive bullets rather than asterisks.
 Org mode source blocks have some really weird and annoying default indentation behavior.  I think this has to do with electric-indent-mode, which is turned on by default in Emacs.  So let's turn it OFF!
 
 #+begin_src emacs-lisp
-(electric-indent-mode -1)
+    (electric-indent-mode -1)
+#+end_src
+
+* Backup file
+** Set backup directory
+#+begin_src emacs-lisp
+  ;; Not working
+  ;;(setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
+#+end_src
+
+** Set backup type to be always a copy
+#+begin_src emacs-lisp
+    (setq backup-by-copying t)
+#+end_src
+
+** Always keep backup files
+#+begin_src emacs-lisp
+    (setq delete-old-versions t
+     kept-new-versions 6
+     kept-old-versions 2
+     version-control t)
 #+end_src
 
 * WHICH-KEY

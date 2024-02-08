@@ -61,7 +61,8 @@
 				      evil-vsplit-window-right t
 				      evil-split-window-below t
 				      evil-want-C-u-scroll t
-				      evil-collection-setup-minibuffer t))
+				      evil-collection-setup-minibuffer t)
+	      (evil-mode))
  (use-package evil-collection
         :after evil
       :config
@@ -71,8 +72,8 @@
 								      evil-insert-state-modes
 								      evil-normal-state-modes
 								      evil-motion-state-modes))
-      (evil-collection-init)
-	      (evil-mode))
+  (evil-set-undo-system 'undo-redo)
+      (evil-collection-init))
   (use-package evil-tutor)
 
 ;;Turns off elpaca-use-package-mode current declaration
@@ -143,7 +144,7 @@
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-;; (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-11"))
+(add-to-list 'default-frame-alist '(font . "IBM Plex Mono"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
@@ -153,7 +154,20 @@
 (scroll-bar-mode -1)
 
 (global-display-line-numbers-mode 1)
+(setq display-line-numbers-type 'relative)
 (global-visual-line-mode t)
+
+; Scroll by one line when moving off the screen by 1 line
+  (setq scroll-conservatively 101)
+(defun update-scroll-margin (&optional frame)
+  "Update scroll-margin based on the current window height."
+  (interactive)
+  (setq scroll-margin
+        (ceiling (/ (float (window-height))
+                    (* 3.5 1.2)))))
+
+(add-hook 'after-make-frame-functions #'update-scroll-margin)
+(add-hook 'window-size-change-functions #'update-scroll-margin)
 
 (use-package toc-org
     :commands toc-org-enable
@@ -164,6 +178,16 @@
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
 (electric-indent-mode -1)
+
+;; Not working
+;;(setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
+
+(setq backup-by-copying t)
+
+(setq delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)
 
 (use-package which-key
   :init

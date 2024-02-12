@@ -10,6 +10,8 @@
   - [[#load-evil-mode][Load Evil Mode]]
   - [[#general-keybindings][General Keybindings]]
 - [[#fonts][FONTS]]
+  - [[#setting-the-font-face][Setting the font face]]
+  - [[#zooming-inout][Zooming In/Out]]
 - [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
@@ -19,6 +21,7 @@
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
+  - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
 - [[#backup-file][Backup file]]
   - [[#set-backup-directory][Set backup directory]]
   - [[#set-backup-type-to-be-always-a-copy][Set backup type to be always a copy]]
@@ -125,48 +128,62 @@
 ** General Keybindings
 
 #+begin_src emacs-lisp
-    (use-package general
-      :config
-      (general-evil-setup)
+(use-package general
+  :config
+  (general-evil-setup)
 
-      ;; Leader key
-      (general-create-definer dw/leader-keys
-         :states '(normal insert visual emacs)
-         :keymaps 'override
-         :prefix  "SPC"
-         :global-prefix "M-SPC")
+  ;; Leader key
+  (general-create-definer dw/leader-keys
+     :states '(normal insert visual emacs)
+     :keymaps 'override
+     :prefix  "SPC"
+     :global-prefix "M-SPC")
 
-      (dw/leader-keys
-         "b" '(:ignore t :wk "buffer")
-         "bb" '(switch-to-buffer :wk "Switch buffer")
-         "bk" '(kill-this-buffer :wk "Kill this buffer")
-         "bn" '(next-buffer :wk "Next buffer")
-         "bp" '(previous-buffer :wk "Previous buffer")
-         "br" '(revert-buffer :wk "Reload buffer"))
+  ;; Comment line
+  (dw/leader-keys "g c" '(comment-line :wk "Comment"))
 
-      (dw/leader-keys
-         "e" '(:ignore t :wk "Evaluate")    
-         "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
-         "e d" '(eval-defun :wk "Evaluate defun containing or after point")
-         "e e" '(eval-expression :wk "Evaluate and elisp expression")
-         "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
-         "e r" '(eval-region :wk "Evaluate elisp in region"))
+  (dw/leader-keys
+     "f" '(:ignore t :wk "Filesystem")
+     "f f" '(find-file :wk "Find file")
+     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config"))
 
-      (dw/leader-keys
-         "h" '(:ignore t :wk "Help")
-         "h f" '(describe-function :wk "Describe function")
-         "h v" '(describe-variable :wk "Describe variable")
-         "h r r" '((lambda () (interactive)
-                   (load-file "~/.config/emacs/init.el")
-                   (ignore (elpaca-process-queues)))
-                  :wk "Reload emacs config"))
-  )
+  (dw/leader-keys
+     "b" '(:ignore t :wk "Buffer")
+     "b b" '(switch-to-buffer :wk "Switch buffer")
+     "b i" '(ibuffer :wk "Ibuffer")
+     "b k" '(kill-this-buffer :wk "Kill this buffer")
+     "b n" '(next-buffer :wk "Next buffer")
+     "b p" '(previous-buffer :wk "Previous buffer")
+     "b r" '(revert-buffer :wk "Reload buffer"))
 
+  (dw/leader-keys
+     "e" '(:ignore t :wk "Evaluate")    
+     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+     "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+     "e e" '(eval-expression :wk "Evaluate and elisp expression")
+     "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+     "e r" '(eval-region :wk "Evaluate elisp in region"))
+
+  (dw/leader-keys
+     "h" '(:ignore t :wk "Help")
+     "h f" '(describe-function :wk "Describe function")
+     "h v" '(describe-variable :wk "Describe variable")
+     "h r r" '((lambda () (interactive)
+               (load-file "~/.config/emacs/init.el")
+               (ignore (elpaca-process-queues)))
+              :wk "Reload emacs config"))
+
+  (dw/leader-keys 
+     "t" '(:ignore t :wk "Toggle")
+     "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+     "t t" '(visual-line-mode :wk "Toggle truncated lines"))
+)
 #+end_src
 
 * FONTS
 Defining the various fonts that Emacs will use.
 
+** Setting the font face
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
     :font "IBM Plex Mono"
@@ -195,7 +212,16 @@ Defining the various fonts that Emacs will use.
 
   ;; Uncomment the following line if line spacing needs adjusting.
   (setq-default line-spacing 0.12)
+#+end_src
 
+** Zooming In/Out
+You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTRL plus the mouse wheel for zooming in/out.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 #+end_src
 
 * GRAPHICAL USER INTERFACE TWEAKS
@@ -256,7 +282,29 @@ Org-bullets gives us attractive bullets rather than asterisks.
 Org mode source blocks have some really weird and annoying default indentation behavior.  I think this has to do with electric-indent-mode, which is turned on by default in Emacs.  So let's turn it OFF!
 
 #+begin_src emacs-lisp
-    (electric-indent-mode -1)
+(electric-indent-mode -1)
+#+end_src
+
+
+** Source Code Block Tag Expansion
+Org-tempo is not a separate package but a module within org that can be enabled.  Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.  Other expansions available include:
+
+| Typing the below + TAB | Expands to ...                          |
+|------------------------+-----------------------------------------|
+| <a                     | '#+BEGIN_EXPORT ascii' … '#+END_EXPORT  |
+| <c                     | '#+BEGIN_CENTER' … '#+END_CENTER'       |
+| <C                     | '#+BEGIN_COMMENT' … '#+END_COMMENT'     |
+| <e                     | '#+BEGIN_EXAMPLE' … '#+END_EXAMPLE'     |
+| <E                     | '#+BEGIN_EXPORT' … '#+END_EXPORT'       |
+| <h                     | '#+BEGIN_EXPORT html' … '#+END_EXPORT'  |
+| <l                     | '#+BEGIN_EXPORT latex' … '#+END_EXPORT' |
+| <q                     | '#+BEGIN_QUOTE' … '#+END_QUOTE'         |
+| <s                     | '#+BEGIN_SRC' … '#+END_SRC'             |
+| <v                     | '#+BEGIN_VERSE' … '#+END_VERSE'         |
+
+
+#+begin_src emacs-lisp 
+(require 'org-tempo)
 #+end_src
 
 * Backup file

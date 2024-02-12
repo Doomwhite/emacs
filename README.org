@@ -16,6 +16,21 @@
   - IBM Plex Mono font
   - HOME environment variable to the parent folder of the configuration 
 
+* Powershell aliases
++ Client
+  #+begin_src powershell
+    function emacsc {
+        emacsclientw $args
+    }
+  #+end_src
++ Server
+  #+begin_src powershell
+    function emacss {
+        $emacsScriptPath = "$env:HOME\.config\emacs\scripts\windows\StartEmacsServer.bat"
+        Start-Process -FilePath $emacsScriptPath -NoNewWindow
+    }
+  #+end_src
+
 * How to use the server script
 - Automatically start the server on startup
   + Make a symlink of the script

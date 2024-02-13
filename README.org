@@ -64,3 +64,7 @@
 * Adding the client to the gitconfig editor
   - Simply add this to the config:
     + editor = emacsclientw -a runemacs
+
+* All-the-icons are not showing up
+- Clone the repo: https://github.com/domtronn/all-the-icons.el.git
+- Install all the fonts in the 'fonts' folder

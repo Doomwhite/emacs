@@ -10,6 +10,13 @@
   - [[#load-evil-mode][Load Evil Mode]]
   - [[#general-keybindings][General Keybindings]]
 - [[#all-the-icons][ALL THE ICONS]]
+- [[#buffer-move][BUFFER-MOVE]]
+- [[#backup-file][Backup file]]
+  - [[#set-backup-directory][Set backup directory]]
+  - [[#set-backup-type-to-be-always-a-copy][Set backup type to be always a copy]]
+  - [[#always-keep-backup-files][Always keep backup files]]
+- [[#drag-stuff][DRAG-STUFF]]
+- [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
 - [[#fonts][FONTS]]
   - [[#setting-the-font-face][Setting the font face]]
   - [[#zooming-inout][Zooming In/Out]]
@@ -18,29 +25,22 @@
   - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
   - [[#scroll-off-functionatility][Scroll off functionatility]]
   - [[#transparency][Transparency]]
-- [[#drag-stuff][DRAG-STUFF]]
+- [[#ivy-counsel][IVY (COUNSEL)]]
 - [[#lsp-mode][LSP MODE]]
 - [[#org-mode][ORG MODE]]
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
-- [[#backup-file][Backup file]]
-  - [[#set-backup-directory][Set backup directory]]
-  - [[#set-backup-type-to-be-always-a-copy][Set backup type to be always a copy]]
-  - [[#always-keep-backup-files][Always keep backup files]]
-- [[#ivy-counsel][IVY (COUNSEL)]]
+- [[#rainbow-mode][RAINBOW MODE]]
+- [[#reload-emacs][RELOAD EMACS]]
 - [[#spaces-only-no-tabs][SPACES ONLY, no tabs]]
-- [[#which-key][WHICH-KEY]]
-- [[#buffer-move][BUFFER-MOVE]]
-- [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
 - [[#shields-and-terminals-wip][Shields and Terminals WIP]]
   - [[#eshell][Eshell]]
   - [[#vterm][Vterm]]
   - [[#vterm-toggle][Vterm-toggle]]
 - [[#theme][THEME]]
-- [[#rainbow-mode][RAINBOW MODE]]
-- [[#reload-emacs][RELOAD EMACS]]
+- [[#which-key][WHICH-KEY]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Elpaca Package Manager
@@ -209,14 +209,13 @@
 
     ;; g
     (general-create-definer dw/g-keys
-      :states '(normal insert visual emacs)
-      :keymaps 'override
-      :prefix  "g"
-      :global-prefix "M-g")
+       :states '(normal insert visual emacs)
+       :keymaps 'override
+       :prefix  "g"
+       :global-prefix "M-g")
 
     ;; Comment line
     (dw/g-keys "c" '(comment-line :wk "Comment"))
-
     )
 #+end_src
 
@@ -230,6 +229,116 @@ This is an icon set that can be used with dashboard, dired, ibuffer and other Em
 
 (use-package all-the-icons-dired
   :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
+#+end_src
+
+* BUFFER-MOVE
+Creating some functions to allow us to easily move windows (splits) around.  The following block of code was taken from buffer-move.el found on the EmacsWiki:
+https://www.emacswiki.org/emacs/buffer-move.el
+
+#+begin_src emacs-lisp
+(require 'windmove)
+
+;;;###autoload
+(defun buf-move-up ()
+  "Swap the current buffer and the buffer above the split.
+If there is no split, ie now window above the current one, an
+error is signaled."
+;;  "Switches between the current buffer, and the buffer above the
+;;  split, if possible."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'up))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (null other-win)
+        (error "No window above this one")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+
+;;;###autoload
+(defun buf-move-down ()
+"Swap the current buffer and the buffer under the split.
+If there is no split, ie now window under the current one, an
+error is signaled."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'down))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (or (null other-win) 
+            (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win))))
+        (error "No window under this one")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+
+;;;###autoload
+(defun buf-move-left ()
+"Swap the current buffer and the buffer on the left of the split.
+If there is no split, ie now window on the left of the current
+one, an error is signaled."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'left))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (null other-win)
+        (error "No left split")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+
+;;;###autoload
+(defun buf-move-right ()
+"Swap the current buffer and the buffer on the right of the split.
+If there is no split, ie now window on the right of the current
+one, an error is signaled."
+  (interactive)
+  (let* ((other-win (windmove-find-other-window 'right))
+	 (buf-this-buf (window-buffer (selected-window))))
+    (if (null other-win)
+        (error "No right split")
+      ;; swap top with this one
+      (set-window-buffer (selected-window) (window-buffer other-win))
+      ;; move this one to top
+      (set-window-buffer other-win buf-this-buf)
+      (select-window other-win))))
+#+end_src
+
+* Backup file
+** Set backup directory
+#+begin_src emacs-lisp
+  ;; Not working
+  ;;(setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
+#+end_src
+
+** Set backup type to be always a copy
+#+begin_src emacs-lisp
+    (setq backup-by-copying t)
+#+end_src
+
+** Always keep backup files
+#+begin_src emacs-lisp
+    (setq delete-old-versions t
+     kept-new-versions 6
+     kept-old-versions 2
+     version-control t)
+#+end_src
+
+* DRAG-STUFF
+Drag Stuff is a minor mode for Emacs taht makes it possible to drag stuff(words, regions, lines) around in Emacs. When 'drag-stuff-define-keys' is enabled, then the following keybindings are set: M-up, M-down, M-left, M-right.
+#+begin_src emacs-lisp
+  (use-package drag-stuff
+    :init
+    (drag-stuff-global-mode 1)
+    (drag-stuff-define-keys))
+#+end_src
+
+* Disable beeping in MS Windows
+#+begin_src emacs-lisp
+  (setq visible-bell 1)
+  (set-message-beep 'silent)
 #+end_src
 
 * FONTS
@@ -312,13 +421,44 @@ Let's make GNU Emacs look a little better.
 (set-frame-parameter nil 'alpha-background 70)
 (add-to-list 'default-frame-alist '(alpha-background . 70))
 
-* DRAG-STUFF
-Drag Stuff is a minor mode for Emacs taht makes it possible to drag stuff(words, regions, lines) around in Emacs. When 'drag-stuff-define-keys' is enabled, then the following keybindings are set: M-up, M-down, M-left, M-right.
+* IVY (COUNSEL)
++ Ivy, a generic completion mechanism for Emacs.
++ Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
++ Ivy-rich allows us to add descriptions alongside the commands in M-x.
+
 #+begin_src emacs-lisp
-  (use-package drag-stuff
-    :init
-    (drag-stuff-global-mode 1)
-    (drag-stuff-define-keys))
+  (use-package counsel
+    :after ivy
+    :config (counsel-mode))
+  
+  (use-package ivy
+    :bind
+    ;; ivy-resume resumes the last Ivy-based completion.
+    (("C-c C-r" . ivy-resume)
+     ("C-x B" . ivy-switch-buffer-other-window))
+    :custom
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    (setq enable-recursive-minibuffers t)
+    :config
+    (ivy-mode))
+
+  (use-package all-the-icons-ivy-rich
+    :ensure t
+    :init (all-the-icons-ivy-rich-mode 1))
+
+  (use-package ivy-rich
+    :after ivy
+    :ensure t
+    :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
+    :custom
+    (ivy-virtual-abbreviate 'full
+     ivy-rich-switch-buffer-align-virtual-buffer t
+     ivy-rich-path-style 'abbrev)
+    :config
+    (ivy-set-display-transformer 'ivy-switch-buffer
+                                 'ivy-rich-switch-buffer-transformer))
+
 #+end_src
 
 * LSP MODE
@@ -377,7 +517,6 @@ Org mode source blocks have some really weird and annoying default indentation b
 (electric-indent-mode -1)
 #+end_src
 
-
 ** Source Code Block Tag Expansion
 Org-tempo is not a separate package but a module within org that can be enabled.  Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.  Other expansions available include:
 
@@ -394,75 +533,46 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 | <s                     | '#+BEGIN_SRC' … '#+END_SRC'             |
 | <v                     | '#+BEGIN_VERSE' … '#+END_VERSE'         |
 
-
 #+begin_src emacs-lisp 
 (require 'org-tempo)
 #+end_src
 
-* Backup file
-** Set backup directory
+* RAINBOW MODE
+Display the actual color as a background for any hex color value (ex. #ffffff).  The code block below enables rainbow-mode in all programming modes (prog-mode) as well as org-mode, which is why rainbow works in this document.  
+
 #+begin_src emacs-lisp
-  ;; Not working
-  ;;(setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
+(use-package rainbow-mode
+  :hook 
+  ((org-mode prog-mode) . rainbow-mode))
 #+end_src
 
-** Set backup type to be always a copy
-#+begin_src emacs-lisp
-    (setq backup-by-copying t)
-#+end_src
-
-** Always keep backup files
-#+begin_src emacs-lisp
-    (setq delete-old-versions t
-     kept-new-versions 6
-     kept-old-versions 2
-     version-control t)
-#+end_src
-
-* IVY (COUNSEL)
-+ Ivy, a generic completion mechanism for Emacs.
-+ Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
-+ Ivy-rich allows us to add descriptions alongside the commands in M-x.
+* RELOAD EMACS
+This is just an example of how to create a simple function in Emacs.  Use this function to reload Emacs after adding changes to the config.  Yes, I am loading the user-init-file twice in this function, which is a hack because for some reason, just loading the user-init-file once does not work properly.
 
 #+begin_src emacs-lisp
-  (use-package counsel
-    :after ivy
-    :config (counsel-mode))
-  
-  (use-package ivy
-    :bind
-    ;; ivy-resume resumes the last Ivy-based completion.
-    (("C-c C-r" . ivy-resume)
-     ("C-x B" . ivy-switch-buffer-other-window))
-    :custom
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-count-format "(%d/%d) ")
-    (setq enable-recursive-minibuffers t)
-    :config
-    (ivy-mode))
-
-  (use-package all-the-icons-ivy-rich
-    :ensure t
-    :init (all-the-icons-ivy-rich-mode 1))
-
-  (use-package ivy-rich
-    :after ivy
-    :ensure t
-    :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
-    :custom
-    (ivy-virtual-abbreviate 'full
-     ivy-rich-switch-buffer-align-virtual-buffer t
-     ivy-rich-path-style 'abbrev)
-    :config
-    (ivy-set-display-transformer 'ivy-switch-buffer
-                                 'ivy-rich-switch-buffer-transformer))
-
+(defun reload-init-file ()
+  (interactive)
+  (load-file user-init-file)
+  (load-file user-init-file))
 #+end_src
 
 * SPACES ONLY, no tabs
 It's pretty annoying having to deal with tabs and spaces at the same time, specially when formating text with elisp.
 #+begin_src emacs-lisp
   (indent-tabs-mode nil)
+#+end_src
+
+* Shields and Terminals WIP
+** Eshell
+** Vterm
+** Vterm-toggle
+
+* THEME
+The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *doomwhite*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
+
+#+begin_src emacs-lisp
+(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+(load-theme 'doomwhite t)
 #+end_src
 
 * WHICH-KEY
@@ -485,117 +595,4 @@ It's pretty annoying having to deal with tabs and spaces at the same time, speci
      which-key-max-description-length 25
      which-key-allow-imprecise-window-fit nil
      which-key-separator " > " ))
-#+end_src
-
-* BUFFER-MOVE
-Creating some functions to allow us to easily move windows (splits) around.  The following block of code was taken from buffer-move.el found on the EmacsWiki:
-https://www.emacswiki.org/emacs/buffer-move.el
-
-#+begin_src emacs-lisp
-(require 'windmove)
-
-;;;###autoload
-(defun buf-move-up ()
-  "Swap the current buffer and the buffer above the split.
-If there is no split, ie now window above the current one, an
-error is signaled."
-;;  "Switches between the current buffer, and the buffer above the
-;;  split, if possible."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'up))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (null other-win)
-        (error "No window above this one")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
-
-;;;###autoload
-(defun buf-move-down ()
-"Swap the current buffer and the buffer under the split.
-If there is no split, ie now window under the current one, an
-error is signaled."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'down))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (or (null other-win) 
-            (string-match "^ \\*Minibuf" (buffer-name (window-buffer other-win))))
-        (error "No window under this one")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
-
-;;;###autoload
-(defun buf-move-left ()
-"Swap the current buffer and the buffer on the left of the split.
-If there is no split, ie now window on the left of the current
-one, an error is signaled."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'left))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (null other-win)
-        (error "No left split")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
-
-;;;###autoload
-(defun buf-move-right ()
-"Swap the current buffer and the buffer on the right of the split.
-If there is no split, ie now window on the right of the current
-one, an error is signaled."
-  (interactive)
-  (let* ((other-win (windmove-find-other-window 'right))
-	 (buf-this-buf (window-buffer (selected-window))))
-    (if (null other-win)
-        (error "No right split")
-      ;; swap top with this one
-      (set-window-buffer (selected-window) (window-buffer other-win))
-      ;; move this one to top
-      (set-window-buffer other-win buf-this-buf)
-      (select-window other-win))))
-#+end_src
-
-
-* Disable beeping in MS Windows
-#+begin_src emacs-lisp
-  (setq visible-bell 1)
-  (set-message-beep 'silent)
-#+end_src
-
-* Shields and Terminals WIP
-** Eshell
-** Vterm
-** Vterm-toggle
-
-* THEME
-The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *doomwhite*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
-
-#+begin_src emacs-lisp
-(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
-(load-theme 'doomwhite t)
-#+end_src
-* RAINBOW MODE
-Display the actual color as a background for any hex color value (ex. #ffffff).  The code block below enables rainbow-mode in all programming modes (prog-mode) as well as org-mode, which is why rainbow works in this document.  
-
-#+begin_src emacs-lisp
-(use-package rainbow-mode
-  :hook 
-  ((org-mode prog-mode) . rainbow-mode))
-#+end_src
-
-* RELOAD EMACS
-This is just an example of how to create a simple function in Emacs.  Use this function to reload Emacs after adding changes to the config.  Yes, I am loading the user-init-file twice in this function, which is a hack because for some reason, just loading the user-init-file once does not work properly.
-
-#+begin_src emacs-lisp
-(defun reload-init-file ()
-  (interactive)
-  (load-file user-init-file)
-  (load-file user-init-file))
 #+end_src

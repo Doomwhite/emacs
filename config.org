@@ -40,6 +40,9 @@
   - [[#vterm][Vterm]]
   - [[#vterm-toggle][Vterm-toggle]]
 - [[#theme][THEME]]
+  - [[#custom-theme][Custom theme]]
+  - [[#catpuccin-mocha][Catpuccin Mocha]]
+  - [[#kanagawa-katsushika-hokusai][Kanagawa (Katsushika Hokusai)]]
 - [[#which-key][WHICH-KEY]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
@@ -568,11 +571,36 @@ It's pretty annoying having to deal with tabs and spaces at the same time, speci
 ** Vterm-toggle
 
 * THEME
+
+** Custom theme
 The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *doomwhite*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
 
 #+begin_src emacs-lisp
-(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
-(load-theme 'doomwhite t)
+  ;;  (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+  ;;  (load-theme 'doomwhite t)
+#+end_src
+
+** Catpuccin Mocha
+#+begin_src emacs-lisp
+  ;; (use-package catppuccin-theme 
+  ;;   :init
+  ;;   (load-theme 'catppuccin :no-confirm)
+  ;; )
+#+end_src
+
+** Kanagawa (Katsushika Hokusai)
+*** 1st version (meritamen)
+#+begin_src emacs-lisp
+    (use-package kanagawa-theme 
+      :init
+      (load-theme 'kanagawa :no-confirm)
+    )
+#+end_src
+
+*** 2nd version (konrad1997)
+#+begin_src emacs-lisp
+  ;;(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+  ;;(load-theme 'kanagawa t)
 #+end_src
 
 * WHICH-KEY

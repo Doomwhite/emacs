@@ -5,47 +5,47 @@
 #+OPTIONS: toc:2
 
 * TABLE OF CONTENTS :toc:
-- [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
+- [[#important-programs-to-load-first][Important Programs To Load First]]
   - [[#elpaca-package-manager][Elpaca Package Manager]]
   - [[#load-evil-mode][Load Evil Mode]]
   - [[#general-keybindings][General Keybindings]]
-- [[#all-the-icons][ALL THE ICONS]]
-- [[#buffer-move][BUFFER-MOVE]]
+- [[#all-the-icons][All-The-Icons]]
+- [[#buffer-move][Buffer-Move]]
 - [[#backup-file][Backup file]]
   - [[#set-backup-directory][Set backup directory]]
   - [[#set-backup-type-to-be-always-a-copy][Set backup type to be always a copy]]
   - [[#always-keep-backup-files][Always keep backup files]]
-- [[#drag-stuff][DRAG-STUFF]]
+- [[#drag-stuff][Drag-Stuff]]
 - [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
-- [[#fonts][FONTS]]
+- [[#fonts][Fonts]]
   - [[#setting-the-font-face][Setting the font face]]
   - [[#zooming-inout][Zooming In/Out]]
-- [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
+- [[#graphical-user-interface-tweaks][Graphical User Interface Tweaks]]
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
-  - [[#scroll-off-functionatility][Scroll off functionatility]]
+  - [[#scrolloff-functionatility][Scrolloff functionatility]]
   - [[#transparency][Transparency]]
-- [[#ivy-counsel][IVY (COUNSEL)]]
-- [[#lsp-mode][LSP MODE]]
-- [[#org-mode][ORG MODE]]
+- [[#ivy-counsel][Ivy (Counsel)]]
+- [[#lsp-mode][Lsp Mode]]
+- [[#org-mode][Org Mode]]
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
-- [[#rainbow-mode][RAINBOW MODE]]
-- [[#reload-emacs][RELOAD EMACS]]
-- [[#spaces-only-no-tabs][SPACES ONLY, no tabs]]
+- [[#rainbow-mode][RainboW Mode]]
+- [[#reload-emacs][Reload Emacs]]
+- [[#spaces-only-no-tabs][Spaces Only, no tabs]]
 - [[#shields-and-terminals-wip][Shields and Terminals WIP]]
   - [[#eshell][Eshell]]
   - [[#vterm][Vterm]]
   - [[#vterm-toggle][Vterm-toggle]]
-- [[#theme][THEME]]
+- [[#theme][Theme]]
   - [[#custom-theme][Custom theme]]
   - [[#catpuccin-mocha][Catpuccin Mocha]]
   - [[#kanagawa-katsushika-hokusai][Kanagawa (Katsushika Hokusai)]]
-- [[#which-key][WHICH-KEY]]
+- [[#which-key][Which-Key]]
 
-* IMPORTANT PROGRAMS TO LOAD FIRST
+* Important Programs To Load First
 ** Elpaca Package Manager
 #+begin_src emacs-lisp
 (defvar elpaca-installer-version 0.6)
@@ -219,10 +219,36 @@
 
     ;; Comment line
     (dw/g-keys "c" '(comment-line :wk "Comment"))
-    )
-#+end_src
 
-* ALL THE ICONS
+    ;; Basic movement bindings
+    (define-key evil-normal-state-map (kbd "H") 'beginning-of-line-text)
+    (define-key evil-visual-state-map (kbd "H") 'beginning-of-line-text)
+    (define-key evil-normal-state-map (kbd "L") 'end-of-line)
+    (define-key evil-normal-state-map (kbd "L") 'end-of-line)
+    (define-key evil-normal-state-map (kbd "K") 'evil-backward-paragraph)
+    (define-key evil-visual-state-map (kbd "K") 'evil-backward-paragraph)
+    (define-key evil-normal-state-map (kbd "J") 'evil-forward-paragraph)
+    (define-key evil-visual-state-map (kbd "J") 'evil-forward-paragraph)
+
+    ;; Autoadjusting scrolling
+    (defun update-scroll-keybinding (&optional frame)
+	   "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
+	   (interactive)
+	   ;; Calculate the value based on the current window height
+	   (let ((x-value (ceiling (/ (float (window-height)) (* 2.4 1.2)))))
+	      ;; Define the keybindings using the calculated value and 'k'
+	      (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+	      (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+	      (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+	      (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+       )
+    )
+
+    (add-hook 'after-make-frame-functions #'update-scroll-keybinding)
+    (add-hook 'window-size-change-functions #'update-scroll-keybinding)
+  )
+#+end_src
+* All-The-Icons
 This is an icon set that can be used with dashboard, dired, ibuffer and other Emacs programs.
   
 #+begin_src emacs-lisp
@@ -234,7 +260,7 @@ This is an icon set that can be used with dashboard, dired, ibuffer and other Em
   :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
 #+end_src
 
-* BUFFER-MOVE
+* Buffer-Move
 Creating some functions to allow us to easily move windows (splits) around.  The following block of code was taken from buffer-move.el found on the EmacsWiki:
 https://www.emacswiki.org/emacs/buffer-move.el
 
@@ -329,7 +355,7 @@ one, an error is signaled."
      version-control t)
 #+end_src
 
-* DRAG-STUFF
+* Drag-Stuff
 Drag Stuff is a minor mode for Emacs taht makes it possible to drag stuff(words, regions, lines) around in Emacs. When 'drag-stuff-define-keys' is enabled, then the following keybindings are set: M-up, M-down, M-left, M-right.
 #+begin_src emacs-lisp
   (use-package drag-stuff
@@ -344,7 +370,7 @@ Drag Stuff is a minor mode for Emacs taht makes it possible to drag stuff(words,
   (set-message-beep 'silent)
 #+end_src
 
-* FONTS
+* Fonts
 Defining the various fonts that Emacs will use.
 
 ** Setting the font face
@@ -388,7 +414,7 @@ You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTR
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 #+end_src
 
-* GRAPHICAL USER INTERFACE TWEAKS
+* Graphical User Interface Tweaks
 Let's make GNU Emacs look a little better.
 
 ** Disable Menubar, Toolbars and Scrollbars
@@ -405,7 +431,7 @@ Let's make GNU Emacs look a little better.
   (global-visual-line-mode t)
 #+end_src
 
-** Scroll off functionatility
+** Scrolloff functionatility
 #+begin_src emacs-lisp
   ; Scroll by one line when moving off the screen by 1 line
   (setq scroll-conservatively 101)
@@ -424,7 +450,7 @@ Let's make GNU Emacs look a little better.
 (set-frame-parameter nil 'alpha-background 70)
 (add-to-list 'default-frame-alist '(alpha-background . 70))
 
-* IVY (COUNSEL)
+* Ivy (Counsel)
 + Ivy, a generic completion mechanism for Emacs.
 + Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
 + Ivy-rich allows us to add descriptions alongside the commands in M-x.
@@ -464,7 +490,7 @@ Let's make GNU Emacs look a little better.
 
 #+end_src
 
-* LSP MODE
+* Lsp Mode
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
@@ -496,7 +522,7 @@ Let's make GNU Emacs look a little better.
 
 #+end_src
 
-* ORG MODE
+* Org Mode
 ** Enabling Table of Contents
 #+begin_src emacs-lisp
   (use-package toc-org
@@ -540,8 +566,8 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 (require 'org-tempo)
 #+end_src
 
-* RAINBOW MODE
-Display the actual color as a background for any hex color value (ex. #ffffff).  The code block below enables rainbow-mode in all programming modes (prog-mode) as well as org-mode, which is why rainbow works in this document.  
+* RainboW Mode
+display the actual color as a background for any hex color value (ex. #ffffff).  The code block below enables rainbow-mode in all programming modes (prog-mode) as well as org-mode, which is why rainbow works in this document.  
 
 #+begin_src emacs-lisp
 (use-package rainbow-mode
@@ -549,7 +575,7 @@ Display the actual color as a background for any hex color value (ex. #ffffff). 
   ((org-mode prog-mode) . rainbow-mode))
 #+end_src
 
-* RELOAD EMACS
+* Reload Emacs
 This is just an example of how to create a simple function in Emacs.  Use this function to reload Emacs after adding changes to the config.  Yes, I am loading the user-init-file twice in this function, which is a hack because for some reason, just loading the user-init-file once does not work properly.
 
 #+begin_src emacs-lisp
@@ -559,7 +585,7 @@ This is just an example of how to create a simple function in Emacs.  Use this f
   (load-file user-init-file))
 #+end_src
 
-* SPACES ONLY, no tabs
+* Spaces Only, no tabs
 It's pretty annoying having to deal with tabs and spaces at the same time, specially when formating text with elisp.
 #+begin_src emacs-lisp
   (indent-tabs-mode nil)
@@ -569,9 +595,7 @@ It's pretty annoying having to deal with tabs and spaces at the same time, speci
 ** Eshell
 ** Vterm
 ** Vterm-toggle
-
-* THEME
-
+* Theme
 ** Custom theme
 The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *doomwhite*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
 
@@ -603,7 +627,7 @@ The first of the two lines below designates the directory where will place all o
   ;;(load-theme 'kanagawa t)
 #+end_src
 
-* WHICH-KEY
+* Which-Key
 #+begin_src emacs-lisp
 (use-package which-key
   :init

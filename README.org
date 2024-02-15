@@ -68,3 +68,17 @@
 * All-the-icons are not showing up
 - Clone the repo: https://github.com/domtronn/all-the-icons.el.git
 - Install all the fonts in the 'fonts' folder
+
+* How to set the "Opens With" by file extension
+- Open cmd.exe with as an Admin
+- Set the file type alias
+  The full path to the .exe is required
+  #+begin_src cmd
+    ftype EmacsFileType="emacsclientw.exe" -c -n "%1"
+  #+end_src
+- Set the file association
+  'X' is the file extension to add the file association
+  #+begin_src cmd
+    assoc .X=EmacsFileType
+  #+end_src
+- If that it has no effect, check this link out: https://superuser.com/questions/1370681/assoc-ftype-does-not-work-properly-on-windows-10

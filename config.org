@@ -15,6 +15,7 @@
   - [[#set-backup-directory][Set backup directory]]
   - [[#set-backup-type-to-be-always-a-copy][Set backup type to be always a copy]]
   - [[#always-keep-backup-files][Always keep backup files]]
+- [[#dashboard][Dashboard]]
 - [[#drag-stuff][Drag-Stuff]]
 - [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
 - [[#fonts][Fonts]]
@@ -355,6 +356,18 @@ one, an error is signaled."
      version-control t)
 #+end_src
 
+* Dashboard
+#+begin_src emacs-lisp
+    ;; use-package with Elpaca:
+    (use-package dashboard
+      :elpaca t
+      :config
+      (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+      (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+      (dashboard-setup-startup-hook)
+      (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+    )
+#+end_src
 * Drag-Stuff
 Drag Stuff is a minor mode for Emacs taht makes it possible to drag stuff(words, regions, lines) around in Emacs. When 'drag-stuff-define-keys' is enabled, then the following keybindings are set: M-up, M-down, M-left, M-right.
 #+begin_src emacs-lisp

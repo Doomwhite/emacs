@@ -9,12 +9,15 @@
   - [[#elpaca-package-manager][Elpaca Package Manager]]
   - [[#load-evil-mode][Load Evil Mode]]
   - [[#general-keybindings][General Keybindings]]
+  - [[#setting-the-keybindings-functions][Setting the keybindings functions]]
+  - [[#setting-the-keybindings][Setting the keybindings]]
 - [[#all-the-icons][All-The-Icons]]
 - [[#buffer-move][Buffer-Move]]
 - [[#backup-file][Backup file]]
   - [[#set-backup-directory][Set backup directory]]
   - [[#set-backup-type-to-be-always-a-copy][Set backup type to be always a copy]]
   - [[#always-keep-backup-files][Always keep backup files]]
+- [[#centered-window-mode][Centered window mode]]
 - [[#dashboard][Dashboard]]
 - [[#drag-stuff][Drag-Stuff]]
 - [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
@@ -49,67 +52,67 @@
 * Important Programs To Load First
 ** Elpaca Package Manager
 #+begin_src emacs-lisp
-(defvar elpaca-installer-version 0.6)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-      :ref nil
-      :files (:defaults (:exclude "extensions"))
-      :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
- (build (expand-file-name "elpaca/" elpaca-builds-directory))
- (order (cdr elpaca-order))
- (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-  (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-     ((zerop (call-process "git" nil buffer t "clone"
-         (plist-get order :repo) repo)))
-     ((zerop (call-process "git" nil buffer t "checkout"
-         (or (plist-get order :ref) "--"))))
-     (emacs (concat invocation-directory invocation-name))
-     ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-     ((require 'elpaca))
-     ((elpaca-generate-autoloads "elpaca" repo)))
-      (kill-buffer buffer)
-    (error "%s" (with-current-buffer buffer (buffer-string))))
-((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
+  (defvar elpaca-installer-version 0.6)
+  (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+  (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+  (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+        :ref nil
+        :files (:defaults (:exclude "extensions"))
+        :build (:not elpaca--activate-package)))
+  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+   (build (expand-file-name "elpaca/" elpaca-builds-directory))
+   (order (cdr elpaca-order))
+   (default-directory repo))
+    (add-to-list 'load-path (if (file-exists-p build) build repo))
+    (unless (file-exists-p repo)
+      (make-directory repo t)
+      (when (< emacs-major-version 28) (require 'subr-x))
+      (condition-case-unless-debug err
+    (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+       ((zerop (call-process "git" nil buffer t "clone"
+           (plist-get order :repo) repo)))
+       ((zerop (call-process "git" nil buffer t "checkout"
+           (or (plist-get order :ref) "--"))))
+       (emacs (concat invocation-directory invocation-name))
+       ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+           "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+       ((require 'elpaca))
+       ((elpaca-generate-autoloads "elpaca" repo)))
+        (kill-buffer buffer)
+      (error "%s" (with-current-buffer buffer (buffer-string))))
+  ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+    (unless (require 'elpaca-autoloads nil t)
+      (require 'elpaca)
+      (elpaca-generate-autoloads "elpaca" repo)
+      (load "./elpaca-autoloads")))
+  (add-hook 'after-init-hook #'elpaca-process-queues)
+  (elpaca `(,@elpaca-order))
 
-;; Install use-package support
-(elpaca elpaca-use-package
-  ;; Enable :elpaca use-package keyword.
-  (elpaca-use-package-mode)
-  ;; Assume :elpaca t unless otherwise specified.
-  (setq elpaca-use-package-by-default t))
+  ;; Install use-package support
+  (elpaca elpaca-use-package
+    ;; Enable :elpaca use-package keyword.
+    (elpaca-use-package-mode)
+    ;; Assume :elpaca t unless otherwise specified.
+    (setq elpaca-use-package-by-default t))
 
-;; Block until current queue processed.
-(elpaca-wait)
+  ;; Block until current queue processed.
+  (elpaca-wait)
 
-;;When installing a package which modifies a form used at the top-level
-;;(e.g. a package which adds a use-package key word),
-;;use `elpaca-wait' to block until that package has been installed/configured.
-;;For example:
-;;(use-package general :demand t)
-;;(elpaca-wait)
+  ;;When installing a package which modifies a form used at the top-level
+  ;;(e.g. a package which adds a use-package key word),
+  ;;use `elpaca-wait' to block until that package has been installed/configured.
+  ;;For example:
+  ;;(use-package general :demand t)
+  ;;(elpaca-wait)
 
-;;Turns off elpaca-use-package-mode current declartion
-;;Note this will cause the declaration to be interpreted immediately (not deferred).
-;;Useful for configuring built-in emacs features.
-;;(use-package emacs :elpaca nil :config (setq ring-bell-function #'ignore))
+  ;;Turns off elpaca-use-package-mode current declartion
+  ;;Note this will cause the declaration to be interpreted immediately (not deferred).
+  ;;Useful for configuring built-in emacs features.
+  ;;(use-package emacs :elpaca nil :config (setq ring-bell-function #'ignore))
 
-;; Don't install anything. Defer execution of BODY
-;;(elpaca nil (message "deferred"))
+  ;; Don't install anything. Defer execution of BODY
+  ;;(elpaca nil (message "deferred"))
 #+end_src
 
 ** Load Evil Mode
@@ -141,6 +144,42 @@
 
 ** General Keybindings
 
+** Setting the keybindings functions
+*** Prints the current directory
+#+begin_src emacs-lisp
+  (defun print-current-directory ()
+    "Print the current directory in the minibuffer."
+    (interactive)
+    (message "Current directory: %s" default-directory))
+#+end_src
+
+*** Autoadjusting scrolling
+#+begin_src emacs-lisp
+  (defun update-scroll-keybinding (&optional frame)
+         "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
+         (interactive)
+         ;; Calculate the value based on the current window height
+         (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
+            ;; Define the keybindings using the calculated value and 'k'
+            (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+            (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+            (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+            (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+     )
+  )
+
+  (add-hook 'after-make-frame-functions #'update-scroll-keybinding)
+  (add-hook 'window-size-change-functions #'update-scroll-keybinding)
+#+end_src
+*** Toggle shell
+#+begin_src emacs-lisp
+  (defun toggle-shell()
+    (interactive)
+    (if (string= (buffer-name) "*shell*")
+        (switch-to-buffer (other-buffer))
+      (shell)))
+#+end_src
+** Setting the keybindings
 #+begin_src emacs-lisp
   (use-package general
     :config
@@ -154,10 +193,24 @@
       :global-prefix "M-SPC")
 
     (dw/leader-keys
+      "q" '(kill-this-buffer :wk "Quit")
+      "Q" '(kill-this-buffer :wk "Quit"))
+
+    (dw/leader-keys
+      "SPC" '(:ignore t :wk "2nd layer"))
+
+    (dw/leader-keys
+      "." '(:ignore t :wk "Current directory")
+      ". d" '(print-current-directory :wk "Prints the current directory")
+      ". r" '(update-scroll-keybinding :wk "Sets the scrolling settings by window size")
+      ". n" '(centered-window-mode :wk "Sets the centered window mode"))
+
+    (dw/leader-keys
       "f" '(:ignore t :wk "Filesystem")
       "f s" '(save-buffer :wk "Save file")
       "f S" '(save-buffer :wk "Save all files")
       "f f" '(find-file :wk "Find file")
+      "f t" '(find-grep-dired :wk "Find text")
       "f r" '(counsel-recentf :wk "Find recent files")
       "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config"))
 
@@ -183,9 +236,9 @@
       "h f" '(describe-function :wk "Describe function")
       "h v" '(describe-variable :wk "Describe variable")
       "h r r" '((lambda () (interactive)
-		  (load-file "~/.config/emacs/init.el")
-		  (ignore (elpaca-process-queues)))
-		:wk "Reload emacs config"))
+                  (load-file "~/.config/emacs/init.el")
+                  (ignore (elpaca-process-queues)))
+                :wk "Reload emacs config"))
 
     (dw/leader-keys 
       "t" '(:ignore t :wk "Toggle")
@@ -221,32 +274,29 @@
     ;; Comment line
     (dw/g-keys "c" '(comment-line :wk "Comment"))
 
+    ;; semicollon
+    (general-create-definer dw/semicollon-keys
+       :states '(normal insert visual emacs)
+       :keymaps 'override
+       :prefix  ";"
+       :global-prefix "M-;")
+
+    (dw/semicollon-keys
+      "q" '(kill-this-buffer :wk "Kill this buffer")
+      "z" '(kill-emacs :wk "Reload buffer"))
+
+    ;; Ctrl keys
+    (define-key evil-normal-state-map (kbd "C-t") 'toggle-shell)
+    
     ;; Basic movement bindings
     (define-key evil-normal-state-map (kbd "H") 'beginning-of-line-text)
     (define-key evil-visual-state-map (kbd "H") 'beginning-of-line-text)
     (define-key evil-normal-state-map (kbd "L") 'end-of-line)
-    (define-key evil-normal-state-map (kbd "L") 'end-of-line)
+    (define-key evil-visual-state-map (kbd "L") 'end-of-line)
     (define-key evil-normal-state-map (kbd "K") 'evil-backward-paragraph)
     (define-key evil-visual-state-map (kbd "K") 'evil-backward-paragraph)
     (define-key evil-normal-state-map (kbd "J") 'evil-forward-paragraph)
     (define-key evil-visual-state-map (kbd "J") 'evil-forward-paragraph)
-
-    ;; Autoadjusting scrolling
-    (defun update-scroll-keybinding (&optional frame)
-	   "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
-	   (interactive)
-	   ;; Calculate the value based on the current window height
-	   (let ((x-value (ceiling (/ (float (window-height)) (* 2.4 1.2)))))
-	      ;; Define the keybindings using the calculated value and 'k'
-	      (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-	      (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-	      (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
-	      (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
-       )
-    )
-
-    (add-hook 'after-make-frame-functions #'update-scroll-keybinding)
-    (add-hook 'window-size-change-functions #'update-scroll-keybinding)
   )
 #+end_src
 * All-The-Icons
@@ -356,11 +406,14 @@ one, an error is signaled."
      version-control t)
 #+end_src
 
+* Centered window mode
+#+begin_src emacs-lisp
+  (use-package centered-window)
+#+end_src
 * Dashboard
 #+begin_src emacs-lisp
-    ;; use-package with Elpaca:
     (use-package dashboard
-      :elpaca t
+      :ensure t
       :config
       (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
       (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
@@ -438,25 +491,29 @@ Let's make GNU Emacs look a little better.
 #+end_src
 
 ** Display Line Numbers and Truncated Lines
+Hook required to work in daemon/client settings
 #+begin_src emacs-lisp
-  (global-display-line-numbers-mode 1)
-  (setq display-line-numbers-type 'relative)
-  (global-visual-line-mode t)
+  (add-hook 'after-make-frame-functions
+    (lambda (frame)
+	(with-selected-frame frame
+	   (global-display-line-numbers-mode 1)
+	   (setq display-line-numbers-type 'relative)
+	   (global-visual-line-mode t))))
 #+end_src
 
 ** Scrolloff functionatility
 #+begin_src emacs-lisp
-  ; Scroll by one line when moving off the screen by 1 line
-  (setq scroll-conservatively 101)
-(defun update-scroll-margin (&optional frame)
-  "Update scroll-margin based on the current window height."
-  (interactive)
-  (setq scroll-margin
-        (ceiling (/ (float (window-height))
-                    (* 3.5 1.2)))))
+    ; Scroll by one line when moving off the screen by 1 line
+    (setq scroll-conservatively 101)
+    (defun update-scroll-margin (&optional frame)
+	  "Update scroll-margin based on the current window height."
+	  (interactive)
+	  (setq scroll-margin
+	  (ceiling (/ (float (window-height))
+		    (* 3.5 1.2)))))
 
-(add-hook 'after-make-frame-functions #'update-scroll-margin)
-(add-hook 'window-size-change-functions #'update-scroll-margin)
+  (add-hook 'after-make-frame-functions #'update-scroll-margin)
+  (add-hook 'window-size-change-functions #'update-scroll-margin)
 #+end_src
 
 ** Transparency 
@@ -608,36 +665,33 @@ It's pretty annoying having to deal with tabs and spaces at the same time, speci
 ** Eshell
 ** Vterm
 ** Vterm-toggle
+
 * Theme
 ** Custom theme
 The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *doomwhite*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
 
+Hook required to work in daemon/client settings
 #+begin_src emacs-lisp
-  ;;  (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
-  ;;  (load-theme 'doomwhite t)
+  (add-hook 'after-make-frame-functions
+     (lambda (frame)
+        (with-selected-frame frame
+           (load-theme 'kanagawa t))))
 #+end_src
 
 ** Catpuccin Mocha
 #+begin_src emacs-lisp
-  ;; (use-package catppuccin-theme 
-  ;;   :init
-  ;;   (load-theme 'catppuccin :no-confirm)
-  ;; )
+  ;; (use-package catppuccin-theme)
 #+end_src
 
 ** Kanagawa (Katsushika Hokusai)
 *** 1st version (meritamen)
 #+begin_src emacs-lisp
-    (use-package kanagawa-theme 
-      :init
-      (load-theme 'kanagawa :no-confirm)
-    )
+  (use-package kanagawa-theme)
 #+end_src
 
 *** 2nd version (konrad1997)
 #+begin_src emacs-lisp
-  ;;(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
-  ;;(load-theme 'kanagawa t)
+  ;; (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
 #+end_src
 
 * Which-Key

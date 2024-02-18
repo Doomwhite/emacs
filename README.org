@@ -19,13 +19,19 @@
 * Powershell aliases
 + Client
   #+begin_src powershell
-    function emacsc {
+    function mx {
         emacsclientw $args
+    }
+    function mxc {
+        emacsclientw -c -n $args
     }
   #+end_src
 + Server
   #+begin_src powershell
-    function emacss {
+    functoin mxd {
+        emacs --daemon $args
+    }
+    function mxs {
         $emacsScriptPath = "$env:HOME\.config\emacs\scripts\windows\StartEmacsServer.bat"
         Start-Process -FilePath $emacsScriptPath -NoNewWindow
     }

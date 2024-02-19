@@ -29,6 +29,7 @@
   - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
   - [[#scrolloff-functionatility][Scrolloff functionatility]]
   - [[#transparency][Transparency]]
+- [[#hook-to-load-config-in-daemonclient][Hook to load config in daemon/client]]
 - [[#ivy-counsel][Ivy (Counsel)]]
 - [[#lsp-mode][Lsp Mode]]
 - [[#org-mode][Org Mode]]
@@ -168,7 +169,6 @@
      )
   )
 
-  (add-hook 'after-make-frame-functions #'update-scroll-keybinding)
   (add-hook 'window-size-change-functions #'update-scroll-keybinding)
 #+end_src
 *** Toggle shell
@@ -491,14 +491,14 @@ Let's make GNU Emacs look a little better.
 #+end_src
 
 ** Display Line Numbers and Truncated Lines
-Hook required to work in daemon/client settings
 #+begin_src emacs-lisp
-  (add-hook 'after-make-frame-functions
-    (lambda (frame)
-	(with-selected-frame frame
-	   (global-display-line-numbers-mode 1)
-	   (setq display-line-numbers-type 'relative)
-	   (global-visual-line-mode t))))
+  (defun toggle-line-numbers ()
+    (global-display-line-numbers-mode 1)
+    (setq display-line-numbers-type 'relative))
+  (defun toggle-truncated-lines ()
+    (global-visual-line-mode t))
+  (toggle-line-numbers)
+  (toggle-truncated-lines)
 #+end_src
 
 ** Scrolloff functionatility
@@ -512,13 +512,23 @@ Hook required to work in daemon/client settings
 	  (ceiling (/ (float (window-height))
 		    (* 3.5 1.2)))))
 
-  (add-hook 'after-make-frame-functions #'update-scroll-margin)
   (add-hook 'window-size-change-functions #'update-scroll-margin)
 #+end_src
 
 ** Transparency 
 (set-frame-parameter nil 'alpha-background 70)
 (add-to-list 'default-frame-alist '(alpha-background . 70))
+
+* Hook to load config in daemon/client
+#+begin_src emacs-lisp
+  (add-hook 'after-make-frame-functions
+    (lambda (frame)
+        (with-selected-frame frame
+           (update-scroll-keybinding)
+           (load-selected-theme)
+           (toggle-line-numbers)
+           (toggle-truncated-lines))))
+#+end_src
 
 * Ivy (Counsel)
 + Ivy, a generic completion mechanism for Emacs.
@@ -670,12 +680,11 @@ It's pretty annoying having to deal with tabs and spaces at the same time, speci
 ** Custom theme
 The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *doomwhite*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
 
-Hook required to work in daemon/client settings
+Selected theme function
 #+begin_src emacs-lisp
-  (add-hook 'after-make-frame-functions
-     (lambda (frame)
-        (with-selected-frame frame
-           (load-theme 'kanagawa t))))
+  (defun load-selected-theme ()
+    (load-theme 'kanagawa t)
+  )
 #+end_src
 
 ** Catpuccin Mocha
@@ -686,7 +695,9 @@ Hook required to work in daemon/client settings
 ** Kanagawa (Katsushika Hokusai)
 *** 1st version (meritamen)
 #+begin_src emacs-lisp
-  (use-package kanagawa-theme)
+  (use-package kanagawa-theme
+    :config
+    (load-selected-theme))
 #+end_src
 
 *** 2nd version (konrad1997)

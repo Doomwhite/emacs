@@ -1,0 +1,24 @@
+#+begin_src emacs-lisp
+  ;; Expands to: (elpaca evil (use-package evil :demand t))
+  (use-package evil
+    :init
+    (setq
+     evil-want-integration t
+     evil-want-keybinding nil
+     evil-vsplit-window-right t
+     evil-split-window-below t
+     evil-want-C-u-scroll t
+     evil-collection-setup-minibuffer t)
+    (evil-mode))
+  (use-package evil-collection
+    :after evil
+    :config
+    (setq evil-collection-media '(dashboard dired ibuffer))
+    (setq evil-normal-state-modes
+          (append evil-emacs-state-modes
+                  evil-insert-state-modes
+                  evil-normal-state-modes
+                  evil-motion-state-modes))
+    (evil-collection-init)
+    (evil-set-undo-system 'undo-redo))
+#+end_src

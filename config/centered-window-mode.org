@@ -1,0 +1,3 @@
+#+begin_src emacs-lisp
+  (use-package centered-window)
+#+end_src

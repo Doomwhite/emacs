@@ -1,7 +1,7 @@
 #+TITLE: DooMWhite's Windows Emacs Config
 #+AUTHOR: DooMWhite
 #+DESCRIPTION: DooMWhite's personal Emacs config
-#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ./config.el :mkdirp yes
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
@@ -32,6 +32,7 @@
 - [[#spaces-only-no-tabs][Spaces Only, no tabs]]
 - [[#shields-and-terminals-wip][Shields and Terminals WIP]]
 - [[#modeline][Modeline]]
+- [[#treemacs][Treemacs]]
 - [[#theme][Theme]]
 - [[#which-key][Which-Key]]
 - [[#yasnippet][Yasnippet]]
@@ -108,10 +109,12 @@
 #+INCLUDE: "config/space-only.org"
 
 * Shields and Terminals WIP
-#+INCLUDE: "config/shields-and-terminals.org"
 
 * Modeline
 #+INCLUDE: "config/modeline.org"
+
+* Treemacs
+#+INCLUDE: "config/treemacs.org"
 
 * Theme
 #+INCLUDE: "config/theme.org"

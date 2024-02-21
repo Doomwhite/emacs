@@ -1,15 +1,15 @@
-** Set backup directory
+* Set backup directory
 #+begin_src emacs-lisp
   ;; Not working
-  ;;(setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
+  ;; (setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
 #+end_src
 
-** Set backup type to be always a copy
+* Set backup type to be always a copy
 #+begin_src emacs-lisp
     (setq backup-by-copying t)
 #+end_src
 
-** Always keep backup files
+* Always keep backup files
 #+begin_src emacs-lisp
     (setq delete-old-versions t
      kept-new-versions 6

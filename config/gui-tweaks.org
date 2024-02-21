@@ -1,13 +1,13 @@
 Let's make GNU Emacs look a little better.
 
-** Disable Menubar, Toolbars and Scrollbars
+* Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 #+end_src
 
-** Display Line Numbers and Truncated Lines
+* Display Line Numbers and Truncated Lines
 #+begin_src emacs-lisp
   (defun toggle-line-numbers ()
     (global-display-line-numbers-mode 1)
@@ -18,7 +18,7 @@ Let's make GNU Emacs look a little better.
   (toggle-truncated-lines)
 #+end_src
 
-** Scrolloff functionatility
+* Scrolloff functionatility
 #+begin_src emacs-lisp
     ; Scroll by one line when moving off the screen by 1 line
     (setq scroll-conservatively 101)
@@ -32,7 +32,7 @@ Let's make GNU Emacs look a little better.
   (add-hook 'window-size-change-functions #'update-scroll-margin)
 #+end_src
 
-** Transparency 
+* Transparency 
 #+begin_src emacs-lisp
   (set-frame-parameter nil 'alpha-background 70)
   (add-to-list 'default-frame-alist '(alpha-background . 90)) 

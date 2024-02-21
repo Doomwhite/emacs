@@ -15,3 +15,4 @@ This snippet adds a hook to org-mode buffers so that start/org-babel-tangle-conf
 
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'start/org-babel-tangle-config)))
 #+end_src
+

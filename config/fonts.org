@@ -1,6 +1,6 @@
 Defining the various fonts that Emacs will use.
 
-** Setting the font face
+* Setting the font face
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
     :font "IBM Plex Mono"
@@ -31,7 +31,7 @@ Defining the various fonts that Emacs will use.
   (setq-default line-spacing 0.12)
 #+end_src
 
-** Zooming In/Out
+* Zooming In/Out
 You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTRL plus the mouse wheel for zooming in/out.
 
 #+begin_src emacs-lisp

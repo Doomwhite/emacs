@@ -10,3 +10,5 @@
 (electric-indent-mode -1)
 
 (require 'org-tempo)
+
+(setq org-cycle-inline-images-display t)

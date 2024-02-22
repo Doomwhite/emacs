@@ -96,7 +96,8 @@
     (dw/leader-keys 
       "t" '(:ignore t :wk "Toggle")
       "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-      "t t" '(visual-line-mode :wk "Toggle truncated lines"))
+      "t t" '(visual-line-mode :wk "Toggle truncated lines")
+      "t i" '(org-toggle-inline-images :wk "Toggle inline images"))
 
     (dw/leader-keys
       "w" '(:ignore t :wk "Windows")

@@ -1,4 +1,9 @@
 (setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
+(setq delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
+
 (require 'ox)
 
 (defvar my-config-directory (expand-file-name "config" user-emacs-directory))
@@ -111,3 +116,15 @@
 (my-create-config-el)
 
 (load (expand-file-name "config.el" user-emacs-directory))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values '((org-startup-with-inline-images . t))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(fringe ((t (:background "unspecified-bg")))))

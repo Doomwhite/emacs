@@ -16,6 +16,7 @@
 - [[#buffer-move][Buffer-Move]]
 - [[#backup-file][Backup file]]
 - [[#centered-window-mode][Centered window mode]]
+- [[#cursor][Cursor]]
 - [[#dashboard][Dashboard]]
 - [[#drag-stuff][Drag-Stuff]]
 - [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
@@ -23,6 +24,7 @@
 - [[#git][Git]]
 - [[#graphical-user-interface-tweaks][Graphical User Interface Tweaks]]
 - [[#hook-to-load-config-in-daemonclient][Hook to load config in daemon/client]]
+- [[#image][Image]]
 - [[#ivy-counsel][Ivy (Counsel)]]
 - [[#lsp-mode][Lsp Mode]]
 - [[#org-mode][Org Mode]]
@@ -67,6 +69,9 @@
 * Centered window mode
 #+INCLUDE: "config/centered-window-mode.org"
 
+* Cursor
+#+INCLUDE: "config/cursor.org"
+
 * Dashboard
 #+INCLUDE: "config/dashboard.org"
 
@@ -87,6 +92,9 @@
 
 * Hook to load config in daemon/client
 #+INCLUDE: "config/hook-daemon-and-client.org"
+
+* Image
+#+INCLUDE: "config/image.org"
 
 * Ivy (Counsel)
 #+INCLUDE: "config/ivy-counsel.org"

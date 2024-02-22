@@ -41,3 +41,8 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 #+begin_src emacs-lisp 
 (require 'org-tempo)
 #+end_src
+
+* Enable images under subtree
+#+begin_src emacs-lisp
+  (setq org-cycle-inline-images-display t)
+#+end_src

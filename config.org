@@ -29,6 +29,7 @@
 - [[#rainbow-mode][Rainbow Mode]]
 - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#reload-emacs][Reload Emacs]]
+- [[#recentf][Recentf]]
 - [[#spaces-only-no-tabs][Spaces Only, no tabs]]
 - [[#shields-and-terminals-wip][Shields and Terminals WIP]]
 - [[#modeline][Modeline]]
@@ -104,6 +105,9 @@
 
 * Reload Emacs
 #+INCLUDE: "config/reload-emacs.org"
+
+* Recentf
+#+INCLUDE: "config/recentf.org"
 
 * Spaces Only, no tabs
 #+INCLUDE: "config/space-only.org"

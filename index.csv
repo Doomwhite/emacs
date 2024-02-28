@@ -4,6 +4,7 @@ auto-tangle-config.org,2024-02-21 14:24:59
 backup-file.org,2024-02-21 16:09:11
 buffer-move.org,2024-02-21 09:21:43
 centered-window-mode.org,2024-02-21 09:21:12
+company-mode.org,2024-02-28 14:25:36
 cursor.org,2024-02-22 14:59:25
 dap-mode.org,2024-02-28 13:43:18
 dashboard.org,2024-02-21 09:20:53
@@ -17,7 +18,7 @@ gui-tweaks.org,2024-02-21 11:17:14
 hook-daemon-and-client.org,2024-02-21 09:18:53
 image.org,2024-02-22 15:02:22
 ivy-counsel.org,2024-02-21 09:18:35
-lsp-mode.org,2024-02-28 13:48:33
+lsp-mode.org,2024-02-28 14:04:31
 modeline.org,2024-02-19 16:22:00
 nerd-icons.org,2024-02-21 09:21:58
 org-mode.org,2024-02-26 15:12:31

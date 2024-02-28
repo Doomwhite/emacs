@@ -1,5 +1,6 @@
 (use-package lsp-mode
   :init
+  (add-hook 'prog-mode-hook 'lsp)
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   ;; (setq lsp-keymap-prefix "C-c l")
   (setq lsp-clients-angular-language-server-command
@@ -13,7 +14,6 @@
   :hook ((lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
-;;(add-hook 'prog-mode-hook' 'lsp)
 
 ;; lsp-ui
 (use-package lsp-ui

@@ -17,6 +17,7 @@
 - [[#backup-file][Backup file]]
 - [[#centered-window-mode][Centered window mode]]
 - [[#cursor][Cursor]]
+- [[#company-mode][Company mode]]
 - [[#dashboard][Dashboard]]
 - [[#dap-mode][Dap Mode]]
 - [[#drag-stuff][Drag-Stuff]]
@@ -73,6 +74,9 @@
 
 * Cursor
 #+INCLUDE: "config/cursor.org"
+
+* Company mode
+#+INCLUDE: "config/company-mode.org"
 
 * Dashboard
 #+INCLUDE: "config/dashboard.org"

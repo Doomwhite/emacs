@@ -8,3 +8,5 @@ recentf
 transient
 .cache
 bookmarks
+/tree-sitter
+/.lsp-session-v1

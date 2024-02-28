@@ -7,6 +7,9 @@
   :after org
   :hook (org-mode . org-superstar-mode))
 
+(use-package ob-mermaid
+  :after org)
+
 (electric-indent-mode -1)
 
 (require 'org-tempo)

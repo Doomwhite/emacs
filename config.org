@@ -18,6 +18,7 @@
 - [[#centered-window-mode][Centered window mode]]
 - [[#cursor][Cursor]]
 - [[#dashboard][Dashboard]]
+- [[#dap-mode][Dap Mode]]
 - [[#drag-stuff][Drag-Stuff]]
 - [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
 - [[#fonts][Fonts]]
@@ -35,6 +36,7 @@
 - [[#spaces-only-no-tabs][Spaces Only, no tabs]]
 - [[#shields-and-terminals-wip][Shields and Terminals WIP]]
 - [[#modeline][Modeline]]
+- [[#treesitter][Treesitter]]
 - [[#treemacs][Treemacs]]
 - [[#theme][Theme]]
 - [[#which-key][Which-Key]]
@@ -74,6 +76,9 @@
 
 * Dashboard
 #+INCLUDE: "config/dashboard.org"
+
+* Dap Mode
+#+INCLUDE: "config/dap-mode.org"
 
 * Drag-Stuff
 #+INCLUDE: "config/drag-stuff.org"
@@ -124,6 +129,9 @@
 
 * Modeline
 #+INCLUDE: "config/modeline.org"
+
+* Treesitter
+#+INCLUDE: "config/tree-sitter.org"
 
 * Treemacs
 #+INCLUDE: "config/treemacs.org"

@@ -15,6 +15,12 @@ Org-bullets gives us attractive bullets rather than asterisks.
     :hook (org-mode . org-superstar-mode))
 #+end_src
 
+* ob-mermaid
+#+begin_src emacs-lisp
+  (use-package ob-mermaid
+    :after org)
+#+end_src
+
 * Disable Electric Indent
 Org mode source blocks have some really weird and annoying default indentation behavior.  I think this has to do with electric-indent-mode, which is turned on by default in Emacs.  So let's turn it OFF!
 

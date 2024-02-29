@@ -1,9 +1,13 @@
 (use-package company
-  :ensure t
-  :commands (global-company-mode)
-  :init
-  (add-hook 'elpaca-after-init-hook  'global-company-mode)
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-mode 
+          ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+          ("<tab>" . company-indent-or-complete-common))
   :custom
-  (company-tooltip-align-annotations 't)
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0.1))
+  (company-idle-delay 0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))

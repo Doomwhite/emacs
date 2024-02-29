@@ -1,0 +1,5 @@
+#+begin_src emacs-lisp
+
+  (electric-pair-mode t)
+
+#+end_src

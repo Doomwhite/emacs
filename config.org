@@ -7,6 +7,7 @@
 
 * TABLE OF CONTENTS :toc:
 - [[#auto-tangle-configuration-file][Auto-tangle Configuration file]]
+- [[#automatically-pair-parentheses][Automatically pair parentheses]]
 - [[#important-programs-to-load-first][Important Programs To Load First]]
   - [[#startup-performance][Startup Performance]]
   - [[#elpaca-package-manager][Elpaca Package Manager]]
@@ -28,7 +29,7 @@
 - [[#hook-to-load-config-in-daemonclient][Hook to load config in daemon/client]]
 - [[#image][Image]]
 - [[#ivy-counsel][Ivy (Counsel)]]
-- [[#lsp-mode][Lsp Mode]]
+- [[#lsp][Lsp]]
 - [[#org-mode][Org Mode]]
 - [[#rainbow-mode][Rainbow Mode]]
 - [[#rainbow-delimiters][Rainbow Delimiters]]
@@ -46,6 +47,9 @@
 
 * Auto-tangle Configuration file 
 #+INCLUDE: "config/auto-tangle-config.org"
+
+* Automatically pair parentheses
+#+INCLUDE: "config/automatic-pair-parentheses.org"
 
 * Important Programs To Load First
 ** Startup Performance
@@ -108,8 +112,8 @@
 * Ivy (Counsel)
 #+INCLUDE: "config/ivy-counsel.org"
 
-* Lsp Mode
-#+INCLUDE: "config/lsp-mode.org"
+* Lsp
+#+INCLUDE: "config/lsp.org"
 
 * Org Mode
 #+INCLUDE: "config/org-mode.org"

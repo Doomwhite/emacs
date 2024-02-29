@@ -118,6 +118,12 @@
       "w K" '(buf-move-up :wk "Buffer move up")
       "w L" '(buf-move-right :wk "Buffer move right"))
 
+    (dw/leader-keys 
+      "o" '(:ignore t :wk "Org mode")
+      "o l" '(:ignore t :wk "Link")
+      "o l s" '(org-store-link :wk "Store link")
+      "o l i" '(org-insert-link :wk "Insert link"))
+
     ;; g
     (general-create-definer dw/g-keys
        :states '(normal insert visual emacs)

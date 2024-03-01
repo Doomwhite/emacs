@@ -6,11 +6,8 @@
 (eval-when-compile
   (require 'cl-lib))
 
-(require 'autothemer)
-
 (unless (>= emacs-major-version 24)
   (error "Requires Emacs 24 or later"))
-
 
 (autothemer-deftheme
 	kanagawa "A theme inspired by the colors of the famous painting by Katsushika Hokusa"
@@ -252,7 +249,7 @@
   (company-tooltip-scrollbar-thumb               (:background autumnRed))
   (company-tooltip-scrollbar-track               (:background sumiInk-2))
   (company-tooltip-search                        (:background carpYellow :foreground sumiInk-0 :distant-foreground fujiWhite))
-  (company-tooltip-selection                     (:background peachRed :foreground winterRed :bold t))
+  ;; (company-tooltip-selection                     (:background peachRed :foreground winterRed :bold t))
   (company-tooltip-mouse                         (:background sumiInk-2 :foreground sumiInk-0 :distant-foreground fujiWhite))
   (company-tooltip-annotation                    (:foreground peachRed :distant-foreground sumiInk-1))
   (company-scrollbar-bg                          (:inherit 'tooltip))

@@ -2,10 +2,13 @@
   (load-theme 'kanagawa t)
 )
 
-;; (use-package catppuccin-theme)
+(use-package catppuccin-theme)
 
-(use-package kanagawa-theme
-  :config
-  (load-selected-theme))
+;; (use-package kanagawa-theme)
 
-;; (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+(use-package autothemer 
+ :init
+ (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+ (load-selected-theme))
+
+(use-package doom-themes)

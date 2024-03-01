@@ -20,7 +20,6 @@
 - [[#cursor][Cursor]]
 - [[#company-mode][Company mode]]
 - [[#dashboard][Dashboard]]
-- [[#dap-mode][Dap Mode]]
 - [[#drag-stuff][Drag-Stuff]]
 - [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
 - [[#fonts][Fonts]]
@@ -84,9 +83,6 @@
 
 * Dashboard
 #+INCLUDE: "config/dashboard.org"
-
-* Dap Mode
-#+INCLUDE: "config/dap-mode.org"
 
 * Drag-Stuff
 #+INCLUDE: "config/drag-stuff.org"

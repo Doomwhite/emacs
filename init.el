@@ -121,6 +121,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("b45ee4b9b1e636344ba837e43b0c4cfc6e559b857f594dd3a1a6e4b49051a74a" "0fcf59515e0a8d99dac5811124271a3e4b58e4ee4a86429e3a6b081f995d8808" "c1ee51c327d30b4c342a82ef0d270323b8485f84a109987d66b20d628a3dbb12" "a7e76eab51a647e0ab70aa1fe98ad2540ce8b5df178066e2478f521982810502" "635257489024ce8ed8c5accd1be56444608bf5dc336203ce9a07de640ff54738" default))
  '(safe-local-variable-values '((org-startup-with-inline-images . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

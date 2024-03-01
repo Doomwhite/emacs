@@ -3,25 +3,41 @@ The first of the two lines below designates the directory where will place all o
 
 The selected theme function
 #+begin_src emacs-lisp
+
   (defun load-selected-theme ()
     (load-theme 'kanagawa t)
   )
+  
 #+end_src
 
 * Catpuccin Mocha
 #+begin_src emacs-lisp
-  ;; (use-package catppuccin-theme)
+
+  (use-package catppuccin-theme)
+
 #+end_src
 
 * Kanagawa (Katsushika Hokusai)
 ** 1st version (meritamen)
 #+begin_src emacs-lisp
-  (use-package kanagawa-theme
-    :config
-    (load-selected-theme))
+
+  ;; (use-package kanagawa-theme)
+
 #+end_src
 
 ** 2nd version (konrad1997)
 #+begin_src emacs-lisp
-  ;; (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+
+  (use-package autothemer 
+   :init
+   (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+   (load-selected-theme))
+
+#+end_src
+
+* Doomthemes
+#+begin_src emacs-lisp
+
+  (use-package doom-themes)
+
 #+end_src

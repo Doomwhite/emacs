@@ -1,6 +1,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(set-fringe-mode 10)
 
 (defun toggle-line-numbers ()
   (global-display-line-numbers-mode 1)

@@ -2,9 +2,10 @@ Let's make GNU Emacs look a little better.
 
 * Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (set-fringe-mode 10)
 #+end_src
 
 * Display Line Numbers and Truncated Lines

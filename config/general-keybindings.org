@@ -87,7 +87,9 @@
     (dw/leader-keys
       "h" '(:ignore t :wk "Help")
       "h f" '(describe-function :wk "Describe function")
+      "h F" '(describe-face :wk "Describe face")
       "h v" '(describe-variable :wk "Describe variable")
+      "h r l" '(load-selected-theme :wk "Reload theme" )
       "h r r" '((lambda () (interactive)
                   (load-file "~/.config/emacs/init.el")
                   (ignore (elpaca-process-queues)))

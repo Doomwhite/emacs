@@ -6,11 +6,8 @@
 (eval-when-compile
   (require 'cl-lib))
 
-(require 'autothemer)
-
 (unless (>= emacs-major-version 24)
   (error "Requires Emacs 24 or later"))
-
 
 (autothemer-deftheme
 	kanagawa "A theme inspired by the colors of the famous painting by Katsushika Hokusa"
@@ -179,7 +176,7 @@
   (org-meta-line                                 (:background winterGreen :foreground springGreen))
   (org-block                                     (:background sumiInk-0 :foreground sumiInk-4))
   (org-block-begin-line                          (:background winterBlue :foreground springBlue))
-  (org-block-end-line	                         (:background winterRed :foreground peachRed))
+  (org-block-end-line	                           (:background winterRed :foreground peachRed))
   (org-headline-done                             (:foreground dragonBlue :strike-through t))
   (org-todo                                      (:foreground surimiOrange :bold t))
   (org-headline-todo                             (:foreground sumiInk-2))
@@ -205,7 +202,7 @@
   (which-key-command-description-face            (:foreground crystalBlue))
   (which-key-local-map-description-face          (:foreground carpYellow))
   (which-key-posframe                            (:background waveBlue-1))
-  (which-key-posframe-border	                 (:background waveBlue-1))
+  (which-key-posframe-border	                   (:background waveBlue-1))
 
   ;; swiper
   (swiper-line-face                              (:foreground carpYellow))
@@ -252,7 +249,7 @@
   (company-tooltip-scrollbar-thumb               (:background autumnRed))
   (company-tooltip-scrollbar-track               (:background sumiInk-2))
   (company-tooltip-search                        (:background carpYellow :foreground sumiInk-0 :distant-foreground fujiWhite))
-  (company-tooltip-selection                     (:background peachRed :foreground winterRed :bold t))
+  ;; (company-tooltip-selection                     (:background peachRed :foreground winterRed :bold t))
   (company-tooltip-mouse                         (:background sumiInk-2 :foreground sumiInk-0 :distant-foreground fujiWhite))
   (company-tooltip-annotation                    (:foreground peachRed :distant-foreground sumiInk-1))
   (company-scrollbar-bg                          (:inherit 'tooltip))
@@ -328,7 +325,6 @@
   (lsp-headerline-breadcrumb-symbols-face        (:background sumiInk-0))
   (lsp-headerline-breadcrumb-project-prefix-face (:background sumiInk-0))
   (lsp-headerline-breadcrumb-symbols-error-face  (:foreground peachRed))
-  (lsp-face-semhl-method                         (:foreground peachRed))
 
   (lsp-ui-doc-background                         (:background sumiInk-0 :foreground peachRed))
   (lsp-ui-doc-header                             (:background sumiInk-0 :foreground peachRed))
@@ -386,7 +382,7 @@
   (anzu-match-3                                  (:foreground lightBlue :background sumiInk-2))
 
   (anzu-mode-line                                (:foreground sumiInk-0 :background springViolet2))
-  (anzu-mode-no-match	                         (:foreground fujiWhite :background peachRed))
+  (anzu-mode-no-match	                           (:foreground fujiWhite :background peachRed))
   (anzu-replace-to                               (:foreground springBlue :background winterBlue))
   (anzu-replace-highlight                        (:foreground peachRed :background winterRed :strike-through t))
 
@@ -406,6 +402,7 @@
   
   (comint-highlight-prompt                       (:background springViolet2 :foreground sumiInk-1))
   (completions-annotations                       (:background nil :foreground dragonBlue :italic t))
+  (marginalia-file-priv-no                       (:background nil))
   
   ;; hydra
   (hydra-face-amaranth                           (:foreground autumnRed))
@@ -502,7 +499,7 @@
   (tree-sitter-hl-face:variable.synthesized      (:foreground waveRed))
   (tree-sitter-hl-face:keyword.compiler          (:foreground peachRed :bold t :italic t))
 
-  (focus-unfocused (:foreground sumiInk-4))
+  (focus-unfocused                               (:foreground sumiInk-4))  
  ))
 
 ;;;###autoload
@@ -512,5 +509,5 @@
                   (file-name-as-directory
                    (file-name-directory load-file-name))))
 
-(provide-theme 'kanagawa)
+(provide-theme 'kanagawa-2)
 ;;; kanagawa-theme.el ends here

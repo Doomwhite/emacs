@@ -5,9 +5,13 @@ The selected theme function
 #+begin_src emacs-lisp
 
   (defun load-selected-theme ()
+
+    (interactive)
     (load-theme 'kanagawa t)
+    ;; (autothemer--current-theme 'kanagawa)
+
   )
-  
+
 #+end_src
 
 * Catpuccin Mocha

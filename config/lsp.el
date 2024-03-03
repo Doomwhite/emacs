@@ -24,6 +24,7 @@
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :hook (typescript-mode . lsp-deferred)
+  :hook (typescript-ts-mode . lsp-deferred)
   :config
   (setq typescript-indent-level 2))
 
@@ -39,8 +40,8 @@
   (require 'dap-python))
 
 (use-package zig-mode
-  :hook (zig-mode . lsp-deferred)
-  :mode "\\.zig\\'")
+   :hook (zig-mode . lsp-deferred)
+   :mode "\\.zig\\'")
 
 (use-package dap-mode
   ;; Uncomment the config below if you want all UI panes to be hidden by default!

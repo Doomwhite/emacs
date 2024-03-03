@@ -33,6 +33,7 @@
   (use-package typescript-mode
     :mode "\\.ts\\'"
     :hook (typescript-mode . lsp-deferred)
+    :hook (typescript-ts-mode . lsp-deferred)
     :config
     (setq typescript-indent-level 2))
 
@@ -56,9 +57,9 @@
 #+begin_src emacs-lisp
 
   (use-package zig-mode
-    :hook (zig-mode . lsp-deferred)
-    :mode "\\.zig\\'")
-  
+     :hook (zig-mode . lsp-deferred)
+     :mode "\\.zig\\'")
+
 #+end_src
 * Debugging
 #+begin_src emacs-lisp

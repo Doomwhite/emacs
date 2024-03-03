@@ -1,14 +1,14 @@
 (set-face-attribute 'default nil
   :font "IBM Plex Mono"
-  :height 110
+  :height 90
   :weight 'medium)
 (set-face-attribute 'variable-pitch nil
   :font "IBM Plex Mono"
-  :height 120
+  :height 100
   :weight 'medium)
 (set-face-attribute 'fixed-pitch nil
   :font "IBM Plex Mono"
-  :height 110
+  :height 90
   :weight 'medium)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.

@@ -1,5 +1,9 @@
 (defun load-selected-theme ()
+
+  (interactive)
   (load-theme 'kanagawa t)
+  ;; (autothemer--current-theme 'kanagawa)
+
 )
 
 (use-package catppuccin-theme)

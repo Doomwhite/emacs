@@ -37,6 +37,10 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
+(setq elpaca-queue-limit 12) ;; to avoid "too many open files" errors
+(elpaca transient)
+(elpaca magit)
+
 ;; Install use-package support
 (elpaca elpaca-use-package
   ;; Enable :elpaca use-package keyword.

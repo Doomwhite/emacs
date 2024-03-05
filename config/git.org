@@ -1,8 +1,10 @@
 * Magit
 Complete text-based user interface to Git.
 #+begin_src emacs-lisp
-  (use-package magit
-    :commands magit-status)
+  
+  ;;(use-package magit
+  ;;  :commands magit-status)
+
 #+end_src
 
 * Diff-hl

@@ -1,29 +1,3 @@
-(defun print-current-directory ()
-  "Print the current directory in the minibuffer."
-  (interactive)
-  (message "Current directory: %s" default-directory))
-
-(defun update-scroll-keybinding (&optional frame)
-       "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
-       (interactive)
-       ;; Calculate the value based on the current window height
-       (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
-          ;; Define the keybindings using the calculated value and 'k'
-          (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-          (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-          (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
-          (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
-   )
-)
-
-(add-hook 'window-size-change-functions #'update-scroll-keybinding)
-
-(defun toggle-shell()
-  (interactive)
-  (if (string= (buffer-name) "*shell*")
-      (switch-to-buffer (other-buffer))
-    (shell)))
-
 (use-package general
   :config
   (general-evil-setup)
@@ -58,15 +32,6 @@
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config"))
 
   (dw/leader-keys
-    "b" '(:ignore t :wk "Buffer")
-    "b b" '(switch-to-buffer :wk "Switch buffer")
-    "b i" '(ibuffer :wk "Ibuffer")
-    "b k" '(kill-this-buffer :wk "Kill this buffer")
-    "b n" '(next-buffer :wk "Next buffer")
-    "b p" '(previous-buffer :wk "Previous buffer")
-    "b r" '(revert-buffer :wk "Reload buffer"))
-
-  (dw/leader-keys
     "e" '(:ignore t :wk "Evaluate")    
     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
     "e d" '(eval-defun :wk "Evaluate defun containing or after point")
@@ -92,7 +57,14 @@
     "t i" '(org-toggle-inline-images :wk "Toggle inline images"))
 
   (dw/leader-keys
-    "w" '(:ignore t :wk "Windows")
+    "w" '(:ignore t :wk "Window/Buffer management")
+     ;; Buffer
+    "w b" '(switch-to-buffer :wk "Switch buffer")
+    "w i" '(ibuffer :wk "Ibuffer")
+    "w C" '(kill-this-buffer :wk "Kill this buffer")
+    "w n" '(next-buffer :wk "Next buffer")
+    "w p" '(previous-buffer :wk "Previous buffer")
+    "w r" '(revert-buffer :wk "Reload buffer")
     ;; Window splits
     "w c" '(evil-window-delete :wk "Close window")
     "w n" '(evil-window-new :wk "New window")
@@ -155,3 +127,29 @@
   (define-key evil-normal-state-map (kbd "J") 'evil-forward-paragraph)
   (define-key evil-visual-state-map (kbd "J") 'evil-forward-paragraph)
 )
+
+(defun print-current-directory ()
+  "Print the current directory in the minibuffer."
+  (interactive)
+  (message "Current directory: %s" default-directory))
+
+(defun update-scroll-keybinding (&optional frame)
+       "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
+       (interactive)
+       ;; Calculate the value based on the current window height
+       (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
+          ;; Define the keybindings using the calculated value and 'k'
+          (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+          (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+          (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+          (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+   )
+)
+
+(add-hook 'window-size-change-functions #'update-scroll-keybinding)
+
+(defun toggle-shell()
+  (interactive)
+  (if (string= (buffer-name) "*shell*")
+      (switch-to-buffer (other-buffer))
+    (shell)))

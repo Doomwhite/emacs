@@ -1,5 +1,5 @@
 * Server
-** Lsp mode
+** Eglot
 #+begin_src emacs-lisp
 
 

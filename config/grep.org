@@ -1,0 +1,11 @@
+* Grep
+Switch  default grep to ripgrep
+#+begin_src emacs-lisp
+
+
+  (setq find-program (expand-file-name "shims/find.exe" user-emacs-directory))
+  (use-package rg
+    :config
+    (rg-enable-default-bindings))
+
+#+end_src

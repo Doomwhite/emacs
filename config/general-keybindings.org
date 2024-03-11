@@ -1,3 +1,36 @@
+* Setting the keybindings functions
+** Prints the current directory
+#+begin_src emacs-lisp
+  (defun print-current-directory ()
+    "Print the current directory in the minibuffer."
+    (interactive)
+    (message "Current directory: %s" default-directory))
+#+end_src
+
+** Autoadjusting scrolling
+#+begin_src emacs-lisp
+
+  (defun update-scroll-keybinding (&optional frame)
+    "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
+    (interactive)
+    ;; Calculate the value based on the current window height
+    (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
+      ;; Define the keybindings using the calculated value and 'k'
+      (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+      (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+      (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+      (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value))))
+  )
+
+#+end_src
+** Toggle shell
+#+begin_src emacs-lisp
+  (defun toggle-shell()
+    (interactive)
+    (if (string= (buffer-name) "*shell*")
+        (switch-to-buffer (other-buffer))
+      (shell)))
+#+end_src
 * Setting the keybindings
 #+begin_src emacs-lisp
   (use-package general

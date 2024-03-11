@@ -19,4 +19,5 @@
                 evil-normal-state-modes
                 evil-motion-state-modes))
   (evil-collection-init)
-  (evil-set-undo-system 'undo-redo))
+  (evil-set-undo-system 'undo-redo)
+  (add-hook 'window-size-change-functions #'update-scroll-keybinding))

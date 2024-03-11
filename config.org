@@ -25,6 +25,7 @@
 - [[#fonts][Fonts]]
 - [[#git][Git]]
 - [[#graphical-user-interface-tweaks][Graphical User Interface Tweaks]]
+- [[#grep][Grep]]
 - [[#hook-to-load-config-in-daemonclient][Hook to load config in daemon/client]]
 - [[#image][Image]]
 - [[#ivy-counsel][Ivy (Counsel)]]
@@ -98,6 +99,9 @@
 
 * Graphical User Interface Tweaks
 #+INCLUDE: "config/gui-tweaks.org"
+
+* Grep
+#+INCLUDE: "config/grep.org"
 
 * Hook to load config in daemon/client
 #+INCLUDE: "config/hook-daemon-and-client.org"

@@ -116,17 +116,3 @@
 (my-create-config-el)
 
 (load (expand-file-name "config.el" user-emacs-directory))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("8fe9547aa5c18cec21451e339609f43923b39b21b5fd5816143bdbe13b9b4f5c" "5cfa7b1388fd0fd1273f64ba8bf1836220bf9cdc10b86d5dd77b756a52185dd0" "b105848d139fefacec3c0f7080ff389822e8b73007b16abb4710f80c3acf6e12" "476fe2180054c68863477bd43617e17bb4d10b75e44f6efed146cc55d7b28809" "b45ee4b9b1e636344ba837e43b0c4cfc6e559b857f594dd3a1a6e4b49051a74a" "0fcf59515e0a8d99dac5811124271a3e4b58e4ee4a86429e3a6b081f995d8808" "c1ee51c327d30b4c342a82ef0d270323b8485f84a109987d66b20d628a3dbb12" "a7e76eab51a647e0ab70aa1fe98ad2540ce8b5df178066e2478f521982810502" "635257489024ce8ed8c5accd1be56444608bf5dc336203ce9a07de640ff54738" default))
- '(safe-local-variable-values '((org-startup-with-inline-images . t))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(fringe ((t (:background "unspecified-bg")))))

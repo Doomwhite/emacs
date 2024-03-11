@@ -18,6 +18,13 @@
 ;;   :config
 ;;   (require 'dap-python))
 
+(use-package zig-mode
+  :ensure (zig-mode :host github :repo "nanzhong/zig-mode" :branch "tree-sitter")
+  :mode (("\\.zig\\'" . zig-ts-mode)
+         ("\\.zon\\'" . zig-ts-mode))
+  :hook (zig-ts-mode . (lambda ()
+                         (setq treesit-font-lock-level 4))))
+
 ;; (use-package zig-mode
 ;;    :hook (zig-mode . lsp-deferred)
 ;;    :mode "\\.zig\\'")

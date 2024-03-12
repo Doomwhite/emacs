@@ -78,12 +78,14 @@
       "h" '(:ignore t :wk "Help")
       "h f" '(describe-function :wk "Describe function")
       "h F" '(describe-face :wk "Describe face")
+      "h t" '(load-theme :wk "Load theme")
       "h v" '(describe-variable :wk "Describe variable")
       "h r l" '(load-selected-theme :wk "Reload theme" )
-      "h r r" '((lambda () (interactive)
-                  (load-file "~/.config/emacs/init.el")
-                  (ignore (elpaca-process-queues)))
-                :wk "Reload emacs config"))
+      "h r r" '(restart-emacs :wk "Reload emacs config"))
+    ;;   "h r r" '((lambda () (interactive)
+    ;;               (load-file "~/.config/emacs/init.el")
+    ;;               (ignore (elpaca-process-queues)))
+    ;;             :wk "Reload emacs config"))
 
     (dw/leader-keys 
       "t" '(:ignore t :wk "Toggle")
@@ -116,6 +118,13 @@
       "w J" '(buf-move-down :wk "Buffer move down")
       "w K" '(buf-move-up :wk "Buffer move up")
       "w L" '(buf-move-right :wk "Buffer move right"))
+
+    (dw/leader-keys
+      "d" '(:ignore t :wk "Dired")
+      "d d" '(dired :wk "Open dired")
+      "d j" '(dired-jump :wk "Dired jump to current")
+      "d n" '(neotree-dir :wk "Open directory in neotree")
+      "d p" '(peep-dired :wk "Peep-dired"))
 
     (dw/leader-keys 
       "o" '(:ignore t :wk "Org mode")

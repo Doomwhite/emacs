@@ -21,8 +21,11 @@
 - [[#company-mode][Company mode]]
 - [[#dashboard][Dashboard]]
 - [[#drag-stuff][Drag-Stuff]]
+- [[#diminish][Diminish]]
+- [[#dired][Dired]]
 - [[#disable-beeping-in-ms-windows][Disable beeping in MS Windows]]
 - [[#fonts][Fonts]]
+- [[#flycheck][Flycheck]]
 - [[#git][Git]]
 - [[#graphical-user-interface-tweaks][Graphical User Interface Tweaks]]
 - [[#grep][Grep]]
@@ -37,6 +40,7 @@
 - [[#recentf][Recentf]]
 - [[#spaces-only-no-tabs][Spaces Only, no tabs]]
 - [[#shields-and-terminals-wip][Shields and Terminals WIP]]
+- [[#neotree][Neotree]]
 - [[#modeline][Modeline]]
 - [[#treesitter][Treesitter]]
 - [[#treemacs][Treemacs]]
@@ -88,11 +92,20 @@
 * Drag-Stuff
 #+INCLUDE: "config/drag-stuff.org"
 
+* Diminish 
+#+INCLUDE: "config/diminish.org"
+
+* Dired 
+#+INCLUDE: "config/dired.org"
+
 * Disable beeping in MS Windows
 #+INCLUDE: "config/annoying-beeping.org"
 
 * Fonts
 #+INCLUDE: "config/fonts.org"
+
+* Flycheck
+#+INCLUDE: "config/flycheck.org"
 
 * Git
 #+INCLUDE: "config/git.org"
@@ -134,6 +147,9 @@
 #+INCLUDE: "config/space-only.org"
 
 * Shields and Terminals WIP
+
+* Neotree
+#+INCLUDE: "config/neotree.org"
 
 * Modeline
 #+INCLUDE: "config/modeline.org"

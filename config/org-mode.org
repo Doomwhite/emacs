@@ -25,7 +25,10 @@ Org-bullets gives us attractive bullets rather than asterisks.
 Org mode source blocks have some really weird and annoying default indentation behavior.  I think this has to do with electric-indent-mode, which is turned on by default in Emacs.  So let's turn it OFF!
 
 #+begin_src emacs-lisp
-(electric-indent-mode -1)
+
+  (electric-indent-mode -1)
+  (setq org-edit-src-content-indentation 2)
+
 #+end_src
 
 * Source Code Block Tag Expansion

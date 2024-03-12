@@ -1,3 +1,26 @@
+(defun print-current-directory ()
+  "Print the current directory in the minibuffer."
+  (interactive)
+  (message "Current directory: %s" default-directory))
+
+(defun update-scroll-keybinding (&optional frame)
+  "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
+  (interactive)
+  ;; Calculate the value based on the current window height
+  (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
+    ;; Define the keybindings using the calculated value and 'k'
+    (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+    (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+    (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+    (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value))))
+)
+
+(defun toggle-shell()
+  (interactive)
+  (if (string= (buffer-name) "*shell*")
+      (switch-to-buffer (other-buffer))
+    (shell)))
+
 (use-package general
   :config
   (general-evil-setup)
@@ -43,12 +66,14 @@
     "h" '(:ignore t :wk "Help")
     "h f" '(describe-function :wk "Describe function")
     "h F" '(describe-face :wk "Describe face")
+    "h t" '(load-theme :wk "Load theme")
     "h v" '(describe-variable :wk "Describe variable")
     "h r l" '(load-selected-theme :wk "Reload theme" )
-    "h r r" '((lambda () (interactive)
-                (load-file "~/.config/emacs/init.el")
-                (ignore (elpaca-process-queues)))
-              :wk "Reload emacs config"))
+    "h r r" '(restart-emacs :wk "Reload emacs config"))
+  ;;   "h r r" '((lambda () (interactive)
+  ;;               (load-file "~/.config/emacs/init.el")
+  ;;               (ignore (elpaca-process-queues)))
+  ;;             :wk "Reload emacs config"))
 
   (dw/leader-keys 
     "t" '(:ignore t :wk "Toggle")
@@ -81,6 +106,13 @@
     "w J" '(buf-move-down :wk "Buffer move down")
     "w K" '(buf-move-up :wk "Buffer move up")
     "w L" '(buf-move-right :wk "Buffer move right"))
+
+  (dw/leader-keys
+    "d" '(:ignore t :wk "Dired")
+    "d d" '(dired :wk "Open dired")
+    "d j" '(dired-jump :wk "Dired jump to current")
+    "d n" '(neotree-dir :wk "Open directory in neotree")
+    "d p" '(peep-dired :wk "Peep-dired"))
 
   (dw/leader-keys 
     "o" '(:ignore t :wk "Org mode")

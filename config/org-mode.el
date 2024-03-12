@@ -11,6 +11,7 @@
   :after org)
 
 (electric-indent-mode -1)
+(setq org-edit-src-content-indentation 2)
 
 (require 'org-tempo)
 

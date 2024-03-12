@@ -65,6 +65,8 @@
   (dw/leader-keys
     "h" '(:ignore t :wk "Help")
     "h f" '(describe-function :wk "Describe function")
+    "h m" '(info :wk "Open manual")
+    "h a" '(apropos :wk "Open manual")
     "h F" '(describe-face :wk "Describe face")
     "h t" '(load-theme :wk "Load theme")
     "h v" '(describe-variable :wk "Describe variable")

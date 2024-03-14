@@ -4,6 +4,31 @@
 
 
 #+end_src
+** Lsp mode
+#+begin_src emacs-lisp
+
+  (defvar zig-ts-mode-initialized nil
+    "Flag to track initialization of zig-ts-mode.")
+
+  (defun my-zig-ts-mode-init ()
+    "Initialize zig-ts-mode and LSP if not already initialized."
+    (unless zig-ts-mode-initialized
+      (setq zig-ts-mode-initialized t)
+      (zig-ts-mode)
+      (lsp))
+    (when zig-ts-mode-initialized
+      (lsp)))
+
+    (use-package lsp-mode
+      :init
+      (setq lsp-keymap-prefix "C-c l")
+      :hook ((zig-ts-mode . my-zig-ts-mode-init)
+             (lsp-mode . lsp-enable-which-key-integration))
+      :commands (lsp lsp-deferred)
+      :config
+      (add-to-list 'lsp-language-id-configuration '(zig-ts-mode . "zig")))
+
+#+end_src
 * Languages
 ** Typescript
 #+begin_src emacs-lisp
@@ -38,8 +63,7 @@
     :ensure (zig-mode :host github :repo "nanzhong/zig-mode" :branch "tree-sitter")
     :mode (("\\.zig\\'" . zig-ts-mode)
            ("\\.zon\\'" . zig-ts-mode))
-    :hook (zig-ts-mode . (lambda ()
-                           (setq treesit-font-lock-level 4))))
+    :hook (zig-ts-mode . (lambda () (setq treesit-font-lock-level 4))))
 
   ;; (use-package zig-mode
   ;;    :hook (zig-mode . lsp-deferred)

@@ -64,7 +64,7 @@
       "f f" '(find-file :wk "Find file")
       "f t" '(find-grep-dired :wk "Find text")
       "f r" '(counsel-recentf :wk "Find recent files")
-      "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config"))
+      "f c" '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :wk "Edit emacs config"))
 
     (dw/leader-keys
       "e" '(:ignore t :wk "Evaluate")    

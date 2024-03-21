@@ -12,7 +12,7 @@
 
 (use-package autothemer 
  :init
- (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+ (add-to-list 'custom-theme-load-path "/home/doomwhite/.emacs.d/themes/")
  (load-selected-theme))
 
 (use-package doom-themes)

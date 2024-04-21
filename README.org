@@ -19,7 +19,6 @@
 * Powershell aliases
 + Client
   #+begin_src powershell
-
     function mx {
         wsl -e emacsclient $args
     }
@@ -32,7 +31,6 @@
   #+end_src
 + Server
   #+begin_src powershell
-
     function mxd {
         emacs --daemon $args
     }
@@ -40,22 +38,17 @@
         $emacsScriptPath = "$env:HOME\.config\emacs\scripts\windows\StartEmacsServer.bat"
         Start-Process -FilePath $emacsScriptPath -NoNewWindow
     }
-
   #+end_src
 
 * Bash aliases
 + Client
   #+begin_src bash
-
     alias mx=`emacsclient`
     alias mxc=`emacsclient -c -n`
-
   #+end_src
 + Server
   #+begin_src bash
-
     alias mxs=`emacs --daemon`
-
   #+end_src
 
 * How to use the server script
@@ -113,11 +106,9 @@
 * AutoStart daemon in linux
 Add this line to .bashrc to autostart the daemon
 #+begin_src bash
-
     # Check if Emacs server socket exists
     if [ ! -S "/run/user/$UID/emacs/server" ]; then
         # Start Emacs daemon if the server socket doesn't exist
         emacs --daemon &
     fi
-
 #+end_src

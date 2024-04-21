@@ -1,4 +1,4 @@
-#+TITLE: My Windows Emacs configuration
+#+TITLE: My WSL Emacs configuration
 #+AUTHOR: DooMWhite
 #+DESCRIPTION: DooMWhite's personal Emacs config
 #+STARTUP: showeverything
@@ -25,18 +25,11 @@
     function mxc {
         wsl -e emacsclient -c -n $args
     }
-    function mxs {
-        wsl --daemon $args
-    }
   #+end_src
 + Server
   #+begin_src powershell
-    function mxd {
-        emacs --daemon $args
-    }
     function mxs {
-        $emacsScriptPath = "$env:HOME\.config\emacs\scripts\windows\StartEmacsServer.bat"
-        Start-Process -FilePath $emacsScriptPath -NoNewWindow
+        wsl -e emacs --daemon $args
     }
   #+end_src
 
@@ -83,7 +76,7 @@
   
 * Adding the client to the gitconfig editor
   - Simply add this to the config:
-    + editor = emacsclientw -a runemacs
+    + editor = emacsclient -c -n -a emacs
 
 * All-the-icons are not showing up
 - Clone the repo: https://github.com/domtronn/all-the-icons.el.git

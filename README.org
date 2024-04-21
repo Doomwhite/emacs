@@ -77,6 +77,8 @@
 * Adding the client to the gitconfig editor
   - Simply add this to the config:
     + editor = emacsclient -c -d :0 -a emacs
+  - Or run this command:
+    + git config --global core.editor "emacsclient -c -d :0 -a emacs"
 
 * All-the-icons are not showing up
 - Clone the repo: https://github.com/domtronn/all-the-icons.el.git

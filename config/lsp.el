@@ -16,10 +16,15 @@
     :init
     (setq lsp-keymap-prefix "C-c l")
     :hook ((zig-ts-mode . my-zig-ts-mode-init)
+           (go-mode . lsp)
            (lsp-mode . lsp-enable-which-key-integration))
     :commands (lsp lsp-deferred)
     :config
     (add-to-list 'lsp-language-id-configuration '(zig-ts-mode . "zig")))
+
+(use-package go-mode
+  :mode ("\\.go\\'" . go-mode)
+)
 
 ;; (use-package typescript-mode
 ;;   :mode "\\.ts\\'"

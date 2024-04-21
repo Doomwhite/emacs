@@ -23,6 +23,7 @@
       :init
       (setq lsp-keymap-prefix "C-c l")
       :hook ((zig-ts-mode . my-zig-ts-mode-init)
+             (go-mode . lsp)
              (lsp-mode . lsp-enable-which-key-integration))
       :commands (lsp lsp-deferred)
       :config
@@ -30,6 +31,14 @@
 
 #+end_src
 * Languages
+** Go
+#+begin_src emacs-lisp
+
+  (use-package go-mode
+    :mode ("\\.go\\'" . go-mode)
+  )
+
+#+end_src
 ** Typescript
 #+begin_src emacs-lisp
 

@@ -1,4 +1,8 @@
 It's pretty annoying having to deal with tabs and spaces at the same time, specially when formating text with elisp.
 #+begin_src emacs-lisp
+
   (indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil)
+  (setq evil-auto-indent nil)
+
 #+end_src

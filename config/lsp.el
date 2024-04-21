@@ -24,6 +24,11 @@
 
 (use-package go-mode
   :mode ("\\.go\\'" . go-mode)
+  :hook (go-mode . (lambda () 
+  (setq treesit-font-lock-level 4)
+  (setq tab-width 2)
+  (setq indent-tabs-mode nil)
+  ))
 )
 
 ;; (use-package typescript-mode

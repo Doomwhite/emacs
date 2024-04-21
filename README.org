@@ -20,10 +20,13 @@
 + Client
   #+begin_src powershell
     function mx {
-        emacsclientw $args
+        wsl -e emacsclient $args
     }
     function mxc {
-        emacsclientw -c -n $args
+        wsl -e emacsclient -c -n $args
+    }
+    function mxs {
+        wsl --daemon $args
     }
   #+end_src
 + Server
@@ -35,6 +38,21 @@
         $emacsScriptPath = "$env:HOME\.config\emacs\scripts\windows\StartEmacsServer.bat"
         Start-Process -FilePath $emacsScriptPath -NoNewWindow
     }
+  #+end_src
+
+* Bash aliases
++ Client
+  #+begin_src bash
+
+    alias mx=`emacsclient`
+    alias mxc=`emacsclient -c -n`
+
+  #+end_src
++ Server
+  #+begin_src bash
+
+    alias mxs=`emacs --daemon`
+
   #+end_src
 
 * How to use the server script
@@ -88,3 +106,15 @@
     assoc .X=EmacsFileType
   #+end_src
 - If that it has no effect, check this link out: https://superuser.com/questions/1370681/assoc-ftype-does-not-work-properly-on-windows-10
+
+* AutoStart daemon in linux
+Add this line to .bashrc to autostart the daemon
+#+begin_src bash
+
+    # Check if Emacs server socket exists
+    if [ ! -S "/run/user/$UID/emacs/server" ]; then
+        # Start Emacs daemon if the server socket doesn't exist
+        emacs --daemon &
+    fi
+
+#+end_src

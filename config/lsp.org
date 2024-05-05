@@ -117,3 +117,19 @@
     ;;     ("<f8>" . dap-next)
     ;;     ("<f9>" . dap-continue)))
 #+end_src
+
+* Handmade project
+#+begin_src emacs-lisp
+
+(defun run-cmd-command (command)
+  "Run a command using cmd.exe."
+  (let ((cmd-command (format "cmd.exe /c \"%s\"" command)))
+    (message "Running command: %s" cmd-command)
+    (shell-command cmd-command)))
+
+(defun compile-handmade-project ()
+  "Compile the Handmade Hero project."
+  (interactive)
+  (run-cmd-command "cd C:/Users/Cliente/Documents/Projects/C/handmade/handmade/misc && shell.bat && cd C:/Users/Cliente/Documents/Projects/C/handmade/handmade/code && build.bat"))
+
+#+end_src

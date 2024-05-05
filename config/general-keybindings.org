@@ -135,6 +135,10 @@
       "d n" '(neotree-dir :wk "Open directory in neotree")
       "d p" '(peep-dired :wk "Peep-dired"))
 
+    (dw/leader-keys
+      "c" '(:ignore t :wk "Compile")
+      "c c" '(compile-handmade-project :wk "Compile Handmade"))
+
     (dw/leader-keys 
       "o" '(:ignore t :wk "Org mode")
       "o l" '(:ignore t :wk "Link")

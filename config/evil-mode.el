@@ -21,3 +21,6 @@
   (evil-collection-init)
   (evil-set-undo-system 'undo-redo)
   (add-hook 'window-size-change-functions #'update-scroll-keybinding))
+
+  ;; Adds _ to the w
+  (add-hook 'after-change-major-mode-hook (lambda () (modify-syntax-entry ?_ "w")))

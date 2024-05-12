@@ -92,17 +92,14 @@
 (defun run-cmd-command (command)
   "Run a command using cmd.exe and display the output in a special-mode buffer."
   (interactive)
-  (let* ((buffer-name "*cmd-output*")
+  (let* ((current-time (format-time-string "%Y-%m-%d_%H-%M-%S"))
+         (buffer-name (concat "*cmd-output*_" current-time))
          (cmd-command (format "/mnt/c/Windows/System32/cmd.exe /c \"%s\"" command)))
     (message "Running command: %s" cmd-command)
-    ;; Delete buffer if it already exists
-    (if (get-buffer buffer-name)
-        (kill-buffer buffer-name))
-
     (with-current-buffer (get-buffer-create buffer-name)
       (erase-buffer)
       (insert (shell-command-to-string cmd-command))
-      (goto-char (point-min))
+      (goto-char (point-max))
       (special-mode)
       (pop-to-buffer buffer-name))))
 

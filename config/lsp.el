@@ -88,3 +88,29 @@
   ;;    (("<f7>" . dap-step-in)
   ;;     ("<f8>" . dap-next)
   ;;     ("<f9>" . dap-continue)))
+
+(defun run-cmd-command (command)
+  "Run a command using cmd.exe and display the output in a special-mode buffer."
+  (interactive)
+  (let* ((buffer-name "*cmd-output*")
+         (cmd-command (format "/mnt/c/Windows/System32/cmd.exe /c \"%s\"" command)))
+    (message "Running command: %s" cmd-command)
+    ;; Delete buffer if it already exists
+    (if (get-buffer buffer-name)
+        (kill-buffer buffer-name))
+
+    (with-current-buffer (get-buffer-create buffer-name)
+      (erase-buffer)
+      (insert (shell-command-to-string cmd-command))
+      (goto-char (point-min))
+      (special-mode)
+      (pop-to-buffer buffer-name))))
+
+(defun compile-handmade-project ()
+  "Compile the Handmade Hero project and display the output in a special-mode buffer."
+  (interactive)
+  (let* ((project-root "C:/Users/Cliente/Documents/Projects/C/handmade/handmade")
+         (misc-dir (concat project-root "/misc"))
+         (code-dir (concat project-root "/code"))
+         (command (format "cd %s && shell.bat && cd %s && build.bat" misc-dir code-dir)))
+    (run-cmd-command command)))

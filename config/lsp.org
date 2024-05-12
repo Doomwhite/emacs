@@ -122,14 +122,26 @@
 #+begin_src emacs-lisp
 
 (defun run-cmd-command (command)
-  "Run a command using cmd.exe."
-  (let ((cmd-command (format "cmd.exe /c \"%s\"" command)))
+  "Run a command using cmd.exe and display the output in a special-mode buffer."
+  (interactive)
+  (let* ((current-time (format-time-string "%Y-%m-%d_%H-%M-%S"))
+         (buffer-name (concat "*cmd-output*_" current-time))
+         (cmd-command (format "/mnt/c/Windows/System32/cmd.exe /c \"%s\"" command)))
     (message "Running command: %s" cmd-command)
-    (shell-command cmd-command)))
+    (with-current-buffer (get-buffer-create buffer-name)
+      (erase-buffer)
+      (insert (shell-command-to-string cmd-command))
+      (goto-char (point-max))
+      (special-mode)
+      (pop-to-buffer buffer-name))))
 
 (defun compile-handmade-project ()
-  "Compile the Handmade Hero project."
+  "Compile the Handmade Hero project and display the output in a special-mode buffer."
   (interactive)
-  (run-cmd-command "cd C:/Users/Cliente/Documents/Projects/C/handmade/handmade/misc && shell.bat && cd C:/Users/Cliente/Documents/Projects/C/handmade/handmade/code && build.bat"))
+  (let* ((project-root "C:/Users/Cliente/Documents/Projects/C/handmade/handmade")
+         (misc-dir (concat project-root "/misc"))
+         (code-dir (concat project-root "/code"))
+         (command (format "cd %s && shell.bat && cd %s && build.bat" misc-dir code-dir)))
+    (run-cmd-command command)))
 
 #+end_src

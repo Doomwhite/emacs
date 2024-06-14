@@ -55,3 +55,11 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 #+begin_src emacs-lisp
   (setq org-cycle-inline-images-display t)
 #+end_src
+
+* Add todo workflow states
+#+begin_src emacs-lisp
+
+  (setq org-todo-keywords
+        '((sequence "INFO" "TODO" "WIP" "HELD" "TESTING" "|" "DONE" "CANCELLED")))
+
+#+end_src

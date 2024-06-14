@@ -16,3 +16,6 @@
 (require 'org-tempo)
 
 (setq org-cycle-inline-images-display t)
+
+(setq org-todo-keywords
+      '((sequence "INFO" "TODO" "WIP" "HELD" "TESTING" "|" "DONE" "CANCELLED")))

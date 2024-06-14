@@ -4,16 +4,19 @@
   (message "Current directory: %s" default-directory))
 
 (defun update-scroll-keybinding (&optional frame)
-  "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
-  (interactive)
-  ;; Calculate the value based on the current window height
-  (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
-    ;; Define the keybindings using the calculated value and 'k'
-    (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-    (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-    (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
-    (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value))))
+       "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
+       (interactive)
+       ;; Calculate the value based on the current window height
+       (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
+          ;; Define the keybindings using the calculated value and 'k'
+          (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+          (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
+          (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+          (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
+   )
 )
+
+(add-hook 'window-size-change-functions #'update-scroll-keybinding)
 
 (defun toggle-shell()
   (interactive)
@@ -21,8 +24,22 @@
       (switch-to-buffer (other-buffer))
     (shell)))
 
+(defun set-marker-W () (interactive) (evil-set-marker ?W))
+(defun set-marker-E () (interactive) (evil-set-marker ?E))
+(defun set-marker-R () (interactive) (evil-set-marker ?R))
+(defun set-marker-S () (interactive) (evil-set-marker ?S))
+(defun set-marker-D () (interactive) (evil-set-marker ?D))
+(defun set-marker-F () (interactive) (evil-set-marker ?F))
+(defun goto-marker-W () (interactive) (evil-goto-mark-line ?W))
+(defun goto-marker-E () (interactive) (evil-goto-mark-line ?E))
+(defun goto-marker-R () (interactive) (evil-goto-mark-line ?R))
+(defun goto-marker-S () (interactive) (evil-goto-mark-line ?S))
+(defun goto-marker-D () (interactive) (evil-goto-mark-line ?D))
+(defun goto-marker-F () (interactive) (evil-goto-mark-line ?F))
+
 (use-package general
   :config
+  (general-auto-unbind-keys t)
   (general-evil-setup)
 
   ;; Leader key
@@ -139,7 +156,7 @@
   ;; Comment line
   (dw/g-keys "c" '(comment-line :wk "Comment"))
 
-  ;; semicollon
+  ;; Semicollon
   (general-create-definer dw/semicollon-keys
      :states '(normal insert visual emacs)
      :keymaps 'override
@@ -151,6 +168,28 @@
     "e" '(treemacs-select-window :wk "Selects treemacs")
     "E" '(treemacs :wk "Opens treemacs")
     "z" '(kill-emacs :wk "Reload buffer"))
+
+  ;; Marks
+  (general-create-definer dw/m-keys
+     :states '(normal)
+     :keymaps 'override
+     :prefix  "m")
+
+  (dw/leader-keys
+      "m w" '(set-marker-W :wk "Set marker W")
+      "m e" '(set-marker-E :wk "Set marker E")
+      "m r" '(set-marker-R :wk "Set marker R")
+      "m s" '(set-marker-S :wk "Set marker S")
+      "m d" '(set-marker-D :wk "Set marker D")
+      "m f" '(set-marker-F :wk "Set marker F"))
+
+  (dw/m-keys
+      "w" '(goto-marker-W :wk "Go to marker W")
+      "e" '(goto-marker-E :wk "Go to marker E")
+      "r" '(goto-marker-R :wk "Go to marker R")
+      "s" '(goto-marker-S :wk "Go to marker S")
+      "d" '(goto-marker-D :wk "Go to marker D")
+      "f" '(goto-marker-F :wk "Go to marker F"))
 
   ;; Ctrl keys
   (define-key evil-normal-state-map (kbd "C-t") 'toggle-shell)
@@ -168,29 +207,3 @@
   (define-key evil-normal-state-map (kbd "J") 'evil-forward-paragraph)
   (define-key evil-visual-state-map (kbd "J") 'evil-forward-paragraph)
 )
-
-(defun print-current-directory ()
-  "Print the current directory in the minibuffer."
-  (interactive)
-  (message "Current directory: %s" default-directory))
-
-(defun update-scroll-keybinding (&optional frame)
-       "Update keybindings in evil-normal-state-map and evil-visual-state-map based on the current window height."
-       (interactive)
-       ;; Calculate the value based on the current window height
-       (let ((x-value (ceiling (/ (float (window-height)) (* 2.2 1.2)))))
-          ;; Define the keybindings using the calculated value and 'k'
-          (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-          (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" x-value)))
-          (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
-          (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" x-value)))
-   )
-)
-
-(add-hook 'window-size-change-functions #'update-scroll-keybinding)
-
-(defun toggle-shell()
-  (interactive)
-  (if (string= (buffer-name) "*shell*")
-      (switch-to-buffer (other-buffer))
-    (shell)))

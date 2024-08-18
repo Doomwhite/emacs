@@ -50,44 +50,57 @@
 ;;   (require 'dap-python))
 
 (use-package zig-mode
-  :ensure (zig-mode :host github :repo "nanzhong/zig-mode" :branch "tree-sitter")
-  :mode (("\\.zig\\'" . zig-ts-mode)
-         ("\\.zon\\'" . zig-ts-mode))
-  :hook (zig-ts-mode . (lambda () (setq treesit-font-lock-level 4))))
+:ensure (zig-mode :host github :repo "nanzhong/zig-mode" :branch "tree-sitter")
+:mode (("\\.zig\\'" . zig-ts-mode)
+        ("\\.zon\\'" . zig-ts-mode))
+:hook (zig-ts-mode . (lambda () (setq treesit-font-lock-level 4))))
 
-;; (use-package zig-mode
-;;    :hook (zig-mode . lsp-deferred)
-;;    :mode "\\.zig\\'")
+  ;; (use-package zig-mode
+  ;;    :hook (zig-mode . lsp-deferred)
+  ;;    :mode "\\.zig\\'")
+
+;; (use-package nix-mode
+;;     :mode ("\\.nix\\'" "\\.nix.in\\'")
+;;     :hook (nix-mode . (lambda () (setq treesit-font-lock-level 4))))
+;; (use-package nix-drv-mode
+;;     :ensure nix-mode
+;;     :mode "\\.drv\\'")
+;; (use-package nix-shell
+;;     :ensure nix-mode
+;;     :commands (nix-shell-unpack nix-shell-configure nix-shell-build))
+;; (use-package nix-repl
+;;     :ensure nix-mode
+;;     :commands (nix-repl))
 
 (use-package dap-mode
-  ;; Uncomment the config below if you want all UI panes to be hidden by default!
-  ;; :custom
-  ;; (lsp-enable-dap-auto-configure nil)
-  ;; :config
-  ;; (dap-ui-mode 1)
-  :commands dap-debug
-  :config
-  ;; Set up Node debugging
-  (require 'dap-node)
-  (dap-node-setup) ;; Automatically installs Node debug adapter if needed
-  ;;:bind 
-  ;;(("<f7>" . dap-step-in)
-  ;; ("<f8>" . dap-next)
-  ;; ("<f9>" . dap-continue))
+    ;; Uncomment the config below if you want all UI panes to be hidden by default!
+    ;; :custom
+    ;; (lsp-enable-dap-auto-configure nil)
+    ;; :config
+    ;; (dap-ui-mode 1)
+    :commands dap-debug
+    :config
+    ;; Set up Node debugging
+    (require 'dap-node)
+    (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+    ;;:bind 
+    ;;(("<f7>" . dap-step-in)
+    ;; ("<f8>" . dap-next)
+    ;; ("<f9>" . dap-continue))
 
-  ;; Bind `C-c l d` to `dap-hydra` for easy access
-  (general-define-key
-    :keymaps 'lsp-mode-map
-    :prefix lsp-keymap-prefix
-    "d" '(dap-hydra t :wk "debugger")))
+    ;; Bind `C-c l d` to `dap-hydra` for easy access
+    (general-define-key
+      :keymaps 'lsp-mode-map
+      :prefix lsp-keymap-prefix
+      "d" '(dap-hydra t :wk "debugger")))
 
-  ;; (use-package dap-mode
-  ;;    :config
-  ;;    (dap-auto-configure-mode)
-  ;;    :bind 
-  ;;    (("<f7>" . dap-step-in)
-  ;;     ("<f8>" . dap-next)
-  ;;     ("<f9>" . dap-continue)))
+    ;; (use-package dap-mode
+    ;;    :config
+    ;;    (dap-auto-configure-mode)
+    ;;    :bind 
+    ;;    (("<f7>" . dap-step-in)
+    ;;     ("<f8>" . dap-next)
+    ;;     ("<f9>" . dap-continue)))
 
 (defun run-cmd-command (command)
   "Run a command using cmd.exe and display the output in a special-mode buffer."
@@ -111,3 +124,5 @@
          (code-dir (concat project-root "/code"))
          (command (format "cd %s && shell.bat && cd %s && build.bat" misc-dir code-dir)))
     (run-cmd-command command)))
+
+(setq-default tab-width 4)

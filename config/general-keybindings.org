@@ -201,8 +201,7 @@
 
     (dw/semicollon-keys
       "q" '(kill-this-buffer :wk "Kill this buffer")
-      "e" '(treemacs-select-window :wk "Selects treemacs")
-      "E" '(treemacs :wk "Opens treemacs")
+      "e" '(lambda () (interactive) (dired default-directory) :wk "Open dired in current directory")
       "z" '(kill-emacs :wk "Reload buffer"))
 
     ;; Marks

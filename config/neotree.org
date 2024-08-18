@@ -9,6 +9,7 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
 #+BEGIN_SRC emacs-lisp
 
   ;; Won't work
+  ;; Too fucking laggy
   ;; (use-package neotree)
 
 #+end_src

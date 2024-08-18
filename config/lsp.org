@@ -73,21 +73,38 @@
 ** Zig
 #+begin_src emacs-lisp
 
-  (use-package zig-mode
-    :ensure (zig-mode :host github :repo "nanzhong/zig-mode" :branch "tree-sitter")
-    :mode (("\\.zig\\'" . zig-ts-mode)
-           ("\\.zon\\'" . zig-ts-mode))
-    :hook (zig-ts-mode . (lambda () (setq treesit-font-lock-level 4))))
+(use-package zig-mode
+:ensure (zig-mode :host github :repo "nanzhong/zig-mode" :branch "tree-sitter")
+:mode (("\\.zig\\'" . zig-ts-mode)
+        ("\\.zon\\'" . zig-ts-mode))
+:hook (zig-ts-mode . (lambda () (setq treesit-font-lock-level 4))))
 
   ;; (use-package zig-mode
   ;;    :hook (zig-mode . lsp-deferred)
   ;;    :mode "\\.zig\\'")
 
 #+end_src
+** Nix
+#+begin_src emacs-lisp
+
+  ;; (use-package nix-mode
+  ;;     :mode ("\\.nix\\'" "\\.nix.in\\'")
+  ;;     :hook (nix-mode . (lambda () (setq treesit-font-lock-level 4))))
+  ;; (use-package nix-drv-mode
+  ;;     :ensure nix-mode
+  ;;     :mode "\\.drv\\'")
+  ;; (use-package nix-shell
+  ;;     :ensure nix-mode
+  ;;     :commands (nix-shell-unpack nix-shell-configure nix-shell-build))
+  ;; (use-package nix-repl
+  ;;     :ensure nix-mode
+  ;;     :commands (nix-repl))
+
+#+end_src
 * Debugging
 #+begin_src emacs-lisp
 
-  (use-package dap-mode
+(use-package dap-mode
     ;; Uncomment the config below if you want all UI panes to be hidden by default!
     ;; :custom
     ;; (lsp-enable-dap-auto-configure nil)
@@ -143,5 +160,12 @@
          (code-dir (concat project-root "/code"))
          (command (format "cd %s && shell.bat && cd %s && build.bat" misc-dir code-dir)))
     (run-cmd-command command)))
+
+#+end_src
+
+* Tab space for every language
+#+begin_src emacs-lisp
+
+  (setq-default tab-width 4)
 
 #+end_src

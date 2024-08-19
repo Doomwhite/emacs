@@ -45,6 +45,7 @@
 - [[#treesitter][Treesitter]]
 - [[#treemacs][Treemacs]]
 - [[#theme][Theme]]
+- [[#warnings][Warnings]]
 - [[#which-key][Which-Key]]
 - [[#yasnippet][Yasnippet]]
 - [[#runtime-performance][Runtime Performance]]
@@ -162,6 +163,9 @@
 
 * Theme
 #+INCLUDE: "config/theme.org"
+
+* Warnings
+#+INCLUDE: "config/warning.org"
 
 * Which-Key
 #+INCLUDE: "config/which-key.org"

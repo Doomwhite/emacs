@@ -147,6 +147,7 @@
 #+INCLUDE: "config/space-only.org"
 
 * Shields and Terminals WIP
+#+INCLUDE: "config/shields-and-terminal.org"
 
 * Neotree
 #+INCLUDE: "config/neotree.org"

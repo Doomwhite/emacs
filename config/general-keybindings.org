@@ -32,6 +32,14 @@
         (switch-to-buffer (other-buffer))
       (shell)))
 #+end_src
+** Toggle eshell
+#+begin_src emacs-lisp
+  (defun toggle-eshell()
+    (interactive)
+    (if (string= (buffer-name) "*eshell*")
+        (switch-to-buffer (other-buffer))
+      (eshell)))
+#+end_src
 ** Marks
 #+begin_src emacs-lisp
 
@@ -206,7 +214,7 @@
         "f" '(goto-marker-F :wk "Go to marker F"))
 
     ;; Ctrl keys
-    (define-key evil-normal-state-map (kbd "C-t") 'toggle-shell)
+    (define-key evil-normal-state-map (kbd "C-t") 'toggle-eshell)
 
     ;; Makes Escape quit prompts (Minibuffer Escape)
     (global-set-key [escape] 'keyboard-escape-quit)

@@ -24,6 +24,12 @@
       (switch-to-buffer (other-buffer))
     (shell)))
 
+(defun toggle-eshell()
+  (interactive)
+  (if (string= (buffer-name) "*eshell*")
+      (switch-to-buffer (other-buffer))
+    (eshell)))
+
 (defun set-marker-W () (interactive) (evil-set-marker ?W))
 (defun set-marker-E () (interactive) (evil-set-marker ?E))
 (defun set-marker-R () (interactive) (evil-set-marker ?R))
@@ -192,7 +198,7 @@
       "f" '(goto-marker-F :wk "Go to marker F"))
 
   ;; Ctrl keys
-  (define-key evil-normal-state-map (kbd "C-t") 'toggle-shell)
+  (define-key evil-normal-state-map (kbd "C-t") 'toggle-eshell)
 
   ;; Makes Escape quit prompts (Minibuffer Escape)
   (global-set-key [escape] 'keyboard-escape-quit)

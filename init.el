@@ -113,6 +113,33 @@
       (write-file config-el-file)
       (message "Created %s" config-el-file))))
 
+(add-hook 'shell-mode-hook
+          (lambda ()
+            (face-remap-set-base 'comint-highlight-prompt :inherit nil)))
+(setq ansi-color-map
+      [default bold default italic underline success warning error nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil
+        (foreground-color . "#1d2021")
+        (foreground-color . "#fb4934")
+        (foreground-color . "#b8bb26")
+        (foreground-color . "#fabd2f")
+        (foreground-color . "#fe8019")
+        (foreground-color . "#d3869b")
+        (foreground-color . "#689d6a")
+        (foreground-color . "#ebdbb2")
+        nil nil
+        (background-color . "#1d2021")
+        (background-color . "#fb4934")
+        (background-color . "#b8bb26")
+        (background-color . "#fabd2f")
+        (background-color . "#fe8019")
+        (background-color . "#d3869b")
+        (background-color . "#689d6a")
+        (background-color . "#ebdbb2")
+        nil nil]
+      )
+(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
 (my-create-config-el)
 
 (load (expand-file-name "config.el" user-emacs-directory))

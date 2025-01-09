@@ -1,0 +1,4 @@
+Stop cursor blinking
+#+begin_src emacs-lisp
+  (setq blink-cursor-mode nil)
+#+end_src

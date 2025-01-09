@@ -1,0 +1,1 @@
+c:/Users/Cliente/.emacs.d/elpaca/repos/annalist/annalist.el

@@ -1,0 +1,7 @@
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-height 25)     ;; Sets modeline height
+  (doom-modeline-bar-width 5)   ;; Sets right bar width
+  (doom-modeline-persp-name t)  ;; Adds perspective name to modeline
+  (doom-modeline-persp-icon t)) ;; Adds folder icon next to persp name

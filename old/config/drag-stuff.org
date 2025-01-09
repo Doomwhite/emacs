@@ -1,0 +1,7 @@
+Drag Stuff is a minor mode for Emacs taht makes it possible to drag stuff(words, regions, lines) around in Emacs. When 'drag-stuff-define-keys' is enabled, then the following keybindings are set: M-up, M-down, M-left, M-right.
+#+begin_src emacs-lisp
+  (use-package drag-stuff
+    :init
+    (drag-stuff-global-mode 1)
+    (drag-stuff-define-keys))
+#+end_src

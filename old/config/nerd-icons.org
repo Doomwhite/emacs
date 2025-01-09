@@ -1,0 +1,16 @@
+For icons and more helpful UI. This is an icon set that can be used with dired, ibuffer and other Emacs programs.
+
+Don't forget to use nerd-icons-install-fonts.
+
+We use Nerd icons because it has more, better icons and all-the-icons only supports GUI. While nerd-icons supports both GUI and TUI.
+  
+#+begin_src emacs-lisp
+  (use-package nerd-icons
+    :if (display-graphic-p))
+
+  (use-package nerd-icons-dired
+    :hook (dired-mode . (lambda () (nerd-icons-dired-mode t))))
+
+  (use-package nerd-icons-ibuffer
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+#+end_src

@@ -1,0 +1,1 @@
+c:/Users/Cliente/.emacs.d/elpaca/repos/magit/lisp/magit-base.el

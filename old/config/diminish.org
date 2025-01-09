@@ -1,0 +1,6 @@
+* Diminish
+#+begin_src emacs-lips
+  
+  (use-package diminish)
+
+#+end_src

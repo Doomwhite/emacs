@@ -1,0 +1,4 @@
+#+begin_src emacs-lisp
+  ;;(setq image-animate-loop nil)
+  (setq org-startup-with-inline-images t)
+#+end_src

@@ -1,0 +1,47 @@
+* Custom theme
+The first of the two lines below designates the directory where will place all of our themes.  The second line loads our chosen theme which is *doomwhite*, a theme that I created with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].
+
+The selected theme function
+#+begin_src emacs-lisp
+
+  (defun load-selected-theme ()
+
+    (interactive)
+    (load-theme 'kanagawa t)
+    ;; (autothemer--current-theme 'kanagawa)
+
+  )
+
+#+end_src
+
+* Catpuccin Mocha
+#+begin_src emacs-lisp
+
+  (use-package catppuccin-theme)
+
+#+end_src
+
+* Kanagawa (Katsushika Hokusai)
+** 1st version (meritamen)
+#+begin_src emacs-lisp
+
+  ;; (use-package kanagawa-theme)
+
+#+end_src
+
+** 2nd version (konrad1997)
+#+begin_src emacs-lisp
+
+  (use-package autothemer 
+   :init
+   (add-to-list 'custom-theme-load-path "~/.config/emacs/themes/")
+   (load-selected-theme))
+
+#+end_src
+
+* Doomthemes
+#+begin_src emacs-lisp
+
+  (use-package doom-themes)
+
+#+end_src

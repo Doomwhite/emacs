@@ -1,0 +1,118 @@
+(setq backup-directory-alist `(("." . "~/.config/emacs/backups")))
+(setq delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
+
+(require 'ox)
+
+(defvar my-config-directory (expand-file-name "config" user-emacs-directory))
+(defvar my-index-file (expand-file-name "index.csv" user-emacs-directory))
+
+(defun csv-parse-file (file)
+  "Parse the CSV file specified by FILE and return its contents as a list of lists."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let ((lines (split-string (buffer-string) "\n" t))
+          result)
+      (dolist (line lines (reverse result))
+        (setq result (cons (split-string line ",") result))))))
+
+(defun my-tangle-org-file (org-file)
+  "Tangle the specified ORG-FILE."
+  (let ((el-file (concat (file-name-sans-extension org-file) ".el")))
+    (message "Tangling %s to %s" org-file el-file)
+    (org-babel-tangle-file org-file el-file)))
+
+(defun my-update-index ()
+  "Create or update the index file with filenames and modification times."
+  (with-temp-buffer
+    (insert "Filename,Last Modified\n")
+    (dolist (org-file (directory-files my-config-directory t "\\.org$"))
+      (let* ((filename (file-name-nondirectory org-file))
+             (last-modified (format-time-string "%Y-%m-%d %H:%M:%S" (nth 5 (file-attributes org-file)))))
+        (insert (format "%s,%s\n" filename last-modified))))
+    (write-file my-index-file)))
+
+(defun my-parse-index ()
+  "Parse the index file and return its contents as an association list."
+  (if (file-exists-p my-index-file)
+      (let ((parsed-data (csv-parse-file my-index-file))
+            result)
+        (dolist (row parsed-data)
+          (setq result (cons (cons (car row) (cadr row)) result)))
+        (reverse result))))
+
+(defun my-tangle-config ()
+  "Tangle org files in the config directory based on the index."
+  (interactive)
+  (unless (file-directory-p my-config-directory)
+    (error "Config directory not found: %s" my-config-directory))
+  (let ((index-data (my-parse-index)))
+    (dolist (org-file (directory-files my-config-directory t "\\.org$"))
+      (let* ((filename (file-name-nondirectory org-file))
+             (last-modified (nth 5 (file-attributes org-file)))
+             (index-last-modified (cdr (assoc filename index-data))))
+        (if (or (not index-last-modified)
+                (not (file-exists-p my-index-file))
+                (not (assoc filename index-data))
+                (not (equal index-last-modified (format-time-string "%Y-%m-%d %H:%M:%S" last-modified))))
+            (progn
+              (my-tangle-org-file org-file)
+              (my-update-index)))))))
+
+;; Call the function to tangle org files in the config directory based on the index
+(my-tangle-config)
+
+(defun my-parse-config-org ()
+  "Parse config.org file and extract included files along with their order."
+  (let ((config-org-file (expand-file-name "config.org" user-emacs-directory))
+        include-files)
+    (with-temp-buffer
+      (insert-file-contents config-org-file)
+      (goto-char (point-min))
+      (while (re-search-forward "^\\*\\* \\(.*\\)$" nil t)
+        (let* ((section-title (match-string 1))
+               (section-order (string-to-number (substring section-title 0 1))))
+          (forward-line)
+          (while (re-search-forward "^#\\+INCLUDE: \"config/\\(.*\\)\"" nil t)
+            (let* ((include-file (concat (file-name-sans-extension (match-string 1)) ".el")))
+              (push (cons section-order include-file) include-files)))))
+      (message "Parsed include files: %s" include-files)
+      (setq include-files (nreverse include-files)))))
+
+(defun my-append-file-contents-to-config-el (filename)
+  "Append contents of FILENAME wrapped with start and end comments to config.el."
+  (message "Appending contents of %s to config.el" filename)
+  (let* ((start-comment (format ";; Start %s\n" (file-name-sans-extension (file-name-nondirectory filename))))
+         (end-comment (format ";; End %s\n" (file-name-sans-extension (file-name-nondirectory filename))))
+         (content (with-temp-buffer
+                    (insert-file-contents filename)
+                    (buffer-string))))
+    ;; Create start comment if it doesn't exist
+    (unless (search-backward start-comment nil t)
+      (insert start-comment))
+    ;; Append contents of the file
+    (insert content)
+    ;; Create end comment if it doesn't exist
+    (unless (search-forward end-comment nil t)
+      (insert end-comment))))
+
+(defun my-create-config-el ()
+  "Create config.el in the emacs directory with sections from .el files in the config directory."
+  (message "Creating config.el")
+  (let* ((config-directory (expand-file-name "config" user-emacs-directory))
+         (emacs-directory (expand-file-name user-emacs-directory))
+         (include-files (my-parse-config-org))
+         (config-el-file (expand-file-name "config.el" emacs-directory)))
+    (with-temp-buffer
+      (insert ";; Configuration file generated by Emacs Lisp\n\n")
+      (dolist (include-file include-files)
+        (let ((filename (format "%s" (cdr include-file))))
+          (my-append-file-contents-to-config-el (expand-file-name filename config-directory))))
+      (write-file config-el-file)
+      (message "Created %s" config-el-file))))
+
+(my-create-config-el)
+
+(load (expand-file-name "config.el" user-emacs-directory))

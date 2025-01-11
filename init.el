@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t -*-
+
 ;; Install the Elpaca package manager
 (defvar elpaca-installer-version 0.8)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -51,7 +53,7 @@
 
 ;; Customize stuff
   ;; Sets the customize file path
-  (setq custom-file (expand-file-name ".emacs.custom.el" user-emacs-directory))
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   ;; Loads the customize file
   (load-file custom-file)
 
@@ -61,7 +63,52 @@
 (use-package emacs
   :ensure nil
   :config
-  (setq ring-bell-function #'ignore)
+
+  (setq inhibit-startup-message t
+        inhibit-startup-echo-area-message user-login-name
+        inhibit-default-init t
+        visible-bell 1
+        ring-bell-function 'ignore
+        create-lockfiles nil
+        ;; Starting scratch buffer in fundamental mode instead
+        ;; of elisp-mode saves startup time
+        initial-major-mode 'fundamental-mode
+        initial-scratch-message nil
+        scroll-conservatively 101
+        mouse-wheel-progressive-speed nil
+        mouse-wheel-scroll-amount '(3)
+        use-dialog-box nil
+        auto-window-vscroll nil
+        vc-follow-symlinks t
+        confirm-kill-processes nil
+        echo-keystrokes 0.5
+        dired-dwim-target t
+        tab-always-indent t
+        ;; 1mb
+        read-process-output-max (* 1024 1024)
+        column-number-indicator-zero-based nil
+        ;; Preserves clipboard contents when overwriting the clipboard with a new selection.
+        ; save-interprogram-paste-before-kill t
+        truncate-partial-width-windows nil
+        require-final-newline t
+        imenu-max-items 1000
+        imenu-max-item-length 1000
+        ;; Prevents eldoc (which shows function signatures) from using multiple lines in the minibuffer.
+        ; eldoc-echo-area-use-multiline-p nil
+        pixel-scroll-precision-interpolate-page t
+        make-backup-files nil
+        warning-minimum-level :error
+        ;; Enables multi-window layout when debugging with gdb.
+        gdb-many-windows t)
+
+  (setq-default select-active-regions nil
+                ;; Uses spaces instead of tabs for indentation.
+                indent-tabs-mode nil
+                truncate-lines t
+                tab-width 2)
+
+  (set-message-beep 'silent)
+
   (tool-bar-mode 0)
   (menu-bar-mode 0)
   (scroll-bar-mode 0)
@@ -89,6 +136,11 @@
   ;; Enables Evil mode globally.
   (evil-mode 1))
 
+  (use-package evil-surround
+    :ensure t
+    :after evil
+    :config (global-evil-surround-mode 1))
+
   (use-package evil-collection
     :ensure t  ;; Ensures 'evil-collection' is installed
     :after evil
@@ -101,3 +153,366 @@
                   evil-motion-state-modes))
     (evil-collection-init)
     (evil-set-undo-system 'undo-redo))
+
+  (use-package evil-mc
+    :ensure t
+    :after evil
+    :config
+    (global-evil-mc-mode 1)
+    :bind
+    (:map evil-normal-state-map
+          ("C-n"   . evil-mc-make-and-goto-next-match)
+          ("C-p"   . evil-mc-make-and-goto-prev-match)
+          ("C-M-n" . evil-mc-make-cursor-here)
+          ("C-M-p" . evil-mc-undo-cursor)
+          ("C-M-q" . evil-mc-undo-all-cursors)))
+
+;; Company
+(use-package company
+  :ensure t
+  :hook (elpaca-after-init . global-company-mode)
+  :config
+
+  (setq company-idle-delay 0
+        company-minimum-prefix-length 2)
+
+  (custom-set-faces
+   '(company-tooltip ((t (:background "black" :foreground "#fff"))))
+   '(company-tooltip-selection ((t (:background "#555" :foreground "#fff")))))
+
+  :bind
+  (:map company-active-map
+        ("C-n" . company-select-next)
+        ("C-p" . company-select-previous)
+        ("C-o" . company-complete)))
+
+;; Theme Configuration
+(use-package autothemer
+  :ensure t
+  :init
+  (my/add-theme-path)
+  :config
+  (my/load-theme))
+
+  (defun my/load-theme ()
+    "Load the Kanagawa theme."
+    (interactive)
+    (load-theme 'kanagawa t))
+
+  (defun my/add-theme-path ()
+    "Add the theme directory to `custom-theme-load-path`."
+    (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory)))
+
+;; Centered window mode
+(use-package centered-window
+  :ensure t)
+
+;; Fonts
+(defun my/setup-fonts ()
+  "Setup all font configurations."
+  (my/set-default-fonts)
+  (my/set-italic-faces)
+  (setq-default line-spacing 0.12)
+  (run-at-time 0.1 nil 'my/apply-font-heights))
+
+  (defun my/set-default-fonts ()
+    "Configure default, variable-pitch, and fixed-pitch fonts."
+    (add-to-list 'default-frame-alist '(font . "IBM Plex Mono"))
+    (set-face-attribute 'default nil :font "IBM Plex Mono" :height 90)
+    (set-face-attribute 'variable-pitch nil :font "IBM Plex Mono" :height 100)
+    (set-face-attribute 'fixed-pitch nil :font "IBM Plex Mono" :height 90))
+
+  (defun my/set-italic-faces ()
+    "Set italic style for comments and keywords."
+    (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+    (set-face-attribute 'font-lock-keyword-face nil :slant 'italic))
+
+  (defun my/apply-font-heights ()
+    "Apply font height settings to all frames."
+    (dolist (frame (frame-list))
+      (set-face-attribute 'default frame :height 90)))
+
+(my/setup-fonts)
+
+;; IDO (Interactive Do)
+(use-package ido-vertical-mode
+  :ensure t
+  :init
+  (ido-vertical-mode 1)
+  (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right))
+
+  (use-package smex
+    :ensure t
+    :after ido-vertical-mode)
+
+    (use-package ido-completing-read+
+      :ensure t
+      :after smex
+      :config
+      (ido-mode 1)
+      (ido-everywhere 1)
+      (ido-ubiquitous-mode 1))
+
+;; Grep
+(setq grep-command "rg --no-heading --color=never -n ")
+(setq grep-use-null-device nil)
+
+;; Dashboard
+;; Muito lento
+; (use-package dashboard
+;   :ensure t
+;   :config
+;   (dashboard-setup-startup-hook)
+;   (setq dashboard-startup-banner 'official
+;         dashboard-items '((recents  . 5)
+;                           (bookmarks . 5)
+;                           (projects . 5)
+;                           (agenda . 5))))
+
+;; Restart emacs
+(defun my/restart-emacs-with-window-size-and-position ()
+  "Restart Emacs and restore the window size and position, making the current frame invisible first."
+  (interactive)
+  (let* ((frame (selected-frame))
+         (width (frame-width frame))
+         (height (frame-height frame))
+         (top (frame-parameter frame 'top))
+         (left (frame-parameter frame 'left))
+         (cmd (format "emacs --eval \"(set-frame-size (selected-frame) %d %d)\" \
+                              --eval \"(set-frame-position (selected-frame) %d %d)\" &"
+                      width height left top)))
+    ;; Make frame invisible
+    (modify-frame-parameters frame '((visibility . nil)))
+    ;; Save the session
+    (persp-save-state-to-file)
+    ;; Start a new Emacs process
+    (start-process "restart-emacs" nil "sh" "-c" cmd)
+    ;; Kill Emacs
+    (save-buffers-kill-emacs)))
+
+;; Persp
+(use-package persp-mode
+  :ensure t
+  :init
+  (setq persp-auto-save-fname "~/.emacs.d/persp-save")
+  :config
+  (persp-mode 1))
+
+;; Keybindings
+(use-package general
+  :after evil-collection
+  :ensure t
+  :config
+  (general-evil-setup)
+  (my/set-fonts-keys)
+  (my/escape-prompt)
+  (my/evil/basic-movements)
+  (my/evil/ctrl)
+  (my/evil/ctrl-and-shift)
+  (my/evil/set-leader-key)
+  (my/evil/leader/set-basic-key-bindings)
+  (my/evil/leader/current-directory)
+  (my/evil/leader/file-system)
+  (my/evil/leader/evaluation)
+  (my/evil/leader/help)
+  (my/evil/leader/toggle)
+  (my/evil/leader/window-buffer-management)
+  (my/evil/leader/dired)
+  (my/evil/leader/org-mode)
+  (my/evil/leader/set-g-definer)
+  (my/evil/leader/g)
+  (my/evil/leader/set-semicollon-definer)
+  (my/evil/leader/semicollon))
+
+  (defun my/set-fonts-keys ()
+    (global-set-key (kbd "C-=") 'text-scale-increase)
+    (global-set-key (kbd "C--") 'text-scale-decrease)
+    (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+    (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease))
+
+  (defun my/escape-prompt ()
+    "Makes Escape quit prompts (Minibuffer Escape)"
+    (global-set-key [escape] 'keyboard-escape-quit))
+
+  (defun my/evil/basic-movements ()
+    "Sets the basic movements."
+    (define-key evil-normal-state-map (kbd "H") 'beginning-of-line-text)
+    (define-key evil-visual-state-map (kbd "H") 'beginning-of-line-text)
+    (define-key evil-normal-state-map (kbd "L") 'end-of-line)
+    (define-key evil-visual-state-map (kbd "L") 'end-of-line)
+    (define-key evil-normal-state-map (kbd "K") 'evil-backward-paragraph)
+    (define-key evil-visual-state-map (kbd "K") 'evil-backward-paragraph)
+    (define-key evil-normal-state-map (kbd "J") 'evil-forward-paragraph)
+    (define-key evil-visual-state-map (kbd "J") 'evil-forward-paragraph))
+
+  (defun my/evil/ctrl ()
+    "Ctrl key bindings"
+    ;(define-key evil-normal-state-map (kbd "C-t") 'toggle-shell)
+  )
+
+  (defun my/evil/ctrl-and-shift ()
+    "Ctrl and Shift key bindings"
+    (define-key evil-normal-state-map (kbd "C-S-p") (lambda () (interactive) (dired user-emacs-directory)))
+  )
+
+  (defun my/evil/set-leader-key ()
+    "Sets the leader key"
+    (general-create-definer dw/leader-keys
+      :states '(normal insert visual emacs)
+      :keymaps 'override
+      :prefix  "SPC"
+      :global-prefix "M-SPC"))
+
+    (defun my/evil/leader/set-basic-key-bindings ()
+      "Sets some basic keybindings"
+      (dw/leader-keys
+        "q" '(kill-this-buffer :wk "Quit")
+        "Q" '(kill-this-buffer :wk "Quit")))
+
+    (defun my/evil/leader/current-directory ()
+      (dw/leader-keys
+        "." '(:ignore t :wk "Current directory")
+        ". y" '(copy-current-directory :wk "Copies the current directory")
+        ; ". r" '(update-scroll-keybinding :wk "Sets the scrolling settings by window size")
+      ))
+
+      (defun copy-current-directory ()
+        "Copy the current directory to the clipboard and print it in the minibuffer."
+        (interactive)
+        (kill-new default-directory)
+        (message "Copied current directory: %s" default-directory))
+
+    (defun my/evil/leader/file-system ()
+      (dw/leader-keys
+        "f" '(:ignore t :wk "Filesystem")
+        "f s" '(save-buffer :wk "Save file")
+        "f S" '(save-some-buffers :wk "Save all files")
+        "f f" '(find-file :wk "Find file")
+        "f t" '(grep :wk "Find text")
+        "f T" '(find-grep-dired :wk "Find text in X folder")
+        ; "f r" '(counsel-recentf :wk "Find recent files")
+        "f c" '((lambda () (interactive) (dired user-emacs-directory)) :wk "Edit emacs config")))
+
+    (defun my/evil/leader/evaluation ()
+      (dw/leader-keys
+        "e" '(:ignore t :wk "Evaluate")
+        "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+        "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+        "e e" '(eval-expression :wk "Evaluate and elisp expression")
+        "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+        "e r" '(eval-region :wk "Evaluate elisp in region")))
+
+    (defun my/evil/leader/help ()
+      (dw/leader-keys
+        "h" '(:ignore t :wk "Help")
+        "h d" '(:ignore :wk "Describe")
+        "h h f" '(describe-function :wk "Function")
+        "h h F" '(describe-face :wk "Face")
+        "h h m" '(describe-mode :wk "Mode")
+        "h h v" '(describe-variable :wk "Variable")
+        "h h k" '(describe-key :wk "Mode")
+        "h i" '(info :wk "Open manual")
+        "h a" '(:ignore t :wk "Apropos")
+        "h a a" '(apropos :wk "Apropos")
+        "h a c" '(apropos-command :wk "Command")
+        "h a l" '(apropos-library :wk "Library")
+        "h a u" '(apropos-user-option :wk "User option")
+        "h a v" '(apropos-value :wk "Value")
+        "h r" '(:ignore t :wk "Reload")
+        "h r t" '(my/load-theme :wk "Theme" )
+        "h r r" '(my/restart-emacs-with-window-size-and-position :wk "Emacs config")))
+
+    (defun my/evil/leader/toggle ()
+      (dw/leader-keys
+        "t" '(:ignore t :wk "Toggle")
+        "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+        "t t" '(visual-line-mode :wk "Toggle truncated lines")
+        ; "t i" '(org-toggle-inline-images :wk "Toggle inline images")
+        "t c" '(centered-window-mode :wk "Toggle the centered window mode")))
+
+    (defun my/evil/leader/window-buffer-management ()
+      (dw/leader-keys
+        "w" '(:ignore t :wk "Window/Buffer management")
+        ;; Buffer
+        "w b" '(switch-to-buffer :wk "Switch buffer")
+        "w i" '(ibuffer :wk "Ibuffer")
+        "w C" '(kill-this-buffer :wk "Kill this buffer")
+        "w n" '(next-buffer :wk "Next buffer")
+        "w p" '(previous-buffer :wk "Previous buffer")
+        "w r" '(revert-buffer :wk "Reload buffer")
+        ;; Window splits
+        "w c" '(evil-window-delete :wk "Close window")
+        "w n" '(evil-window-new :wk "New window")
+        "w s" '(evil-window-split :wk "Horizontal split window")
+        "w v" '(evil-window-vsplit :wk "Vertical split window")
+        ;; Window motions
+        "w h" '(evil-window-left :wk "Window left")
+        "w j" '(evil-window-down :wk "Window down")
+        "w k" '(evil-window-up :wk "Window up")
+        "w l" '(evil-window-right :wk "Window right")
+        "w w" '(evil-window-next :wk "Goto next window")
+        ;; Move Windows
+        "w H" '(buf-move-left :wk "Buffer move left")
+        "w J" '(buf-move-down :wk "Buffer move down")
+        "w K" '(buf-move-up :wk "Buffer move up")
+        "w L" '(buf-move-right :wk "Buffer move right")))
+
+    (defun my/evil/leader/dired ()
+      (dw/leader-keys
+        "d" '(:ignore t :wk "Dired")
+        "d d" '(dired :wk "Open dired")
+        "d j" '(dired-jump :wk "Dired jump to current")
+        ; "d n" '(neotree-dir :wk "Open directory in neotree")
+        ; "d p" '(peep-dired :wk "Peep-dired")
+      ))
+
+    (defun my/evil/leader/org-mode ()
+      (dw/leader-keys
+        "o" '(:ignore t :wk "Org mode")
+        "o l" '(:ignore t :wk "Link")
+        "o l s" '(org-store-link :wk "Store link")
+        "o l i" '(org-insert-link :wk "Insert link")))
+
+    (defun my/evil/leader/set-g-definer ()
+      (general-create-definer dw/g-keys
+        :states '(normal insert visual emacs)
+        :keymaps 'override
+        :prefix  "g"
+        :global-prefix "M-g"))
+
+      (defun my/evil/leader/g ()
+        (dw/g-keys "c" '(comment-line :wk "Comment")))
+
+    (defun my/evil/leader/set-semicollon-definer ()
+      (general-create-definer dw/semicollon-keys
+        :states '(normal insert visual emacs)
+        :keymaps 'override
+        :prefix  ";"
+        :global-prefix "M-;"))
+
+      (defun my/evil/leader/semicollon ()
+        (dw/semicollon-keys
+          "q" '(kill-this-buffer :wk "Kill this buffer")
+          ; "e" '(treemacs-select-window :wk "Selects treemacs")
+          ; "E" '(treemacs :wk "Opens treemacs")
+         ))
+
+;; Whickey
+(use-package which-key
+  :ensure t
+  :after general
+  :config
+  (which-key-mode 1))
+
+;; Reset GC threshold before loading GCMH
+(setq gc-cons-threshold (* 16 1024 1024))  ; 16MB
+
+;; Magic garbage collector hack
+;; It's kinda small so maybe makes sense to just copy/paste
+;; it into a config instead of installing it with straight
+(use-package gcmh
+  :ensure t
+  :init
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold (* 100 1024 1024))  ; 100mb
+  :hook ((window-setup-hook . gcmh-mode)))

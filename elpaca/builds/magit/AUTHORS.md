@@ -1,1 +1,0 @@
-c:/Users/Cliente/.emacs.d/elpaca/repos/magit/docs/AUTHORS.md

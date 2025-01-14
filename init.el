@@ -57,6 +57,17 @@
   ;; Loads the customize file
   (load-file custom-file)
 
+
+;; General functions
+(defun my/log-message (message)
+  "Log the MESSAGE to a log file."
+  (let ((log-file (expand-file-name "emacs_server_log.txt" user-emacs-directory)))
+    (write-region (format "[%s] %s\n" (current-time-string) message)
+                  nil
+                  log-file
+                  'append)))
+
+
 ;; Turns off elpaca-use-package-mode current declaration
 ;; Note this will cause evaluate the declaration immediately. It is not deferred.
 ;; Useful for configuring built-in emacs features.
@@ -115,6 +126,24 @@
   (column-number-mode 1)
   (show-paren-mode 1))
 
+;; Dotenv
+;; TODO: didn't work??
+(use-package dot-env
+  :ensure t
+  :config
+  (dot-env-config))
+
+  (defun my/env (key)
+    "Retrieve the value of the environment variable by KEY.
+    If the value is nil, raise an error. KEY can be a string or a symbol."
+    (interactive "sEnter environment variable name: ")
+    (let* ((key-symbol (if (symbolp key) key (intern key))) ;; Convert string to symbol if necessary
+            (value (dot-env-get key-symbol)))  ;; Get the value using dot-env-get
+        (if value
+            value  ;; Return the value if it's not nil
+        (error "Error: Environment variable '%s' is not set." (symbol-name key-symbol)))))
+
+
 ;; Evil mode
 ;; Expands to: (elpaca evil (use-package evil :demand t))
 (use-package evil
@@ -136,6 +165,7 @@
   ;; Enables Evil mode globally.
   (evil-mode 1))
 
+  ;; TODO: testar
   (use-package evil-surround
     :ensure t
     :after evil
@@ -270,25 +300,93 @@
 ;                           (agenda . 5))))
 
 ;; Restart emacs
-(defun my/restart-emacs-with-window-size-and-position ()
-  "Restart Emacs and restore the window size and position, making the current frame invisible first."
-  (interactive)
-  (let* ((frame (selected-frame))
-         (width (frame-width frame))
-         (height (frame-height frame))
-         (top (frame-parameter frame 'top))
-         (left (frame-parameter frame 'left))
-         (cmd (format "emacs --eval \"(set-frame-size (selected-frame) %d %d)\" \
-                              --eval \"(set-frame-position (selected-frame) %d %d)\" &"
-                      width height left top)))
-    ;; Make frame invisible
-    (modify-frame-parameters frame '((visibility . nil)))
-    ;; Save the session
-    (persp-save-state-to-file)
-    ;; Start a new Emacs process
-    (start-process "restart-emacs" nil "sh" "-c" cmd)
-    ;; Kill Emacs
-    (save-buffers-kill-emacs)))
+(use-package restart-emacs
+  :ensure t)
+
+  (defun my/create-trigger-file-for-new-frame ()
+    "Create the trigger file that will prompt Emacs to create a new frame."
+    (interactive)
+    (let ((client-trigger-file (expand-file-name (my/env 'CREATE_NEW_FRAME_FILE_NAME) user-emacs-directory)))
+      (with-temp-file client-trigger-file
+        (insert "start"))
+      (message "Trigger file created: %s" client-trigger-file)))  ;; Optional: Log message for confirmation
+
+  (defun my/restart-emacs ()
+    "Create a trigger file for a new frame and restart Emacs, but only if the server is running."
+    (interactive)
+    (when (my/is-server-ready)
+      (my/create-trigger-file-for-new-frame))
+    (restart-emacs))
+
+; (defun my/restart-emacs-with-window-size-and-position ()
+;   "Restart Emacs and restore the window size and position, making the current frame invisible first."
+;   (interactive)
+;   (let* ((frame (selected-frame))
+;          (width (frame-width frame))
+;          (height (frame-height frame))
+;          (top (frame-parameter frame 'top))
+;          (left (frame-parameter frame 'left))
+;          (cmd (format "emacs --eval \"(set-frame-size (selected-frame) %d %d)\" \
+;                               --eval \"(set-frame-position (selected-frame) %d %d)\" &"
+;                       width height left top)))
+;     ;; Save the session
+;     (persp-save-state-to-file)
+;     ;; Start a new Emacs process
+;     (start-process "restart-emacs" nil "sh" "-c" cmd)
+;     ;; Make frame invisible
+;     (modify-frame-parameters frame '((visibility . nil)))
+;     ;; Kill Emacs
+;     (save-buffers-kill-emacs)))
+
+
+; (defun my/restart-emacs-with-window-size-and-position ()
+;   "Restart Emacs and restore the window size and position, making the current frame invisible first.
+; If Emacs is running as a daemon, it will restart the server using a batch script located in `scripts/windows/StartEmacsServer.bat`."
+;   (interactive)
+;   (let* ((frame (selected-frame))
+;          (width (frame-width frame))
+;          (height (frame-height frame))
+;          (top (frame-parameter frame 'top))
+;          (left (frame-parameter frame 'left))
+;          (cmd (format "emacs --eval \"(set-frame-size (selected-frame) %d %d)\" \
+;                               --eval \"(set-frame-position (selected-frame) %d %d)\" &"
+;                       width height left top)))
+
+;     ;; Temporarily enable persp-mode if it's not already active, and save the session
+;     ; (when (and (not persp-mode) (boundp 'persp-mode))
+;     ;   (persp-mode 1))
+
+;     ; (when persp-mode
+;     ;   ;; Save the session if persp-mode is active
+;     ;   (persp-save-state-to-file))
+
+;     ;; Check if Emacs is running as a daemon
+;     (if (and (fboundp 'server-running-p) (server-running-p))
+;       (progn
+;         ;; If Emacs is running as a daemon, restart the server using the batch file
+;         (message "Emacs is running as a daemon. Restarting the server...")
+
+;         ;; Get the path to the batch file (relative to the user config)
+;         (let ((batch-file (expand-file-name "scripts/windows/StartEmacsServer.bat" user-emacs-directory)))
+;           (message "Running batch file: %s" batch-file)
+
+;           ;; Start the batch file in the background using cmd.exe
+
+;           ; (shell-command (concat "cmd.exe /c start " batch-file))
+;           ; (start-process "restart-emacs-daemon" nil "cmd.exe" "/c" "start" "" batch-file)
+
+;           (message "Emacs server restarted using the batch file.")))
+
+
+;       ;; If Emacs is not running as a daemon, start a new Emacs process
+;       (progn
+;         ;; Start a new Emacs process with background execution using `&`
+;         (start-process "restart-emacs" nil "sh" "-c" (concat cmd " &"))
+;         ;; Make frame invisible
+;         (modify-frame-parameters frame '((visibility . nil)))
+;         ;; Kill Emacs
+;         (save-buffers-kill-emacs)))))
+
 
 ;; Persp
 (use-package persp-mode
@@ -296,7 +394,9 @@
   :init
   (setq persp-auto-save-fname "~/.emacs.d/persp-save")
   :config
-  (persp-mode 1))
+  ;; TODO: criar keybinding pra isso
+  ; (persp-mode 1)
+)
 
 ;; Keybindings
 (use-package general
@@ -391,7 +491,8 @@
         "f t" '(grep :wk "Find text")
         "f T" '(find-grep-dired :wk "Find text in X folder")
         ; "f r" '(counsel-recentf :wk "Find recent files")
-        "f c" '((lambda () (interactive) (dired user-emacs-directory)) :wk "Edit emacs config")))
+        "f c" '((lambda () (dired user-emacs-directory)) :wk "Edit emacs config")
+        "f b" '((lambda () (persp-mode 1)) :wk "Load backup")))
 
     (defun my/evil/leader/evaluation ()
       (dw/leader-keys
@@ -420,7 +521,7 @@
         "h a v" '(apropos-value :wk "Value")
         "h r" '(:ignore t :wk "Reload")
         "h r t" '(my/load-theme :wk "Theme" )
-        "h r r" '(my/restart-emacs-with-window-size-and-position :wk "Emacs config")))
+        "h r r" '(my/restart-emacs :wk "Emacs config")))
 
     (defun my/evil/leader/toggle ()
       (dw/leader-keys
@@ -516,3 +617,68 @@
   (setq gcmh-idle-delay 5
         gcmh-high-cons-threshold (* 100 1024 1024))  ; 100mb
   :hook ((window-setup-hook . gcmh-mode)))
+
+; Server stuff
+  (defun my/is-server-ready ()
+    "Check if the Emacs server is fully initialized."
+    (interactive)
+    (eq (server-running-p) t))
+
+  (defun my/check-for-trigger-file-and-delete ()
+    "Check if the trigger file exists and delete it if it does."
+    (let ((client-trigger-file (expand-file-name (my/env 'CREATE_NEW_FRAME_FILE_NAME) user-emacs-directory)))
+      (if (file-exists-p client-trigger-file)
+          (progn
+            (delete-file client-trigger-file)
+            t)
+        nil)))
+
+  ;; (defun my/start-new-frame-if-trigger ()
+  ;;   "Check for the trigger file and start a new Emacs frame if the file exists."
+  ;;   (when (my/check-for-trigger-file-and-delete)
+  ;;     (message "Starting a new Emacs frame due to restart trigger...")
+  ;;     (start-process "emacsclient-new-frame"
+  ;;                    nil
+  ;;                    "cmd.exe"
+  ;;                    "/c"
+  ;;                    "emacsclientw"
+  ;;                    "-c"
+  ;;                    "-n")))
+
+  (defun my/wait-for-server-or-timeout-async (timeout callback)
+    "Wait asynchronously for up to TIMEOUT seconds until the Emacs server has files in its directory.
+  If the server is ready within the timeout, CALL the CALLBACK function."
+    (let ((server-dir (expand-file-name "server" user-emacs-directory))
+          (elapsed 0))
+      (cl-labels ((check-server ()
+                    (if (directory-files server-dir t "^[^.].") ;; Ignore "." and ".."
+                        (progn
+                          (message "Emacs server is ready.")
+                          (funcall callback)) ;; Call the callback when server is ready
+                      (if (< elapsed timeout)
+                          (progn
+                            (setq elapsed (1+ elapsed))
+                            (message "Waiting for Emacs server to be ready... (%ds)" elapsed)
+                            (run-at-time 1 nil #'check-server)) ;; Schedule next check
+                        (message "Timeout reached. Emacs server did not start."))))) ;; Timeout
+        (check-server)))) ;; Start checking immediately
+
+  (defun my/start-new-frame-if-trigger ()
+    "Check for the trigger file, wait asynchronously for the server, and start a new Emacs frame."
+    (when (my/check-for-trigger-file-and-delete)
+      (my/wait-for-server-or-timeout-async
+       30
+       (lambda ()
+         (message "Starting a new Emacs frame due to restart trigger...")
+         ;; (start-process "emacsclient-new-frame"
+         ;;                nil
+         ;;                "cmd.exe"
+         ;;                "/c"
+         ;;                "emacsclientw"
+         ;;                "-c"
+         ;;                "-n")
+         (make-frame-command)
+         ))))
+
+  ;; Call the function when Emacs starts
+  (add-hook 'elpaca-after-init-hook (lambda () (my/start-new-frame-if-trigger)))

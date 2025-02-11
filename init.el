@@ -1,12 +1,12 @@
 ;;; -*- lexical-binding: t -*-
 
 ;; Install the Elpaca package manager
-(defvar elpaca-installer-version 0.8)
+(defvar elpaca-installer-version 0.9)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1
+                              :ref nil :depth 1 :inherit ignore
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
                               :build (:not elpaca--activate-package)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
@@ -67,6 +67,22 @@
                   log-file
                   'append)))
 
+(defun toggle-line-numbers ()
+  (interactive)
+  (global-display-line-numbers-mode 1)
+  (setq display-line-numbers-type 'relative))
+
+(defun my/get-visual-selection ()
+  "Return the text selected in visual mode as a plain string."
+  (interactive)
+  (when (use-region-p)
+    (let ((beg (region-beginning))
+          (end (region-end)))
+      (message "Region selected: %d to %d" beg end)  ;; Log region bounds
+      (let* ((selected-text (buffer-substring beg end))
+             (clean-text (substring-no-properties selected-text)))
+        (message "Selected text: '%s'" clean-text)
+        clean-text))))
 
 ;; Turns off elpaca-use-package-mode current declaration
 ;; Note this will cause evaluate the declaration immediately. It is not deferred.
@@ -111,6 +127,7 @@
         warning-minimum-level :error
         ;; Enables multi-window layout when debugging with gdb.
         gdb-many-windows t)
+  (toggle-line-numbers)
 
   (setq-default select-active-regions nil
                 ;; Uses spaces instead of tabs for indentation.
@@ -143,6 +160,22 @@
             value  ;; Return the value if it's not nil
         (error "Error: Environment variable '%s' is not set." (symbol-name key-symbol)))))
 
+;; Magit
+;; (use-package my-magit-speedup-for-windows
+;;   :load-path "~/.emacs.d/my-magit-speedup-for-windows"
+;;   :init
+;;   (require 'my-magit-process-cache)
+;;   (require 'my-magit-speedup-settings))
+
+;; (let ((repo-dir (expand-file-name "my-magit-speedup-for-windows" user-emacs-directory)))
+;;   (add-to-list 'load-path repo-dir)
+;;   (with-eval-after-load "magit"
+;;     (require 'my-magit-process-cache)
+;;     (require 'my-magit-speedup-settings)))
+
+;; Vterm
+;; (use-package vterm
+;;    :ensure t)
 
 ;; Evil mode
 ;; Expands to: (elpaca evil (use-package evil :demand t))
@@ -284,8 +317,8 @@
       (ido-ubiquitous-mode 1))
 
 ;; Grep
-(setq grep-command "rg --no-heading --color=never -n ")
-(setq grep-use-null-device nil)
+;; (setq grep-command "rg --no-heading --color=never -n ")
+;; (setq grep-use-null-device nil)
 
 ;; Dashboard
 ;; Muito lento
@@ -306,7 +339,7 @@
   (defun my/create-trigger-file-for-new-frame ()
     "Create the trigger file that will prompt Emacs to create a new frame."
     (interactive)
-    (let ((client-trigger-file (expand-file-name (my/env 'CREATE_NEW_FRAME_FILE_NAME) user-emacs-directory)))
+    (let ((client-trigger-file (expand-file-name "create-new-frame" user-emacs-directory)))
       (with-temp-file client-trigger-file
         (insert "start"))
       (message "Trigger file created: %s" client-trigger-file)))  ;; Optional: Log message for confirmation
@@ -485,14 +518,16 @@
     (defun my/evil/leader/file-system ()
       (dw/leader-keys
         "f" '(:ignore t :wk "Filesystem")
+        ; Save
         "f s" '(save-buffer :wk "Save file")
         "f S" '(save-some-buffers :wk "Save all files")
+        ; Find
         "f f" '(find-file :wk "Find file")
         "f t" '(grep :wk "Find text")
         "f T" '(find-grep-dired :wk "Find text in X folder")
         ; "f r" '(counsel-recentf :wk "Find recent files")
-        "f c" '((lambda () (dired user-emacs-directory)) :wk "Edit emacs config")
-        "f b" '((lambda () (persp-mode 1)) :wk "Load backup")))
+        "f c" '(dired user-emacs-directory :wk "Edit emacs config")
+        "f b" '(persp-mode 1 :wk "Load backup")))
 
     (defun my/evil/leader/evaluation ()
       (dw/leader-keys
@@ -506,27 +541,30 @@
     (defun my/evil/leader/help ()
       (dw/leader-keys
         "h" '(:ignore t :wk "Help")
+        ; Describe
         "h d" '(:ignore :wk "Describe")
-        "h h f" '(describe-function :wk "Function")
-        "h h F" '(describe-face :wk "Face")
-        "h h m" '(describe-mode :wk "Mode")
-        "h h v" '(describe-variable :wk "Variable")
-        "h h k" '(describe-key :wk "Mode")
-        "h i" '(info :wk "Open manual")
+        "h d f" '(describe-function :wk "Function")
+        "h d F" '(describe-face :wk "Face")
+        "h d m" '(describe-mode :wk "Mode")
+        "h d v" '(describe-variable :wk "Variable")
+        "h d k" '(describe-key :wk "Mode")
+        "h m" '(info :wk "Open manual")
+        ; Apropos
         "h a" '(:ignore t :wk "Apropos")
         "h a a" '(apropos :wk "Apropos")
         "h a c" '(apropos-command :wk "Command")
         "h a l" '(apropos-library :wk "Library")
         "h a u" '(apropos-user-option :wk "User option")
         "h a v" '(apropos-value :wk "Value")
+        ; Reload
         "h r" '(:ignore t :wk "Reload")
         "h r t" '(my/load-theme :wk "Theme" )
-        "h r r" '(my/restart-emacs :wk "Emacs config")))
+        "h r r" '(restart-emacs :wk "Emacs config")))
 
     (defun my/evil/leader/toggle ()
       (dw/leader-keys
         "t" '(:ignore t :wk "Toggle")
-        "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+        "t l" '(toggle-line-numbers :wk "Toggle line numbers")
         "t t" '(visual-line-mode :wk "Toggle truncated lines")
         ; "t i" '(org-toggle-inline-images :wk "Toggle inline images")
         "t c" '(centered-window-mode :wk "Toggle the centered window mode")))
@@ -598,6 +636,12 @@
           ; "E" '(treemacs :wk "Opens treemacs")
          ))
 
+(use-package evil-visualstar
+  :ensure t
+  :after general
+  :config
+  (global-evil-visualstar-mode))
+
 ;; Whickey
 (use-package which-key
   :ensure t
@@ -626,7 +670,7 @@
 
   (defun my/check-for-trigger-file-and-delete ()
     "Check if the trigger file exists and delete it if it does."
-    (let ((client-trigger-file (expand-file-name (my/env 'CREATE_NEW_FRAME_FILE_NAME) user-emacs-directory)))
+    (let ((client-trigger-file (expand-file-name "create-new-frame" user-emacs-directory)))
       (if (file-exists-p client-trigger-file)
           (progn
             (delete-file client-trigger-file)

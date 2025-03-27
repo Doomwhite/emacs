@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 
 ;; Install the Elpaca package manager
-(defvar elpaca-installer-version 0.9)
+(defvar elpaca-installer-version 0.10)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -16,7 +16,7 @@
   (add-to-list 'load-path (if (file-exists-p build) build repo))
   (unless (file-exists-p repo)
     (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
+    (when (<= emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
         (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
                   ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
@@ -43,8 +43,8 @@
 ;; To avoid "too many open files" errors
 (setq elpaca-queue-limit 12)
 
-(elpaca transient)
-(elpaca magit)
+; (elpaca transient)
+; (elpaca magit)
 
   ;; Install use-package support
   (elpaca elpaca-use-package
@@ -254,17 +254,30 @@
   :ensure t
   :init
   (my/add-theme-path)
+  ;; :config
+  ;; (my/load-theme)
+  )
+
+  ;; (defun my/load-theme ()
+  ;;   "Load the Kanagawa theme."
+  ;;   (interactive)
+  ;;   (load-theme 'kanagawa t))
+
+  (defun my/add-theme-path ()
+    "Add the theme directory to `custom-theme-load-path`."
+    (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory)))
+
+(use-package catppuccin-theme
+  :ensure t
   :config
   (my/load-theme))
 
   (defun my/load-theme ()
     "Load the Kanagawa theme."
     (interactive)
-    (load-theme 'kanagawa t))
-
-  (defun my/add-theme-path ()
-    "Add the theme directory to `custom-theme-load-path`."
-    (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory)))
+    (load-theme 'catppuccin t)
+    (setq catppuccin-flavor 'mocha)
+    (catppuccin-reload))
 
 ;; Centered window mode
 (use-package centered-window
@@ -500,7 +513,8 @@
       "Sets some basic keybindings"
       (dw/leader-keys
         "q" '(kill-this-buffer :wk "Quit")
-        "Q" '(kill-this-buffer :wk "Quit")))
+        "Q" '(kill-this-buffer :wk "Quit")
+        "ESC" '(keyboard-quit :wk "Close which-key")))
 
     (defun my/evil/leader/current-directory ()
       (dw/leader-keys
@@ -647,6 +661,9 @@
   :ensure t
   :after general
   :config
+  (setq which-key-idle-delay 0.1)
+  (setq which-key-idle-secondary-delay 0.05)
+  (setq which-key-show-remaining-keys t)
   (which-key-mode 1))
 
 ;; Reset GC threshold before loading GCMH

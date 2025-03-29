@@ -1,5 +1,17 @@
 ;;; -*- lexical-binding: t -*-
 
+;; Envs
+;; Formas de setar environments pro emacs, pretty good
+; (when (eq system-type 'windows-nt)
+;   ;; Add MSYS2 MinGW64 bin to the front of PATH
+;   (setenv "PATH" (concat "C:\\Users\\Cliente\\scoop\\apps\\msys2\\2025-02-21\\mingw64\\bin;" (getenv "PATH")))
+;   ;; Ensure Emacs uses this PATH for exec commands
+;   (setq exec-path (append '("C:/Users/Cliente/scoop/apps/msys2/2025-02-21/mingw64/bin") exec-path)))
+
+; (when (eq system-type 'windows-nt)
+;   (setenv "PATH" (concat "C:\\Users\\Cliente\\scoop\\apps\\msys2\\2025-02-21\\usr\\bin;" (getenv "PATH")))
+;   (setq exec-path (append '("C:/Users/Cliente/scoop/apps/msys2/2025-02-21/usr/bin") exec-path)))
+
 ;; Install the Elpaca package manager
 (defvar elpaca-installer-version 0.10)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -143,22 +155,26 @@
   (column-number-mode 1)
   (show-paren-mode 1))
 
+;; Global variables
+(defconst my/create-new-frame "create-new-frame"
+  "Name of the trigger file used to create a new frame.")
+
 ;; Dotenv
 ;; TODO: didn't work??
-(use-package dot-env
-  :ensure t
-  :config
-  (dot-env-config))
+; (use-package dot-env
+;   :ensure t
+;   :config
+;   (dot-env-config))
 
-  (defun my/env (key)
-    "Retrieve the value of the environment variable by KEY.
-    If the value is nil, raise an error. KEY can be a string or a symbol."
-    (interactive "sEnter environment variable name: ")
-    (let* ((key-symbol (if (symbolp key) key (intern key))) ;; Convert string to symbol if necessary
-            (value (dot-env-get key-symbol)))  ;; Get the value using dot-env-get
-        (if value
-            value  ;; Return the value if it's not nil
-        (error "Error: Environment variable '%s' is not set." (symbol-name key-symbol)))))
+;   (defun my/env (key)
+;     "Retrieve the value of the environment variable by KEY.
+;     If the value is nil, raise an error. KEY can be a string or a symbol."
+;     (interactive "sEnter environment variable name: ")
+;     (let* ((key-symbol (if (symbolp key) key (intern key))) ;; Convert string to symbol if necessary
+;             (value (dot-env-get key-symbol)))  ;; Get the value using dot-env-get
+;         (if value
+;             value  ;; Return the value if it's not nil
+;         (error "Error: Environment variable '%s' is not set." (symbol-name key-symbol)))))
 
 ;; Magit
 ;; (use-package my-magit-speedup-for-windows
@@ -172,10 +188,6 @@
 ;;   (with-eval-after-load "magit"
 ;;     (require 'my-magit-process-cache)
 ;;     (require 'my-magit-speedup-settings)))
-
-;; Vterm
-;; (use-package vterm
-;;    :ensure t)
 
 ;; Evil mode
 ;; Expands to: (elpaca evil (use-package evil :demand t))
@@ -288,13 +300,13 @@
   "Setup all font configurations."
   (my/set-default-fonts)
   (my/set-italic-faces)
-  (setq-default line-spacing 0.12)
+  ;; (setq-default line-spacing 0.4
   (run-at-time 0.1 nil 'my/apply-font-heights))
 
   (defun my/set-default-fonts ()
     "Configure default, variable-pitch, and fixed-pitch fonts."
     (add-to-list 'default-frame-alist '(font . "IBM Plex Mono"))
-    (set-face-attribute 'default nil :font "IBM Plex Mono" :height 90)
+    (set-face-attribute 'default nil :font "IBM Plex Mono 12")
     (set-face-attribute 'variable-pitch nil :font "IBM Plex Mono" :height 100)
     (set-face-attribute 'fixed-pitch nil :font "IBM Plex Mono" :height 90))
 
@@ -307,6 +319,10 @@
     "Apply font height settings to all frames."
     (dolist (frame (frame-list))
       (set-face-attribute 'default frame :height 90)))
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
 (my/setup-fonts)
 
@@ -352,7 +368,7 @@
   (defun my/create-trigger-file-for-new-frame ()
     "Create the trigger file that will prompt Emacs to create a new frame."
     (interactive)
-    (let ((client-trigger-file (expand-file-name "create-new-frame" user-emacs-directory)))
+    (let ((client-trigger-file (expand-file-name my/create-new-frame user-emacs-directory)))
       (with-temp-file client-trigger-file
         (insert "start"))
       (message "Trigger file created: %s" client-trigger-file)))  ;; Optional: Log message for confirmation
@@ -432,7 +448,6 @@
 ;         (modify-frame-parameters frame '((visibility . nil)))
 ;         ;; Kill Emacs
 ;         (save-buffers-kill-emacs)))))
-
 
 ;; Persp
 (use-package persp-mode
@@ -687,7 +702,7 @@
 
   (defun my/check-for-trigger-file-and-delete ()
     "Check if the trigger file exists and delete it if it does."
-    (let ((client-trigger-file (expand-file-name "create-new-frame" user-emacs-directory)))
+    (let ((client-trigger-file (expand-file-name my/create-new-frame  user-emacs-directory)))
       (if (file-exists-p client-trigger-file)
           (progn
             (delete-file client-trigger-file)

@@ -7,3 +7,9 @@ auto-save-list
 transient
 eln-cache
 elpa
+.cache
+.lsp-session-v1
+.npm-global
+deps.log
+tree-sitter
+

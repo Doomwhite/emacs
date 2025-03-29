@@ -147,7 +147,8 @@
                 truncate-lines t
                 tab-width 2)
 
-  (set-message-beep 'silent)
+  (when (eq system-type 'windows-nt)
+    (set-message-beep 'silent))
 
   (tool-bar-mode 0)
   (menu-bar-mode 0)
@@ -279,6 +280,70 @@
     "Add the theme directory to `custom-theme-load-path`."
     (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory)))
 
+;; Treesitter
+;; (use-package typescript-ts-mode
+;;   :mode ("\\.ts\\'" . typescript-ts-mode)
+;;   :ensure nil  ; Built-in, no need to install
+;;   ;; :hook
+;;   ;; (typescript-ts-mode . lsp-deferred)
+;;   )
+
+;; Ensure Tree-sitter is enabled (built-in with Emacs 29+)
+(use-package treesit
+  :ensure nil  ; Built-in, no need to install
+  :config
+  ;; Remap modes to use Tree-sitter versions
+  (setq major-mode-remap-alist
+        '((typescript-mode . typescript-ts-mode)
+          (tsx-mode . tsx-ts-mode)
+          (html-mode . html-ts-mode))))
+
+;; Install Tree-sitter grammars automatically (optional, requires treesit-extra-load-path)
+(use-package treesit-auto
+  :ensure t
+  :config
+  (setq treesit-auto-install 'prompt)  ; Prompt to install grammars if missing
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode 1))
+
+;; Lsp-mode
+(use-package lsp-mode
+  :ensure t
+  :init
+  ;; Set prefix for lsp-command-keymap
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  ;; Enable lsp-mode for TypeScript, TSX, and HTML modes
+  ((typescript-ts-mode . lsp-deferred)
+   (tsx-ts-mode . lsp-deferred)
+   (html-ts-mode . lsp-deferred)  ; Use html-ts-mode for Tree-sitter
+   ;; Enable which-key integration for lsp-mode
+   (lsp-mode . lsp-enable-which-key-integration))
+  :commands (lsp lsp-deferred)
+  :config
+  ;; Optional: Customize LSP settings
+  (setq lsp-log-io nil)  ;; Disable logging for performance
+  (setq lsp-idle-delay 0.5))  ;; Adjust delay for responsiveness
+
+;; TypeScript Tree-sitter mode (for .ts files)
+(use-package typescript-ts-mode
+  :mode ("\\.ts\\'" . typescript-ts-mode)
+  :ensure nil)  ; Built-in with Emacs 29+
+
+;; TSX Tree-sitter mode (for .tsx files)
+(use-package tsx-ts-mode
+  :mode ("\\.tsx\\'" . tsx-ts-mode)
+  :ensure nil)  ; Built-in with Emacs 29+
+
+;; HTML Tree-sitter mode (for .html files)
+(use-package html-ts-mode
+  :mode ("\\.html\\'" . html-ts-mode)
+  :ensure nil)  ; Requires tree-sitter grammar for HTML
+
+;; Vterm
+(use-package vterm
+  :ensure t)
+
 (use-package catppuccin-theme
   :ensure t
   :config
@@ -306,7 +371,7 @@
   (defun my/set-default-fonts ()
     "Configure default, variable-pitch, and fixed-pitch fonts."
     (add-to-list 'default-frame-alist '(font . "IBM Plex Mono"))
-    (set-face-attribute 'default nil :font "IBM Plex Mono 12")
+    (set-face-attribute 'default nil :font "IBM Plex Mono 10")
     (set-face-attribute 'variable-pitch nil :font "IBM Plex Mono" :height 100)
     (set-face-attribute 'fixed-pitch nil :font "IBM Plex Mono" :height 90))
 
@@ -555,7 +620,7 @@
         "f t" '(grep :wk "Find text")
         "f T" '(find-grep-dired :wk "Find text in X folder")
         ; "f r" '(counsel-recentf :wk "Find recent files")
-        "f c" '(dired user-emacs-directory :wk "Edit emacs config")
+        "f c" '((lambda () (interactive) (find-file user-emacs-directory)) :wk "Edit emacs config")
         "f b" '(persp-mode 1 :wk "Load backup")))
 
     (defun my/evil/leader/evaluation ()
@@ -571,12 +636,12 @@
       (dw/leader-keys
         "h" '(:ignore t :wk "Help")
         ; Describe
-        "h d" '(:ignore :wk "Describe")
+        "h d" '(:ignore t :wk "Describe")
         "h d f" '(describe-function :wk "Function")
         "h d F" '(describe-face :wk "Face")
         "h d m" '(describe-mode :wk "Mode")
         "h d v" '(describe-variable :wk "Variable")
-        "h d k" '(describe-key :wk "Mode")
+        "h d k" '(describe-key :wk "Key/Mouse")
         "h m" '(info :wk "Open manual")
         ; Apropos
         "h a" '(:ignore t :wk "Apropos")

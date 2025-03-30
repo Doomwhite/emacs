@@ -12,4 +12,6 @@ elpa
 .npm-global
 deps.log
 tree-sitter
+projectile-bookmarks.eld
+*ido.last*
 

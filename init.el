@@ -288,17 +288,7 @@
 ;;   ;; (typescript-ts-mode . lsp-deferred)
 ;;   )
 
-;; Ensure Tree-sitter is enabled (built-in with Emacs 29+)
-(use-package treesit
-  :ensure nil  ; Built-in, no need to install
-  :config
-  ;; Remap modes to use Tree-sitter versions
-  (setq major-mode-remap-alist
-        '((typescript-mode . typescript-ts-mode)
-          (tsx-mode . tsx-ts-mode)
-          (html-mode . html-ts-mode))))
-
-;; Install Tree-sitter grammars automatically (optional, requires treesit-extra-load-path)
+;; Install Tree-sitter grammars automatically
 (use-package treesit-auto
   :ensure t
   :config
@@ -316,14 +306,30 @@
   ;; Enable lsp-mode for TypeScript, TSX, and HTML modes
   ((typescript-ts-mode . lsp-deferred)
    (tsx-ts-mode . lsp-deferred)
-   (html-ts-mode . lsp-deferred)  ; Use html-ts-mode for Tree-sitter
+   (html-ts-mode . lsp-deferred)
    ;; Enable which-key integration for lsp-mode
    (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred)
   :config
-  ;; Optional: Customize LSP settings
+  ;; Customize LSP settings
   (setq lsp-log-io nil)  ;; Disable logging for performance
-  (setq lsp-idle-delay 0.5))  ;; Adjust delay for responsiveness
+  (setq lsp-idle-delay 0.5)  ;; Adjust delay for responsiveness
+  ;; Configure Angular Language Server (global ngserver)
+  (setq lsp-clients-angular-language-server-command
+        '("ngserver"
+          "--ngProbeLocations" "./node_modules"
+          "--tsProbeLocations" "./node_modules"
+          "--stdio"))
+  ;; Optional: Dynamic path adjustment for multiple projects (requires projectile)
+  (defun start-angular-lsp ()
+    (interactive)
+    (let ((root (or (projectile-project-root) default-directory)))
+      (setq lsp-clients-angular-language-server-command
+            `("ngserver"
+              "--ngProbeLocations" ,(concat root "node_modules")
+              "--tsProbeLocations" ,(concat root "node_modules")
+              "--stdio"))
+      (lsp-deferred))))
 
 ;; TypeScript Tree-sitter mode (for .ts files)
 (use-package typescript-ts-mode
@@ -339,6 +345,12 @@
 (use-package html-ts-mode
   :mode ("\\.html\\'" . html-ts-mode)
   :ensure nil)  ; Requires tree-sitter grammar for HTML
+
+;; Ensure projectile is available for project root detection
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode +1))
 
 ;; Vterm
 (use-package vterm

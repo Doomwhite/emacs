@@ -1,4 +1,3 @@
-
 {
   description = "Development environment with Emacs, CMake, Libtool, Node.js and LSPs";
 
@@ -19,13 +18,13 @@
             emacs       # Emacs editor
             cmake       # CMake build system
             libtool     # Libtool for building shared libraries
-            nodejs      # Node.js, which includes npm
+            nodejs # Node.js 20.x (LTS, avoids EBADENGINE warning)
           ];
 
           # Shell hook to set up the environment
           shellHook = ''
             # Create a local directory for global npm packages
-            export NPM_GLOBAL_DIR=$PWD/.npm-global
+            export NPM_GLOBAL_DIR=$HOME/.npm-global
             mkdir -p $NPM_GLOBAL_DIR
 
             # Configure npm to use this directory for global installs
@@ -35,10 +34,10 @@
             export PATH=$NPM_GLOBAL_DIR/bin:$PATH
 
             # Install the required npm packages globally
-            npm install -g typescript typescript-language-server
+            npm install -g typescript typescript-language-server @angular/language-server@19.2.2
 
             # Print a message to confirm the shell is ready
-            echo "Nix flake devShell with Emacs, CMake, Libtool, Node.js, and LSPs is ready!"
+            echo "Nix flake devShell with Emacs, CMake, Libtool, Node.js, and LSPs (including Angular) is ready!"
           '';
         };
       });

@@ -291,6 +291,8 @@
 ;; Install Tree-sitter grammars automatically
 (use-package treesit-auto
   :ensure t
+  :custom
+  (treesit-font-lock-level 4)
   :config
   (setq treesit-auto-install 'prompt)  ; Prompt to install grammars if missing
   (treesit-auto-add-to-auto-mode-alist 'all)

@@ -12,6 +12,10 @@
 ;   (setenv "PATH" (concat "C:\\Users\\Cliente\\scoop\\apps\\msys2\\2025-02-21\\usr\\bin;" (getenv "PATH")))
 ;   (setq exec-path (append '("C:/Users/Cliente/scoop/apps/msys2/2025-02-21/usr/bin") exec-path)))
 
+;; Removes decoration from emacs
+;; (push '(undecorated .t) default-frame-alist)
+;; Disabled cuz it`s buggy with my WM (GlazeWm)
+
 ;; Install the Elpaca package manager
 (defvar elpaca-installer-version 0.10)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -108,7 +112,11 @@
         inhibit-default-init t
         visible-bell 1
         ring-bell-function 'ignore
+        global-auto-revert-mode 1
         create-lockfiles nil
+        ;; Treesitter
+        global-treesit-auto-mode 1
+        treesit-font-lock-level 4
         ;; Starting scratch buffer in fundamental mode instead
         ;; of elisp-mode saves startup time
         initial-major-mode 'fundamental-mode
@@ -288,65 +296,158 @@
 ;;   ;; (typescript-ts-mode . lsp-deferred)
 ;;   )
 
-;; Install Tree-sitter grammars automatically
-(use-package treesit-auto
-  :ensure t
-  :custom
-  (treesit-font-lock-level 4)
-  :config
-  (setq treesit-auto-install 'prompt)  ; Prompt to install grammars if missing
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode 1))
+;; Install Tree-sitter grammars automatically (still useful for other languages)
+;; (use-package treesit-auto
+;;   :ensure t
+;;   :custom
+;;   (treesit-font-lock-level 4)
+;;   :config
+;;   (setq treesit-auto-install 'prompt)
+;;   (treesit-auto-add-to-auto-mode-alist 'all)
+;;   (global-treesit-auto-mode 1))
 
-;; Lsp-mode
-(use-package lsp-mode
-  :ensure t
-  :init
-  ;; Set prefix for lsp-command-keymap
-  (setq lsp-keymap-prefix "C-c l")
-  :hook
-  ;; Enable lsp-mode for TypeScript, TSX, and HTML modes
-  ((typescript-ts-mode . lsp-deferred)
-   (tsx-ts-mode . lsp-deferred)
-   (html-ts-mode . lsp-deferred)
-   ;; Enable which-key integration for lsp-mode
-   (lsp-mode . lsp-enable-which-key-integration))
-  :commands (lsp lsp-deferred)
-  :config
-  ;; Customize LSP settings
-  (setq lsp-log-io nil)  ;; Disable logging for performance
-  (setq lsp-idle-delay 0.5)  ;; Adjust delay for responsiveness
-  ;; Configure Angular Language Server (global ngserver)
-  (setq lsp-clients-angular-language-server-command
-        '("ngserver"
-          "--ngProbeLocations" "./node_modules"
-          "--tsProbeLocations" "./node_modules"
-          "--stdio"))
-  ;; Optional: Dynamic path adjustment for multiple projects (requires projectile)
-  (defun start-angular-lsp ()
-    (interactive)
-    (let ((root (or (projectile-project-root) default-directory)))
-      (setq lsp-clients-angular-language-server-command
-            `("ngserver"
-              "--ngProbeLocations" ,(concat root "node_modules")
-              "--tsProbeLocations" ,(concat root "node_modules")
-              "--stdio"))
-      (lsp-deferred))))
+;; ;; Yasnippet for snippet support (optional for eglot, but kept for lsp-mode)
+;; (use-package yasnippet
+;;   :ensure t
+;;   :hook (lsp-mode . yas-minor-mode)
+;;   :config (yas-reload-all))
 
-;; TypeScript Tree-sitter mode (for .ts files)
+;; ;; Language-specific LSP configuration functions
+;; (defun setup-typescript-lsp ()
+;;   "Configure LSP for TypeScript and TSX."
+;;   (add-hook 'typescript-ts-mode-hook #'lsp-deferred)
+;;   (add-hook 'tsx-ts-mode-hook #'lsp-deferred))
+
+;; (defun setup-html-lsp ()
+;;   "Configure LSP for HTML."
+;;   (add-hook 'html-ts-mode-hook #'lsp-deferred))
+
+;; (defun setup-angular-lsp ()
+;;   "Configure LSP for Angular with dynamic path adjustment."
+;;   (setq lsp-clients-angular-language-server-command
+;;         '("ngserver"
+;;           "--ngProbeLocations" "./node_modules"
+;;           "--tsProbeLocations" "./node_modules"
+;;           "--stdio"))
+;;   (defun start-angular-lsp ()
+;;     (interactive)
+;;     (let ((root (or (projectile-project-root) default-directory)))
+;;       (setq lsp-clients-angular-language-server-command
+;;             `("ngserver"
+;;               "--ngProbeLocations" ,(concat root "node_modules")
+;;               "--tsProbeLocations" ,(concat root "node_modules")
+;;               "--stdio"))
+;;       (lsp-deferred))))
+
+;; ;; Rust-specific Eglot configuration
+;; (defun setup-rust-eglot ()
+;;   "Configure Eglot for Rust with rust-analyzer."
+;;   (use-package rust-mode
+;;     :ensure t
+;;     :mode ("\\.rs\\'" . rust-mode)
+;;     :hook (rust-mode . eglot-ensure)  ;; Start eglot in rust-mode
+;;     :config
+;;     ;; Optional: Customize rust-mode settings
+;;     (setq rust-format-on-save t))  ;; Format with rustfmt on save
+;;   ;; Ensure eglot uses rust-analyzer
+;;   (with-eval-after-load 'eglot
+;;     (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer")))))
+
+;; Eglot configuration
+(use-package eglot
+  :ensure nil  ;; Built-in since Emacs 29
+  :bind (:map eglot-mode-map
+              ("C-c a" . eglot-code-actions)
+              ("C-c d" . eldoc)
+              ("C-c f" . eglot-format-buffer)
+              ("C-c r" . eglot-rename))
+  :hook ((rustic-mode . eglot-ensure)
+         (zig-mode . eglot-ensure))
+  :config
+  (add-to-list 'eglot-server-programs '(rustic-mode . ("rust-analyzer")))
+  (add-to-list 'eglot-server-programs '(zig-mode . ("zls")))
+  ;; Optional: Enable inlay hints for supported languages
+  ;; (add-hook 'eglot-managed-mode-hook #'eglot-inlay-hints-mode)
+  )
+
+(use-package rust-mode
+  :ensure t)
+
+(use-package rustic
+  :ensure t
+  :after (rust-mode)
+  :init (setq rustic-lsp-client 'eglot)
+  :config 
+  (setq rustic-lsp-client 'eglot))
+
+;; Zig-mode configuration
+(use-package zig-mode
+  :ensure t
+  :mode ("\\.zig\\'" . zig-mode))
+
+(use-package markdown-ts-mode
+  :ensure t
+  :mode ("\\.md\\'" . markdown-ts-mode)
+  :config
+  (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+  (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
+
+;; ;; Rust-specific configuration with rust-mode and eglot
+;; (use-package rust-mode
+;;   :ensure t
+;;   :mode ("\\.rs\\'" . rust-mode)
+;;   :hook (rust-mode . eglot-ensure)  ;; Start eglot in rust-mode
+;;   :config
+;;   (setq rust-format-on-save t))     ;; Format with rustfmt on save (requires rustfmt)
+
+;; ;; Eglot configuration (optional if Emacs 29+)
+;; (use-package eglot
+;;   :ensure nil  ;; Built-in since Emacs 29, no need to install unless older version
+;;   :config
+;;   (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer")))
+;;   ;; Optional: Enable inlay hints if supported (Emacs 29+)
+;;   (add-hook 'rust-mode-hook #'eglot-inlay-hints-mode))
+
+;; ;; Lsp-mode (for non-Rust languages)
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :init
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   :hook
+;;   ((lsp-mode . lsp-enable-which-key-integration)
+;;    (lsp-mode . lsp-ui-mode))
+;;   :commands (lsp lsp-deferred)
+;;   :config
+;;   (setq lsp-log-io nil)
+;;   (setq lsp-idle-delay 0.5)
+;;   ;; Call language-specific setup functions (excluding Rust)
+;;   (setup-typescript-lsp)
+;;   (setup-html-lsp)
+;;   (setup-angular-lsp))
+
+;; ;; Lsp-ui (for lsp-mode languages)
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :commands lsp-ui-mode
+;;   :custom
+;;   (lsp-ui-peek-always-show t)
+;;   (lsp-ui-sideline-show-hover t)
+;;   (lsp-ui-doc-enable nil))
+
+;; Tree-sitter modes (for non-Rust languages)
 (use-package typescript-ts-mode
   :mode ("\\.ts\\'" . typescript-ts-mode)
-  :ensure nil)  ; Built-in with Emacs 29+
+  :ensure nil)
 
-;; TSX Tree-sitter mode (for .tsx files)
 (use-package tsx-ts-mode
   :mode ("\\.tsx\\'" . tsx-ts-mode)
-  :ensure nil)  ; Built-in with Emacs 29+
+  :ensure nil)
 
-;; HTML Tree-sitter mode (for .html files)
 (use-package html-ts-mode
   :mode ("\\.html\\'" . html-ts-mode)
-  :ensure nil)  ; Requires tree-sitter grammar for HTML
+  :ensure nil)
+
+;; Note: rust-ts-mode is removed since we're using rust-mode now
 
 ;; Ensure projectile is available for project root detection
 (use-package projectile
@@ -439,6 +540,13 @@
 ;                           (bookmarks . 5)
 ;                           (projects . 5)
 ;                           (agenda . 5))))
+
+(use-package dashboard
+  :ensure t
+  :config
+  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+  (dashboard-setup-startup-hook))
 
 ;; Restart emacs
 (use-package restart-emacs

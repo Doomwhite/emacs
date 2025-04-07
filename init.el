@@ -57,7 +57,9 @@
 (elpaca `(,@elpaca-order))
 
 ;; To avoid "too many open files" errors
-(setq elpaca-queue-limit 12)
+
+(when (eq system-type 'windows-nt)
+  (setq elpaca-queue-limit 12))
 
 ; (elpaca transient)
 ; (elpaca magit)
@@ -131,6 +133,8 @@
         echo-keystrokes 0.5
         dired-dwim-target t
         tab-always-indent t
+        ;; Scroll off
+        scroll-margin 7
         ;; 1mb
         read-process-output-max (* 1024 1024)
         column-number-indicator-zero-based nil
@@ -294,16 +298,6 @@
   :ensure nil
   )
 
-;; ;; Language-specific LSP configuration functions
-;; (defun setup-typescript-lsp ()
-;;   "Configure LSP for TypeScript and TSX."
-;;   (add-hook 'typescript-ts-mode-hook #'lsp-deferred)
-;;   (add-hook 'tsx-ts-mode-hook #'lsp-deferred))
-
-;; (defun setup-html-lsp ()
-;;   "Configure LSP for HTML."
-;;   (add-hook 'html-ts-mode-hook #'lsp-deferred))
-
 ;; (defun setup-angular-lsp ()
 ;;   "Configure LSP for Angular with dynamic path adjustment."
 ;;   (setq lsp-clients-angular-language-server-command
@@ -350,10 +344,10 @@
   :after (rust-mode)
   :init (setq rustic-lsp-client 'eglot))
 
-;; Zig-mode configuration
 (use-package zig-mode
   :ensure t
-  :mode ("\\.zig\\'" . zig-mode))
+  :mode (("\\.zig\\'" . zig-mode)
+         ("\\.zon\\'" . zig-mode)))
 
 (use-package markdown-ts-mode
   :ensure t
@@ -374,49 +368,6 @@
          (typescript-ts-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
 
-;; ;; Rust-specific configuration with rust-mode and eglot
-;; (use-package rust-mode
-;;   :ensure t
-;;   :mode ("\\.rs\\'" . rust-mode)
-;;   :hook (rust-mode . eglot-ensure)  ;; Start eglot in rust-mode
-;;   :config
-;;   (setq rust-format-on-save t))     ;; Format with rustfmt on save (requires rustfmt)
-
-;; ;; Eglot configuration (optional if Emacs 29+)
-;; (use-package eglot
-;;   :ensure nil  ;; Built-in since Emacs 29, no need to install unless older version
-;;   :config
-;;   (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer")))
-;;   ;; Optional: Enable inlay hints if supported (Emacs 29+)
-;;   (add-hook 'rust-mode-hook #'eglot-inlay-hints-mode))
-
-;; ;; Lsp-mode (for non-Rust languages)
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :init
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   :hook
-;;   ((lsp-mode . lsp-enable-which-key-integration)
-;;    (lsp-mode . lsp-ui-mode))
-;;   :commands (lsp lsp-deferred)
-;;   :config
-;;   (setq lsp-log-io nil)
-;;   (setq lsp-idle-delay 0.5)
-;;   ;; Call language-specific setup functions (excluding Rust)
-;;   (setup-typescript-lsp)
-;;   (setup-html-lsp)
-;;   (setup-angular-lsp))
-
-;; ;; Lsp-ui (for lsp-mode languages)
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :commands lsp-ui-mode
-;;   :custom
-;;   (lsp-ui-peek-always-show t)
-;;   (lsp-ui-sideline-show-hover t)
-;;   (lsp-ui-doc-enable nil))
-
-;; Tree-sitter modes (for non-Rust languages)
 (use-package typescript-ts-mode
   :mode ("\\.ts\\'" . typescript-ts-mode)
   :ensure nil)
@@ -428,8 +379,6 @@
 (use-package html-ts-mode
   :mode ("\\.html\\'" . html-ts-mode)
   :ensure nil)
-
-;; Note: rust-ts-mode is removed since we're using rust-mode now
 
 ;; Ensure projectile is available for project root detection
 (use-package projectile
@@ -673,7 +622,12 @@
     (define-key evil-normal-state-map (kbd "K") 'evil-backward-paragraph)
     (define-key evil-visual-state-map (kbd "K") 'evil-backward-paragraph)
     (define-key evil-normal-state-map (kbd "J") 'evil-forward-paragraph)
-    (define-key evil-visual-state-map (kbd "J") 'evil-forward-paragraph))
+    (define-key evil-visual-state-map (kbd "J") 'evil-forward-paragraph)
+    (define-key evil-normal-state-map (kbd "C-u") (kbd (format "%dk" 15)))
+    (define-key evil-visual-state-map (kbd "C-u") (kbd (format "%dk" 15)))
+    (define-key evil-normal-state-map (kbd "C-d") (kbd (format "%dj" 15)))
+    (define-key evil-visual-state-map (kbd "C-d") (kbd (format "%dj" 15)))
+  )
 
   (defun my/evil/ctrl ()
     "Ctrl key bindings"

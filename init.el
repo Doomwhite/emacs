@@ -366,6 +366,14 @@
   :mode "\\.html\\'"
   )
 
+(use-package tide
+  :ensure t
+  :after (company flycheck)
+  :hook ((typescript-ts-mode . tide-setup)
+         (tsx-ts-mode . tide-setup)
+         (typescript-ts-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
+
 ;; ;; Rust-specific configuration with rust-mode and eglot
 ;; (use-package rust-mode
 ;;   :ensure t

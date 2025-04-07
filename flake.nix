@@ -1,5 +1,5 @@
 {
-  description = "Development environment with Emacs, CMake, Libtool, Node.js and LSPs";
+  description = "Development environment with Emacs";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -20,6 +20,11 @@
             libtool
             rustup
             cargo
+            zls
+            nodejs
+            nodePackages.typescript
+            nodePackages.typescript-language-server
+            nodePackages."@angular/cli"
           ];
 
           shellHook = ''

@@ -289,28 +289,10 @@
     (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory)))
 
 ;; Treesitter
-;; (use-package typescript-ts-mode
-;;   :mode ("\\.ts\\'" . typescript-ts-mode)
-;;   :ensure nil  ; Built-in, no need to install
-;;   ;; :hook
-;;   ;; (typescript-ts-mode . lsp-deferred)
-;;   )
-
-;; Install Tree-sitter grammars automatically (still useful for other languages)
-;; (use-package treesit-auto
-;;   :ensure t
-;;   :custom
-;;   (treesit-font-lock-level 4)
-;;   :config
-;;   (setq treesit-auto-install 'prompt)
-;;   (treesit-auto-add-to-auto-mode-alist 'all)
-;;   (global-treesit-auto-mode 1))
-
-;; ;; Yasnippet for snippet support (optional for eglot, but kept for lsp-mode)
-;; (use-package yasnippet
-;;   :ensure t
-;;   :hook (lsp-mode . yas-minor-mode)
-;;   :config (yas-reload-all))
+(use-package typescript-ts-mode
+  :mode ("\\.ts\\'" . typescript-ts-mode)
+  :ensure nil
+  )
 
 ;; ;; Language-specific LSP configuration functions
 ;; (defun setup-typescript-lsp ()
@@ -339,20 +321,6 @@
 ;;               "--stdio"))
 ;;       (lsp-deferred))))
 
-;; ;; Rust-specific Eglot configuration
-;; (defun setup-rust-eglot ()
-;;   "Configure Eglot for Rust with rust-analyzer."
-;;   (use-package rust-mode
-;;     :ensure t
-;;     :mode ("\\.rs\\'" . rust-mode)
-;;     :hook (rust-mode . eglot-ensure)  ;; Start eglot in rust-mode
-;;     :config
-;;     ;; Optional: Customize rust-mode settings
-;;     (setq rust-format-on-save t))  ;; Format with rustfmt on save
-;;   ;; Ensure eglot uses rust-analyzer
-;;   (with-eval-after-load 'eglot
-;;     (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer")))))
-
 ;; Eglot configuration
 (use-package eglot
   :ensure nil  ;; Built-in since Emacs 29
@@ -362,10 +330,14 @@
               ("C-c f" . eglot-format-buffer)
               ("C-c r" . eglot-rename))
   :hook ((rustic-mode . eglot-ensure)
-         (zig-mode . eglot-ensure))
+         (zig-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (js-mode . eglot-ensure)
+         (web-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs '(rustic-mode . ("rust-analyzer")))
   (add-to-list 'eglot-server-programs '(zig-mode . ("zls")))
+  (add-to-list 'eglot-server-programs '((typescript-ts-mode js-mode web-mode) . ("typescript-language-server" "--stdio")))
   ;; Optional: Enable inlay hints for supported languages
   ;; (add-hook 'eglot-managed-mode-hook #'eglot-inlay-hints-mode)
   )
@@ -376,9 +348,7 @@
 (use-package rustic
   :ensure t
   :after (rust-mode)
-  :init (setq rustic-lsp-client 'eglot)
-  :config 
-  (setq rustic-lsp-client 'eglot))
+  :init (setq rustic-lsp-client 'eglot))
 
 ;; Zig-mode configuration
 (use-package zig-mode
@@ -391,6 +361,10 @@
   :config
   (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
   (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
+
+(use-package web-mode
+  :mode "\\.html\\'"
+  )
 
 ;; ;; Rust-specific configuration with rust-mode and eglot
 ;; (use-package rust-mode

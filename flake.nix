@@ -10,12 +10,18 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
+        # Define Emacs with Tree-sitter grammars
+        emacsWithTreesit = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages (epkgs: [
+          epkgs.treesit-grammars.with-all-grammars
+        ]);
+        # Get the path to the Tree-sitter grammars
+        treesitGrammarsPath = "${pkgs.emacsPackages.treesit-grammars.with-all-grammars}/lib";
       in
       {
         devShells.default = pkgs.mkShell {
-          # Define the packages you want in the shell
           buildInputs = with pkgs; [
-            emacs
+            emacsWithTreesit
+            ripgrep
             cmake
             libtool
             rustup
@@ -30,6 +36,11 @@
           shellHook = ''
             rustup toolchain install stable --profile default
             rustup component add rust-analyzer
+
+            # Set TREE_SITTER_DIR to the actual grammars location
+            export TREE_SITTER_DIR=${treesitGrammarsPath}
+            # Optionally, inform Emacs about the grammars path
+            export EMACS_TREESIT_PATH=${treesitGrammarsPath}
           '';
         };
       });

@@ -164,6 +164,7 @@
 
   (defun my/setup-treesitter ()
     "Configure Tree-sitter settings."
+    (add-to-list 'treesit-extra-load-path (getenv "EMACS_TREESIT_PATH"))
     (setq global-treesit-auto-mode 1
           treesit-font-lock-level 4))
 

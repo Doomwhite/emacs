@@ -109,64 +109,97 @@
   :ensure nil
   :config
 
-  (setq inhibit-startup-message t
-        inhibit-startup-echo-area-message user-login-name
-        inhibit-default-init t
-        visible-bell 1
-        ring-bell-function 'ignore
-        global-auto-revert-mode 1
-        create-lockfiles nil
-        ;; Treesitter
-        global-treesit-auto-mode 1
-        treesit-font-lock-level 4
-        ;; Starting scratch buffer in fundamental mode instead
-        ;; of elisp-mode saves startup time
-        initial-major-mode 'fundamental-mode
-        initial-scratch-message nil
-        scroll-conservatively 101
-        mouse-wheel-progressive-speed nil
-        mouse-wheel-scroll-amount '(3)
-        use-dialog-box nil
-        auto-window-vscroll nil
-        vc-follow-symlinks t
-        confirm-kill-processes nil
-        echo-keystrokes 0.5
-        dired-dwim-target t
-        tab-always-indent t
-        ;; Scroll off
-        scroll-margin 7
-        ;; 1mb
-        read-process-output-max (* 1024 1024)
-        column-number-indicator-zero-based nil
-        ;; Preserves clipboard contents when overwriting the clipboard with a new selection.
-        ; save-interprogram-paste-before-kill t
-        truncate-partial-width-windows nil
-        require-final-newline t
-        imenu-max-items 1000
-        imenu-max-item-length 1000
-        ;; Prevents eldoc (which shows function signatures) from using multiple lines in the minibuffer.
-        ; eldoc-echo-area-use-multiline-p nil
-        pixel-scroll-precision-interpolate-page t
-        make-backup-files nil
-        warning-minimum-level :error
-        ;; Enables multi-window layout when debugging with gdb.
-        gdb-many-windows t)
-  (toggle-line-numbers)
+  (defun my/setup-startup ()
+    "Configure startup-related settings."
+    (setq inhibit-startup-message t
+          inhibit-startup-echo-area-message user-login-name
+          inhibit-default-init t
+          initial-major-mode 'fundamental-mode
+          initial-scratch-message nil))
 
-  (setq-default select-active-regions nil
-                ;; Uses spaces instead of tabs for indentation.
-                indent-tabs-mode nil
-                truncate-lines t
-                tab-width 2)
+  (defun my/setup-ui ()
+    "Configure UI-related settings."
+    (setq visible-bell 1
+          ring-bell-function 'ignore
+          use-dialog-box nil
+          echo-keystrokes 0.5)
+    (tool-bar-mode 0)
+    (menu-bar-mode 0)
+    (scroll-bar-mode 0)
+    (column-number-mode 1)
+    (show-paren-mode 1)
+    (toggle-line-numbers))
 
-  (when (eq system-type 'windows-nt)
-    (set-message-beep 'silent))
+  (defun my/setup-scrolling ()
+    "Configure scrolling behavior."
+    (setq scroll-conservatively 101
+          scroll-margin 7
+          mouse-wheel-progressive-speed nil
+          mouse-wheel-scroll-amount '(3)
+          auto-window-vscroll nil
+          pixel-scroll-precision-interpolate-page t))
 
-  (tool-bar-mode 0)
-  (menu-bar-mode 0)
-  (scroll-bar-mode 0)
-  (column-number-mode 1)
-  (show-paren-mode 1))
+  (defun my/setup-editing ()
+    "Configure editing settings."
+    (setq-default select-active-regions nil
+                  indent-tabs-mode nil
+                  truncate-lines t
+                  tab-width 2
+                  tab-always-indent t)
+    (setq truncate-partial-width-windows nil
+          require-final-newline t
+          create-lockfiles nil
+          make-backup-files nil))
+
+  (defun my/setup-file-management ()
+    "Configure file and buffer management."
+    (setq global-auto-revert-mode 1
+          vc-follow-symlinks t
+          confirm-kill-processes nil
+          dired-dwim-target t))
+
+  (defun my/setup-performance ()
+    "Configure performance-related settings."
+    (setq read-process-output-max (* 1024 1024)))
+
+  (defun my/setup-treesitter ()
+    "Configure Tree-sitter settings."
+    (setq global-treesit-auto-mode 1
+          treesit-font-lock-level 4))
+
+  (defun my/setup-search ()
+    "Configure search and grep settings."
+    (setq grep-command "rg --no-heading --color=never -n "
+          grep-use-null-device nil))
+
+  (defun my/setup-navigation ()
+    "Configure navigation settings."
+    (setq imenu-max-items 1000
+          imenu-max-item-length 1000))
+
+  (defun my/setup-debugging ()
+    "Configure debugging settings."
+    (setq gdb-many-windows t))
+
+  (defun my/setup-platform-specific ()
+    "Configure platform-specific settings."
+    (when (eq system-type 'windows-nt)
+      (set-message-beep 'silent)))
+
+  ;; Initialize all configurations
+  (my/setup-startup)
+  (my/setup-ui)
+  (my/setup-scrolling)
+  (my/setup-editing)
+  (my/setup-file-management)
+  (my/setup-performance)
+  (my/setup-treesitter)
+  (my/setup-search)
+  (my/setup-navigation)
+  (my/setup-debugging)
+  (my/setup-platform-specific)
+
+  :hook ((elpaca-after-init . my/setup-fonts)))
 
 ;; Global variables
 (defconst my/create-new-frame "create-new-frame"
@@ -406,36 +439,9 @@
 (use-package centered-window
   :ensure t)
 
-;; Fonts
-(defun my/setup-fonts ()
-  "Setup all font configurations."
-  (my/set-default-fonts)
-  (my/set-italic-faces)
-  ;; (setq-default line-spacing 0.4
-  (run-at-time 0.1 nil 'my/apply-font-heights))
-
-  (defun my/set-default-fonts ()
-    "Configure default, variable-pitch, and fixed-pitch fonts."
-    (add-to-list 'default-frame-alist '(font . "IBM Plex Mono"))
-    (set-face-attribute 'default nil :font "IBM Plex Mono 10")
-    (set-face-attribute 'variable-pitch nil :font "IBM Plex Mono" :height 100)
-    (set-face-attribute 'fixed-pitch nil :font "IBM Plex Mono" :height 90))
-
-  (defun my/set-italic-faces ()
-    "Set italic style for comments and keywords."
-    (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-    (set-face-attribute 'font-lock-keyword-face nil :slant 'italic))
-
-  (defun my/apply-font-heights ()
-    "Apply font height settings to all frames."
-    (dolist (frame (frame-list))
-      (set-face-attribute 'default frame :height 90)))
-
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
-
-(my/setup-fonts)
+;; (require 'package)
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (package-initialize)
 
 ;; IDO (Interactive Do)
 (use-package ido-vertical-mode
@@ -456,28 +462,12 @@
       (ido-everywhere 1)
       (ido-ubiquitous-mode 1))
 
-;; Grep
-;; (setq grep-command "rg --no-heading --color=never -n ")
-;; (setq grep-use-null-device nil)
-
-;; Dashboard
-;; Muito lento
-; (use-package dashboard
-;   :ensure t
-;   :config
-;   (dashboard-setup-startup-hook)
-;   (setq dashboard-startup-banner 'official
-;         dashboard-items '((recents  . 5)
-;                           (bookmarks . 5)
-;                           (projects . 5)
-;                           (agenda . 5))))
-
 (use-package dashboard
   :ensure t
   :config
-  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
-  (dashboard-setup-startup-hook))
+  (dashboard-setup-startup-hook)
+  :hook ((elpaca-after-init . dashboard-insert-startupify-lists)
+         (elpaca-after-init . dashboard-initialize)))
 
 ;; Restart emacs
 (use-package restart-emacs
@@ -497,75 +487,6 @@
     (when (my/is-server-ready)
       (my/create-trigger-file-for-new-frame))
     (restart-emacs))
-
-; (defun my/restart-emacs-with-window-size-and-position ()
-;   "Restart Emacs and restore the window size and position, making the current frame invisible first."
-;   (interactive)
-;   (let* ((frame (selected-frame))
-;          (width (frame-width frame))
-;          (height (frame-height frame))
-;          (top (frame-parameter frame 'top))
-;          (left (frame-parameter frame 'left))
-;          (cmd (format "emacs --eval \"(set-frame-size (selected-frame) %d %d)\" \
-;                               --eval \"(set-frame-position (selected-frame) %d %d)\" &"
-;                       width height left top)))
-;     ;; Save the session
-;     (persp-save-state-to-file)
-;     ;; Start a new Emacs process
-;     (start-process "restart-emacs" nil "sh" "-c" cmd)
-;     ;; Make frame invisible
-;     (modify-frame-parameters frame '((visibility . nil)))
-;     ;; Kill Emacs
-;     (save-buffers-kill-emacs)))
-
-
-; (defun my/restart-emacs-with-window-size-and-position ()
-;   "Restart Emacs and restore the window size and position, making the current frame invisible first.
-; If Emacs is running as a daemon, it will restart the server using a batch script located in `scripts/windows/StartEmacsServer.bat`."
-;   (interactive)
-;   (let* ((frame (selected-frame))
-;          (width (frame-width frame))
-;          (height (frame-height frame))
-;          (top (frame-parameter frame 'top))
-;          (left (frame-parameter frame 'left))
-;          (cmd (format "emacs --eval \"(set-frame-size (selected-frame) %d %d)\" \
-;                               --eval \"(set-frame-position (selected-frame) %d %d)\" &"
-;                       width height left top)))
-
-;     ;; Temporarily enable persp-mode if it's not already active, and save the session
-;     ; (when (and (not persp-mode) (boundp 'persp-mode))
-;     ;   (persp-mode 1))
-
-;     ; (when persp-mode
-;     ;   ;; Save the session if persp-mode is active
-;     ;   (persp-save-state-to-file))
-
-;     ;; Check if Emacs is running as a daemon
-;     (if (and (fboundp 'server-running-p) (server-running-p))
-;       (progn
-;         ;; If Emacs is running as a daemon, restart the server using the batch file
-;         (message "Emacs is running as a daemon. Restarting the server...")
-
-;         ;; Get the path to the batch file (relative to the user config)
-;         (let ((batch-file (expand-file-name "scripts/windows/StartEmacsServer.bat" user-emacs-directory)))
-;           (message "Running batch file: %s" batch-file)
-
-;           ;; Start the batch file in the background using cmd.exe
-
-;           ; (shell-command (concat "cmd.exe /c start " batch-file))
-;           ; (start-process "restart-emacs-daemon" nil "cmd.exe" "/c" "start" "" batch-file)
-
-;           (message "Emacs server restarted using the batch file.")))
-
-
-;       ;; If Emacs is not running as a daemon, start a new Emacs process
-;       (progn
-;         ;; Start a new Emacs process with background execution using `&`
-;         (start-process "restart-emacs" nil "sh" "-c" (concat cmd " &"))
-;         ;; Make frame invisible
-;         (modify-frame-parameters frame '((visibility . nil)))
-;         ;; Kill Emacs
-;         (save-buffers-kill-emacs)))))
 
 ;; Persp
 (use-package persp-mode
@@ -804,6 +725,32 @@
   (setq which-key-show-remaining-keys t)
   (which-key-mode 1))
 
+;; Fonts
+(defun my/setup-fonts ()
+  (interactive)
+  "Setup all font configurations."
+  (my/set-default-fonts)
+  (my/set-italic-faces)
+  ;; (setq-default line-spacing 0.4
+  (run-at-time 0.1 nil 'my/apply-font-heights))
+
+  (defun my/set-default-fonts ()
+    "Configure default, variable-pitch, and fixed-pitch fonts."
+    (add-to-list 'default-frame-alist '(font . "IBM Plex Mono"))
+    (set-face-attribute 'default nil :font "IBM Plex Mono 10")
+    (set-face-attribute 'variable-pitch nil :font "IBM Plex Mono" :height 100)
+    (set-face-attribute 'fixed-pitch nil :font "IBM Plex Mono" :height 90))
+
+  (defun my/set-italic-faces ()
+    "Set italic style for comments and keywords."
+    (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+    (set-face-attribute 'font-lock-keyword-face nil :slant 'italic))
+
+  (defun my/apply-font-heights ()
+    "Apply font height settings to all frames."
+    (dolist (frame (frame-list))
+      (set-face-attribute 'default frame :height 90)))
+
 ;; Reset GC threshold before loading GCMH
 (setq gc-cons-threshold (* 16 1024 1024))  ; 16MB
 
@@ -817,20 +764,20 @@
         gcmh-high-cons-threshold (* 100 1024 1024))  ; 100mb
   :hook ((window-setup-hook . gcmh-mode)))
 
-; Server stuff
-  (defun my/is-server-ready ()
-    "Check if the Emacs server is fully initialized."
-    (interactive)
-    (eq (server-running-p) t))
+;; ; Server stuff
+;;   (defun my/is-server-ready ()
+;;     "Check if the Emacs server is fully initialized."
+;;     (interactive)
+;;     (eq (server-running-p) t))
 
-  (defun my/check-for-trigger-file-and-delete ()
-    "Check if the trigger file exists and delete it if it does."
-    (let ((client-trigger-file (expand-file-name my/create-new-frame  user-emacs-directory)))
-      (if (file-exists-p client-trigger-file)
-          (progn
-            (delete-file client-trigger-file)
-            t)
-        nil)))
+;;   (defun my/check-for-trigger-file-and-delete ()
+;;     "Check if the trigger file exists and delete it if it does."
+;;     (let ((client-trigger-file (expand-file-name my/create-new-frame  user-emacs-directory)))
+;;       (if (file-exists-p client-trigger-file)
+;;           (progn
+;;             (delete-file client-trigger-file)
+;;             t)
+;;         nil)))
 
   ;; (defun my/start-new-frame-if-trigger ()
   ;;   "Check for the trigger file and start a new Emacs frame if the file exists."
@@ -844,40 +791,40 @@
   ;;                    "-c"
   ;;                    "-n")))
 
-  (defun my/wait-for-server-or-timeout-async (timeout callback)
-    "Wait asynchronously for up to TIMEOUT seconds until the Emacs server has files in its directory.
-  If the server is ready within the timeout, CALL the CALLBACK function."
-    (let ((server-dir (expand-file-name "server" user-emacs-directory))
-          (elapsed 0))
-      (cl-labels ((check-server ()
-                    (if (directory-files server-dir t "^[^.].") ;; Ignore "." and ".."
-                        (progn
-                          (message "Emacs server is ready.")
-                          (funcall callback)) ;; Call the callback when server is ready
-                      (if (< elapsed timeout)
-                          (progn
-                            (setq elapsed (1+ elapsed))
-                            (message "Waiting for Emacs server to be ready... (%ds)" elapsed)
-                            (run-at-time 1 nil #'check-server)) ;; Schedule next check
-                        (message "Timeout reached. Emacs server did not start."))))) ;; Timeout
-        (check-server)))) ;; Start checking immediately
+  ;; (defun my/wait-for-server-or-timeout-async (timeout callback)
+  ;;   "Wait asynchronously for up to TIMEOUT seconds until the Emacs server has files in its directory.
+  ;; If the server is ready within the timeout, CALL the CALLBACK function."
+  ;;   (let ((server-dir (expand-file-name "server" user-emacs-directory))
+  ;;         (elapsed 0))
+  ;;     (cl-labels ((check-server ()
+  ;;                   (if (directory-files server-dir t "^[^.].") ;; Ignore "." and ".."
+  ;;                       (progn
+  ;;                         (message "Emacs server is ready.")
+  ;;                         (funcall callback)) ;; Call the callback when server is ready
+  ;;                     (if (< elapsed timeout)
+  ;;                         (progn
+  ;;                           (setq elapsed (1+ elapsed))
+  ;;                           (message "Waiting for Emacs server to be ready... (%ds)" elapsed)
+  ;;                           (run-at-time 1 nil #'check-server)) ;; Schedule next check
+  ;;                       (message "Timeout reached. Emacs server did not start."))))) ;; Timeout
+  ;;       (check-server)))) ;; Start checking immediately
 
-  (defun my/start-new-frame-if-trigger ()
-    "Check for the trigger file, wait asynchronously for the server, and start a new Emacs frame."
-    (when (my/check-for-trigger-file-and-delete)
-      (my/wait-for-server-or-timeout-async
-       30
-       (lambda ()
-         (message "Starting a new Emacs frame due to restart trigger...")
-         ;; (start-process "emacsclient-new-frame"
-         ;;                nil
-         ;;                "cmd.exe"
-         ;;                "/c"
-         ;;                "emacsclientw"
-         ;;                "-c"
-         ;;                "-n")
-         (make-frame-command)
-         ))))
+  ;; (defun my/start-new-frame-if-trigger ()
+  ;;   "Check for the trigger file, wait asynchronously for the server, and start a new Emacs frame."
+  ;;   (when (my/check-for-trigger-file-and-delete)
+  ;;     (my/wait-for-server-or-timeout-async
+  ;;      30
+  ;;      (lambda ()
+  ;;        (message "Starting a new Emacs frame due to restart trigger...")
+  ;;        ;; (start-process "emacsclient-new-frame"
+  ;;        ;;                nil
+  ;;        ;;                "cmd.exe"
+  ;;        ;;                "/c"
+  ;;        ;;                "emacsclientw"
+  ;;        ;;                "-c"
+  ;;        ;;                "-n")
+  ;;        (make-frame-command)
+  ;;        ))))
 
-  ;; Call the function when Emacs starts
-  (add-hook 'elpaca-after-init-hook (lambda () (my/start-new-frame-if-trigger)))
+  ;; ;; Call the function when Emacs starts
+  ;; (add-hook 'elpaca-after-init-hook (lambda () (my/start-new-frame-if-trigger)))

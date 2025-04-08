@@ -391,20 +391,20 @@
   (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
 
 (use-package web-mode
-  :mode "\\.html\\'"
-  )
-
-(use-package tide
   :ensure t
-  :after (company flycheck)
-  :hook ((typescript-ts-mode . tide-setup)
-         (tsx-ts-mode . tide-setup)
-         (typescript-ts-mode . tide-hl-identifier-mode)
-         (before-save . tide-format-before-save)))
+  :mode "\\.html\\'")
+
+;; (use-package tsx-mode
+;;   ;; :straight '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs30")
+;;   :defer t
+;;   :mode "\\.ts\\'"
+;;   :custom
+;;   (tsx-mode-enable-css-in-js t))
 
 (use-package typescript-ts-mode
-  :mode ("\\.ts\\'" . typescript-ts-mode)
-  :ensure nil)
+  :ensure nil
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode)))
 
 (use-package tsx-ts-mode
   :mode ("\\.tsx\\'" . tsx-ts-mode)
@@ -423,6 +423,14 @@
 ;; Vterm
 (use-package vterm
   :ensure t)
+
+(use-package toggle-term
+  :ensure t
+  :after vterm
+  :config
+  (setq toggle-term-size 35))
+  ;; Maybe check this one out.
+  ;; https://github.com/justinlime/toggle-term.el
 
 (use-package catppuccin-theme
   :ensure t
@@ -553,7 +561,8 @@
 
   (defun my/evil/ctrl ()
     "Ctrl key bindings"
-    ;(define-key evil-normal-state-map (kbd "C-t") 'toggle-shell)
+    (define-key evil-normal-state-map (kbd "C-t") 'toggle-term-vterm)
+    ;; (define-key evil-insert-state-map (kbd "C-g") 'vterm-toggle)
   )
 
   (defun my/evil/ctrl-and-shift ()

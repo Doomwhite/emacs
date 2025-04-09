@@ -18,28 +18,13 @@
         treesitGrammarsPath = "${pkgs.emacsPackages.treesit-grammars.with-all-grammars}/lib";
       in
       {
+        packages = {
+          inherit emacsWithTreesit;
+        };
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            emacsWithTreesit
-            ripgrep
-            cmake
-            libtool
-            rustup
-            cargo
-            zls
-            nodejs
-            nodePackages.typescript
-            nodePackages.typescript-language-server
-            nodePackages."@angular/cli"
-          ];
-
+          buildInputs = [ emacsWithTreesit ];
           shellHook = ''
-            rustup toolchain install stable --profile default
-            rustup component add rust-analyzer
-
-            # Set TREE_SITTER_DIR to the actual grammars location
             export TREE_SITTER_DIR=${treesitGrammarsPath}
-            # Optionally, inform Emacs about the grammars path
             export EMACS_TREESIT_PATH=${treesitGrammarsPath}
           '';
         };

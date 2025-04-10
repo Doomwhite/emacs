@@ -40,9 +40,14 @@
           postInstall =
             (old.postInstall or "")
             + ''
-              export TREE_SITTER_DIR="${treesitGrammarsPath}"
-              export EMACS_TREESIT_PATH="${treesitGrammarsPath}"
-              echo "TESTE" > $out/haha
+                echo "Running postInstall script" >&2
+                echo "Output directory: $out" >&2
+                export TREE_SITTER_DIR="${treesitGrammarsPath}"
+                export EMACS_TREESIT_PATH="${treesitGrammarsPath}"
+                echo "TESTE" > $out/haha
+                echo "Created haha file at $out/haha" >&2
+                echo "Created haha file at $out/testedevalor" >&2
+                ls -l $out >&2
             '';
         });
 

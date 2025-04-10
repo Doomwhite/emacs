@@ -18,9 +18,24 @@
         treesitGrammarsPath = "${pkgs.emacsPackages.treesit-grammars.with-all-grammars}/lib";
       in
       {
-        packages = {
-          inherit emacsWithTreesit;
-        };
+        packages.default = emacsWithTreesit.overrideAttrs (old: {
+          buildInput = (old.buildInputs or []) ++ (with pkgs; [
+	    ripgrep
+	    cmake
+	    libtool
+	    rustup
+	    cargo
+	    zls
+	    nodejs
+	    nodePackages.typescript
+	    nodePackages.typescript-language-server
+	    nodePackages."@angular/cli"
+	  ]);
+	  postInstall = (old.postInstall or "") + ''
+            export TREE_SITTER_DIR="${treesitGrammarsPath}"
+            export EMACS_TREESIT_PATH="${treesitGrammarsPath}"
+          '';
+	});
         devShells.default = pkgs.mkShell {
           buildInputs = [ emacsWithTreesit ];
           shellHook = ''

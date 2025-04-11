@@ -36,21 +36,25 @@
             nodePackages."@angular/cli"
           ]);
         } ''
-          echo "DEBUG: Running customEmacs build script" >&2
           # Set up the output directory
           mkdir -p $out/bin
           # Symlink the emacs binary
           ln -s ${emacsWithTreesit}/bin/emacs $out/bin/emacs
-          # Create the haha file
-          echo "TESTE" > $out/haha
-          echo "DEBUG: Created $out/haha" >&2
+
           # Wrap the emacs binary with environment variables
           wrapProgram $out/bin/emacs \
             --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
-            --set EMACS_TREESIT_PATH "${treesitGrammarsPath}"
-          echo "DEBUG: Wrapped $out/bin/emacs with environment variables" >&2
-          ls -l $out >&2
-          ls -l $out/bin >&2
+            --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
+            --prefix PATH : "${pkgs.ripgrep}/bin" \
+            --prefix PATH : "${pkgs.cmake}/bin" \
+            --prefix PATH : "${pkgs.libtool}/bin" \
+            --prefix PATH : "${pkgs.rustup}/bin" \
+            --prefix PATH : "${pkgs.cargo}/bin" \
+            --prefix PATH : "${pkgs.zls}/bin" \
+            --prefix PATH : "${pkgs.nodejs}/bin" \
+            --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
+            --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
+            --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
         '';
       in {
         # Use customEmacs as the default package

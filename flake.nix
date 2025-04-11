@@ -40,6 +40,11 @@
           mkdir -p $out/bin
           # Symlink the emacs binary
           ln -s ${emacsWithTreesit}/bin/emacs $out/bin/emacs
+          ln -s ${emacsWithTreesit}/bin/ctags $out/bin/ctags
+          ln -s ${emacsWithTreesit}/bin/ebrowse $out/bin/ebrowse
+          ln -s ${emacsWithTreesit}/bin/emacs-30.1 $out/bin/emacs-30.1
+          ln -s ${emacsWithTreesit}/bin/emacsclient $out/bin/emacsclient
+          ln -s ${emacsWithTreesit}/bin/etags $out/bin/etags
 
           # Wrap the emacs binary with environment variables
           wrapProgram $out/bin/emacs \
@@ -55,10 +60,16 @@
             --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
             --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
             --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
+
+          ln -s ${emacsWithTreesit}/share $out/share
         '';
       in {
         # Use customEmacs as the default package
         packages.default = customEmacs;
+        apps.default = {
+          type = "app";
+          program = "${customEmacs}/bin/emacs";
+        };
         devShells.default = pkgs.mkShell {
           buildInputs = [ customEmacs ];
           shellHook = ''

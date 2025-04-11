@@ -14,6 +14,7 @@
     flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = import nixpkgs {inherit system;};
+        lib = pkgs.lib;
         # Define Emacs with Tree-sitter grammars
         emacsWithTreesit = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages (epkgs: [
           epkgs.treesit-grammars.with-all-grammars
@@ -54,31 +55,36 @@
             wrapProgram $out/bin/emacs \
               --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
               --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
-              --prefix PATH : "${pkgs.ripgrep}/bin" \
-              --prefix PATH : "${pkgs.cmake}/bin" \
-              --prefix PATH : "${pkgs.libtool}/bin" \
-              --prefix PATH : "${pkgs.rustup}/bin" \
-              --prefix PATH : "${pkgs.gcc}/bin" \
-              --prefix PATH : "${pkgs.cargo}/bin" \
-              --prefix PATH : "${pkgs.zls}/bin" \
-              --prefix PATH : "${pkgs.nodejs}/bin" \
-              --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
-              --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
-              --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
+              --prefix PATH : ${lib.makeBinPath [
+                pkgs.ripgrep
+                pkgs.cmake
+                pkgs.libtool
+                pkgs.rustup
+                pkgs.gcc
+                pkgs.cargo
+                pkgs.zls
+                pkgs.nodejs
+                pkgs.nodePackages.typescript
+                pkgs.nodePackages.typescript-language-server
+                pkgs.nodePackages."@angular/cli"
+              ]}
 
             wrapProgram $out/bin/emacsclient \
               --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
               --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
-              --prefix PATH : "${pkgs.ripgrep}/bin" \
-              --prefix PATH : "${pkgs.cmake}/bin" \
-              --prefix PATH : "${pkgs.libtool}/bin" \
-              --prefix PATH : "${pkgs.rustup}/bin" \
-              --prefix PATH : "${pkgs.cargo}/bin" \
-              --prefix PATH : "${pkgs.zls}/bin" \
-              --prefix PATH : "${pkgs.nodejs}/bin" \
-              --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
-              --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
-              --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
+              --prefix PATH : ${lib.makeBinPath [
+                pkgs.ripgrep
+                pkgs.cmake
+                pkgs.libtool
+                pkgs.rustup
+                pkgs.gcc
+                pkgs.cargo
+                pkgs.zls
+                pkgs.nodejs
+                pkgs.nodePackages.typescript
+                pkgs.nodePackages.typescript-language-server
+                pkgs.nodePackages."@angular/cli"
+              ]}
 
             ln -s ${emacsWithTreesit}/share $out/share
           '';

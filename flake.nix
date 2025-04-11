@@ -61,6 +61,20 @@
             --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
             --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
 
+          wrapProgram $out/bin/emacsclient \
+            --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
+            --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
+            --prefix PATH : "${pkgs.ripgrep}/bin" \
+            --prefix PATH : "${pkgs.cmake}/bin" \
+            --prefix PATH : "${pkgs.libtool}/bin" \
+            --prefix PATH : "${pkgs.rustup}/bin" \
+            --prefix PATH : "${pkgs.cargo}/bin" \
+            --prefix PATH : "${pkgs.zls}/bin" \
+            --prefix PATH : "${pkgs.nodejs}/bin" \
+            --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
+            --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
+            --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
+
           ln -s ${emacsWithTreesit}/share $out/share
         '';
       in {

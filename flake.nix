@@ -21,62 +21,67 @@
         # Get the path to the Tree-sitter grammars
         treesitGrammarsPath = "${pkgs.emacsPackages.treesit-grammars.with-all-grammars}/lib";
         # Custom derivation wrapping emacsWithTreesit using runCommand
-        customEmacs = pkgs.runCommand "custom-emacs" {
-          nativeBuildInputs = [ pkgs.makeWrapper ];
-          buildInputs = [ emacsWithTreesit ] ++ (with pkgs; [
-            ripgrep
-            cmake
-            libtool
-            rustup
-            cargo
-            zls
-            nodejs
-            nodePackages.typescript
-            nodePackages.typescript-language-server
-            nodePackages."@angular/cli"
-          ]);
-        } ''
-          # Set up the output directory
-          mkdir -p $out/bin
-          # Symlink the emacs binary
-          ln -s ${emacsWithTreesit}/bin/emacs $out/bin/emacs
-          ln -s ${emacsWithTreesit}/bin/ctags $out/bin/ctags
-          ln -s ${emacsWithTreesit}/bin/ebrowse $out/bin/ebrowse
-          ln -s ${emacsWithTreesit}/bin/emacs-30.1 $out/bin/emacs-30.1
-          ln -s ${emacsWithTreesit}/bin/emacsclient $out/bin/emacsclient
-          ln -s ${emacsWithTreesit}/bin/etags $out/bin/etags
+        customEmacs =
+          pkgs.runCommand "custom-emacs" {
+            nativeBuildInputs = [pkgs.makeWrapper];
+            buildInputs =
+              [emacsWithTreesit]
+              ++ (with pkgs; [
+                ripgrep
+                cmake
+                libtool
+                rustup
+                gcc
+                cargo
+                zls
+                nodejs
+                nodePackages.typescript
+                nodePackages.typescript-language-server
+                nodePackages."@angular/cli"
+              ]);
+          } ''
+            # Set up the output directory
+            mkdir -p $out/bin
+            # Symlink the emacs binary
+            ln -s ${emacsWithTreesit}/bin/emacs $out/bin/emacs
+            ln -s ${emacsWithTreesit}/bin/ctags $out/bin/ctags
+            ln -s ${emacsWithTreesit}/bin/ebrowse $out/bin/ebrowse
+            ln -s ${emacsWithTreesit}/bin/emacs-30.1 $out/bin/emacs-30.1
+            ln -s ${emacsWithTreesit}/bin/emacsclient $out/bin/emacsclient
+            ln -s ${emacsWithTreesit}/bin/etags $out/bin/etags
 
-          # Wrap the emacs binary with environment variables
-          wrapProgram $out/bin/emacs \
-            --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
-            --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
-            --prefix PATH : "${pkgs.ripgrep}/bin" \
-            --prefix PATH : "${pkgs.cmake}/bin" \
-            --prefix PATH : "${pkgs.libtool}/bin" \
-            --prefix PATH : "${pkgs.rustup}/bin" \
-            --prefix PATH : "${pkgs.cargo}/bin" \
-            --prefix PATH : "${pkgs.zls}/bin" \
-            --prefix PATH : "${pkgs.nodejs}/bin" \
-            --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
-            --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
-            --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
+            # Wrap the emacs binary with environment variables
+            wrapProgram $out/bin/emacs \
+              --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
+              --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
+              --prefix PATH : "${pkgs.ripgrep}/bin" \
+              --prefix PATH : "${pkgs.cmake}/bin" \
+              --prefix PATH : "${pkgs.libtool}/bin" \
+              --prefix PATH : "${pkgs.rustup}/bin" \
+              --prefix PATH : "${pkgs.gcc}/bin" \
+              --prefix PATH : "${pkgs.cargo}/bin" \
+              --prefix PATH : "${pkgs.zls}/bin" \
+              --prefix PATH : "${pkgs.nodejs}/bin" \
+              --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
+              --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
+              --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
 
-          wrapProgram $out/bin/emacsclient \
-            --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
-            --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
-            --prefix PATH : "${pkgs.ripgrep}/bin" \
-            --prefix PATH : "${pkgs.cmake}/bin" \
-            --prefix PATH : "${pkgs.libtool}/bin" \
-            --prefix PATH : "${pkgs.rustup}/bin" \
-            --prefix PATH : "${pkgs.cargo}/bin" \
-            --prefix PATH : "${pkgs.zls}/bin" \
-            --prefix PATH : "${pkgs.nodejs}/bin" \
-            --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
-            --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
-            --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
+            wrapProgram $out/bin/emacsclient \
+              --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
+              --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
+              --prefix PATH : "${pkgs.ripgrep}/bin" \
+              --prefix PATH : "${pkgs.cmake}/bin" \
+              --prefix PATH : "${pkgs.libtool}/bin" \
+              --prefix PATH : "${pkgs.rustup}/bin" \
+              --prefix PATH : "${pkgs.cargo}/bin" \
+              --prefix PATH : "${pkgs.zls}/bin" \
+              --prefix PATH : "${pkgs.nodejs}/bin" \
+              --prefix PATH : "${pkgs.nodePackages.typescript}/bin" \
+              --prefix PATH : "${pkgs.nodePackages.typescript-language-server}/bin" \
+              --prefix PATH : "${pkgs.nodePackages."@angular/cli"}/bin"
 
-          ln -s ${emacsWithTreesit}/share $out/share
-        '';
+            ln -s ${emacsWithTreesit}/share $out/share
+          '';
       in {
         # Use customEmacs as the default package
         packages.default = customEmacs;
@@ -85,7 +90,7 @@
           program = "${customEmacs}/bin/emacs";
         };
         devShells.default = pkgs.mkShell {
-          buildInputs = [ customEmacs ];
+          buildInputs = [customEmacs];
           shellHook = ''
             echo "DEBUG: Setting up devShell" >&2
             export TREE_SITTER_DIR=${treesitGrammarsPath}

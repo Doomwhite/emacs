@@ -378,6 +378,9 @@
   :after (rust-mode)
   :init (setq rustic-lsp-client 'eglot))
 
+(use-package nix-mode
+  :ensure t)
+
 (use-package zig-mode
   :ensure t
   :mode (("\\.zig\\'" . zig-mode)

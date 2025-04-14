@@ -30,7 +30,7 @@
               ++ (with pkgs; [
                 ripgrep
                 cmake
-                make
+                gnumake
                 libtool
                 rustup
                 gcc
@@ -58,7 +58,7 @@
               --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
               --prefix PATH : ${lib.makeBinPath [
                 pkgs.ripgrep
-                pkgs.make
+                pkgs.gnumake
                 pkgs.cmake
                 pkgs.libtool
                 pkgs.rustup
@@ -76,7 +76,7 @@
               --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
               --prefix PATH : ${lib.makeBinPath [
                 pkgs.ripgrep
-                pkgs.make
+                pkgs.gnumake
                 pkgs.cmake
                 pkgs.libtool
                 pkgs.rustup

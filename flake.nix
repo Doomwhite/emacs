@@ -40,6 +40,7 @@
                 nodePackages.typescript
                 nodePackages.typescript-language-server
                 nodePackages."@angular/cli"
+                nixd
               ]);
           } ''
             # Set up the output directory
@@ -51,6 +52,7 @@
             ln -s ${emacsWithTreesit}/bin/emacs-30.1 $out/bin/emacs-30.1
             ln -s ${emacsWithTreesit}/bin/emacsclient $out/bin/emacsclient
             ln -s ${emacsWithTreesit}/bin/etags $out/bin/etags
+            ln -s ${emacsWithTreesit}/bin/nixd $out/bin/nixd
 
             # Wrap the emacs binary with environment variables
             wrapProgram $out/bin/emacs \
@@ -69,6 +71,7 @@
                 pkgs.nodePackages.typescript
                 pkgs.nodePackages.typescript-language-server
                 pkgs.nodePackages."@angular/cli"
+                pkgs.nixd
               ]}
 
             wrapProgram $out/bin/emacsclient \
@@ -87,6 +90,7 @@
                 pkgs.nodePackages.typescript
                 pkgs.nodePackages.typescript-language-server
                 pkgs.nodePackages."@angular/cli"
+                pkgs.nixd
               ]}
 
             ln -s ${emacsWithTreesit}/share $out/share

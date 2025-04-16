@@ -361,11 +361,13 @@
          (zig-mode . eglot-ensure)
          (typescript-ts-mode . eglot-ensure)
          (js-mode . eglot-ensure)
-         (web-mode . eglot-ensure))
+         (web-mode . eglot-ensure)
+         (nix-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs '(rustic-mode . ("rust-analyzer")))
   (add-to-list 'eglot-server-programs '(zig-mode . ("zls")))
   (add-to-list 'eglot-server-programs '((typescript-ts-mode js-mode web-mode) . ("typescript-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '((nix-mode) . ("nixd")))
   ;; Optional: Enable inlay hints for supported languages
   ;; (add-hook 'eglot-managed-mode-hook #'eglot-inlay-hints-mode)
   )
@@ -379,7 +381,8 @@
   :init (setq rustic-lsp-client 'eglot))
 
 (use-package nix-mode
-  :ensure t)
+  :ensure t
+  :mode (("\\.nix\\'" . nix-mode)))
 
 (use-package zig-mode
   :ensure t

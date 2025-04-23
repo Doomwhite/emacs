@@ -61,8 +61,8 @@
 (when (eq system-type 'windows-nt)
   (setq elpaca-queue-limit 12))
 
-; (elpaca transient)
-; (elpaca magit)
+(elpaca transient)
+(elpaca magit)
 
   ;; Install use-package support
   (elpaca elpaca-use-package
@@ -200,7 +200,11 @@
   (my/setup-debugging)
   (my/setup-platform-specific)
 
-  :hook ((elpaca-after-init . my/setup-fonts)))
+  :hook ((elpaca-after-init . my/setup-fonts)
+         (after-make-frame-functions . (lambda (frame)
+                                         (with-selected-frame frame
+                                           (my/setup-fonts)))))
+  )
 
 ;; Global variables
 (defconst my/create-new-frame "create-new-frame"
@@ -224,6 +228,9 @@
 ;         (error "Error: Environment variable '%s' is not set." (symbol-name key-symbol)))))
 
 ;; Magit
+;; (use-package magit
+;;   :ensure (:branch "main"))
+
 ;; (use-package my-magit-speedup-for-windows
 ;;   :load-path "~/.emacs.d/my-magit-speedup-for-windows"
 ;;   :init

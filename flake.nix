@@ -59,39 +59,39 @@
               --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
               --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
               --prefix PATH : ${lib.makeBinPath [
-                pkgs.ripgrep
-                pkgs.gnumake
-                pkgs.cmake
-                pkgs.libtool
-                pkgs.rustup
-                pkgs.gcc
-                pkgs.cargo
-                pkgs.zls
-                pkgs.nodejs
-                pkgs.nodePackages.typescript
-                pkgs.nodePackages.typescript-language-server
-                pkgs.nodePackages."@angular/cli"
-                pkgs.nixd
-              ]}
+              pkgs.ripgrep
+              pkgs.gnumake
+              pkgs.cmake
+              pkgs.libtool
+              pkgs.rustup
+              pkgs.gcc
+              pkgs.cargo
+              pkgs.zls
+              pkgs.nodejs
+              pkgs.nodePackages.typescript
+              pkgs.nodePackages.typescript-language-server
+              pkgs.nodePackages."@angular/cli"
+              pkgs.nixd
+            ]}
 
             wrapProgram $out/bin/emacsclient \
               --set TREE_SITTER_DIR "${treesitGrammarsPath}" \
               --set EMACS_TREESIT_PATH "${treesitGrammarsPath}" \
               --prefix PATH : ${lib.makeBinPath [
-                pkgs.ripgrep
-                pkgs.gnumake
-                pkgs.cmake
-                pkgs.libtool
-                pkgs.rustup
-                pkgs.gcc
-                pkgs.cargo
-                pkgs.zls
-                pkgs.nodejs
-                pkgs.nodePackages.typescript
-                pkgs.nodePackages.typescript-language-server
-                pkgs.nodePackages."@angular/cli"
-                pkgs.nixd
-              ]}
+              pkgs.ripgrep
+              pkgs.gnumake
+              pkgs.cmake
+              pkgs.libtool
+              pkgs.rustup
+              pkgs.gcc
+              pkgs.cargo
+              pkgs.zls
+              pkgs.nodejs
+              pkgs.nodePackages.typescript
+              pkgs.nodePackages.typescript-language-server
+              pkgs.nodePackages."@angular/cli"
+              pkgs.nixd
+            ]}
 
             ln -s ${emacsWithTreesit}/share $out/share
           '';
